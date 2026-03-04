@@ -1,0 +1,58 @@
+# Unreal build and intermediate files
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/*/Binaries/
+Build/*/Intermediate/
+
+# User specific files
+*.suo
+*.sln.docstates
+*.opensdf
+*.VC.db
+*.VC.opendb
+
+# Generated project files
+*.xcodeproj
+*.xcworkspace
+*.xcconfig
+*.vscode/
+
+# Unreal-specific ignored content
+*.generated.h
+*.generated.cpp
+
+# Build artifacts
+*.pdb
+
+# Backup and local config
+*.local
+*.backup
+*.tmp
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Plugins that generate intermediates
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+Plugins/*/Saved/
+
+# Optional but recommended
+# Ignore large DDC artifacts inside project folder
+DerivedDataCache/
+
+# If you use Rider
+.idea/
+
+# If you use Visual Studio Code
+.vscode/
+
+# If you include third party libs with build artifacts
+ThirdParty/**/Binaries/
+ThirdParty/**/Lib/
