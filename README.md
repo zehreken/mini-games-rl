@@ -4,3 +4,6 @@ To run TensorBoard, go to C:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Thi
 To start headless mode, go to C:\Users\zehre\Documents\Dev\Unreal Projects\MiniGamesRL\Saved\StagedBuilds\Windows\MiniGamesRL\Binaries\Win64
 If it does not exist you need to build(cook)
 .\MiniGamesRL.exe L_ReverseKaboom -nullrhi -nosound -log -log=kaboom.log
+
+Snapshots are here
+C:\Users\zehre\Documents\Dev\Unreal Projects\MiniGamesRL\Intermediate\LearningAgents\Snapshots
