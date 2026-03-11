@@ -1,0 +1,10 @@
+@echo off
+echo Starting TensorBoard...
+echo.
+
+cd /d "C:\Program Files\Epic Games\UE_5.5\Engine\Binaries\ThirdParty\Python3\Win64\Scripts"
+
+.\tensorboard.exe --logdir="C:\Users\zehre\Documents\Dev\Unreal Projects\MiniGamesRL\Intermediate\LearningAgents\TensorBoard\runs"
+
+echo.
+pause
