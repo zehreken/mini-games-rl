@@ -20,6 +20,9 @@ Build/*/Intermediate/
 *.xcconfig
 *.vscode/
 
+# Visual Studio
+.vs/
+
 # Unreal-specific ignored content
 *.generated.h
 *.generated.cpp
