@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Guchan Alkan - Licensed under GPLv3
 
 #include "GoldRushGameMode.h"
 #include "Kismet/GameplayStatics.h"
@@ -32,7 +31,9 @@ void AGoldRushGameMode::SpawnObstacle()
 	AActor* NewObstacle = GetWorld()->SpawnActor<AActor>(ObstacleClass, SpawnTransform);
 
 	if (NewObstacle)
+	{
 		Obstacles.Add(NewObstacle);
+	}
 }
 
 void AGoldRushGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)

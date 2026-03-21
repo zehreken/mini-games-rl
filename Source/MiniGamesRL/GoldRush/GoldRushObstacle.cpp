@@ -1,0 +1,39 @@
+// Guchan Alkan - Licensed under GPLv3
+
+#include "GoldRushObstacle.h"
+
+#include "GoldRushGameMode.h"
+#include "GoldRushPlayer.h"
+
+// Sets default values
+AGoldRushObstacle::AGoldRushObstacle()
+{
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AGoldRushObstacle::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(OtherActor))
+	{
+		Player->MissObject();
+	}
+
+	if (AGoldRushGameMode* GameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		GameMode->Obstacles.RemoveSwap(this);
+	}
+
+	Destroy();
+}
+
+// Called every frame
+void AGoldRushObstacle::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	const FVector Velocity(0.0f, 0.0f, -200.0f);
+	AddActorLocalOffset(DeltaTime * Velocity);
+}

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Guchan Alkan - Licensed under GPLv3
 
 #pragma once
 
@@ -21,6 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 
+public:
+	UPROPERTY(EditAnywhere, Category = "GoldRush")
+	TArray<AActor*> Obstacles;
+	
 private:
 	UFUNCTION()
 	void SpawnObstacle();
@@ -30,9 +34,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
 	TSubclassOf<AActor> PlayerClass;
-
-	UPROPERTY(EditAnywhere, Category = "GoldRush")
-	TArray<AActor*> Obstacles;
 
 	FTimerHandle SpawnTimerHandle;
 };
