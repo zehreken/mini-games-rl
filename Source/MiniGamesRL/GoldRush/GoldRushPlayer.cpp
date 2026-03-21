@@ -1,5 +1,6 @@
 // Guchan Alkan - Licensed under GPLv3
 
+
 #include "GoldRush/GoldRushPlayer.h"
 
 // Sets default values

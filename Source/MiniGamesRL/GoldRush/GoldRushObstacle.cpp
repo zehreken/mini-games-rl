@@ -1,5 +1,6 @@
 // Guchan Alkan - Licensed under GPLv3
 
+
 #include "GoldRush/GoldRushObstacle.h"
 #include "GoldRush/GoldRushGameMode.h"
 #include "GoldRush/GoldRushPlayer.h"
