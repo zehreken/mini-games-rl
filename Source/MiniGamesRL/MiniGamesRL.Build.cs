@@ -10,7 +10,7 @@ public class MiniGamesRL : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+		PrivateDependencyModuleNames.AddRange(new string[] { "LearningAgents" });
 
 		PublicIncludePaths.Add(ModuleDirectory);
 
