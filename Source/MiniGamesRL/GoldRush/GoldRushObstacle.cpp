@@ -1,9 +1,8 @@
 // Guchan Alkan - Licensed under GPLv3
 
-#include "GoldRushObstacle.h"
-
-#include "GoldRushGameMode.h"
-#include "GoldRushPlayer.h"
+#include "GoldRush/GoldRushObstacle.h"
+#include "GoldRush/GoldRushGameMode.h"
+#include "GoldRush/GoldRushPlayer.h"
 
 // Sets default values
 AGoldRushObstacle::AGoldRushObstacle()

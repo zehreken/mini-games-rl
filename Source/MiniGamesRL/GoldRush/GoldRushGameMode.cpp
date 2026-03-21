@@ -1,6 +1,6 @@
 // Guchan Alkan - Licensed under GPLv3
 
-#include "GoldRushGameMode.h"
+#include "GoldRush/GoldRushGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 AGoldRushGameMode::AGoldRushGameMode()
