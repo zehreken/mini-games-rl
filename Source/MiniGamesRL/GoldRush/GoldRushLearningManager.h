@@ -10,6 +10,7 @@
 #include "LearningAgentsCritic.h"
 #include "LearningAgentsTrainingEnvironment.h"
 #include "LearningAgentsPPOTrainer.h"
+#include "LearningAgentsCommunicator.h"
 #include "GoldRushLearningManager.generated.h"
 
 UCLASS()
@@ -32,6 +33,9 @@ public:
 	UPROPERTY(visibleAnywhere, Category = "GoldRush")
 	ULearningAgentsManager* LearningAgentsManager;
 
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
+	TSubclassOf<ULearningAgentsInteractor> InteractorClass;
+
 	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsInteractor* Interactor;
 	
@@ -46,5 +50,20 @@ public:
 
 	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
 	ULearningAgentsPPOTrainer* PPOTrainer;
+
+	UPROPERTY(EditAnywhere, Category = "Learning|Networks")
+	TObjectPtr<ULearningAgentsNeuralNetwork> CriticNetwork;
+
+	UPROPERTY(EditAnywhere, Category = "Learning|Networks")
+	TObjectPtr<ULearningAgentsNeuralNetwork> DecoderNetwork;
+
+	UPROPERTY(EditAnywhere, Category = "Learning|Networks")
+	TObjectPtr<ULearningAgentsNeuralNetwork> EncoderNetwork;
+
+	UPROPERTY(EditAnywhere, Category = "Learning|Networks")
+	TObjectPtr<ULearningAgentsNeuralNetwork> PolicyNetwork;
+
+	FLearningAgentsTrainerProcess TrainerProcess;
+	FLearningAgentsCommunicator Communicator;
 
 };

@@ -2,8 +2,9 @@
 
 
 #include "GoldRush/GoldRushLearningManager.h"
-
 #include "GoldRushPlayer.h"
+#include "GoldRushPlayerInteractor.h"
+#include "GoldRushTrainingEnvironment.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -22,16 +23,71 @@ void AGoldRushLearningManager::BeginPlay()
 
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGoldRushPlayer::StaticClass(), Actors);
+	const FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
 
 	for (AActor* Actor : Actors)
 	{
 		LearningAgentsManager->AddAgent(Actor);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Added agent"));
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, LevelName + TEXT(" - Added agent"));
+
+		Actor->AddTickPrerequisiteActor(this);
 	}
+
+	Interactor = ULearningAgentsInteractor::MakeInteractor(
+		LearningAgentsManager,
+		InteractorClass,
+		TEXT("Interactor")
+	);
+
+	// Can convert to RunInference later
+	const bool ReinitializeNetwork = true;
+
+	Policy = ULearningAgentsPolicy::MakePolicy(
+		LearningAgentsManager,
+		Interactor,
+		ULearningAgentsPolicy::StaticClass(),
+		TEXT("Policy"),
+		EncoderNetwork,
+		PolicyNetwork,
+		DecoderNetwork,
+		ReinitializeNetwork,
+		ReinitializeNetwork,
+		ReinitializeNetwork);
+
+	Critic = ULearningAgentsCritic::MakeCritic(
+		LearningAgentsManager,
+		Interactor,
+		Policy,
+		ULearningAgentsCritic::StaticClass(),
+		TEXT("Critic"),
+		CriticNetwork,
+		ReinitializeNetwork);
+
+	TrainingEnv = ULearningAgentsTrainingEnvironment::MakeTrainingEnvironment(
+		LearningAgentsManager,
+		UGoldRushTrainingEnvironment::StaticClass(),
+		TEXT("TrainingEnvironment"));
+
+	TrainerProcess = ULearningAgentsCommunicatorLibrary::SpawnSharedMemoryTrainingProcess();
+
+	Communicator = ULearningAgentsCommunicatorLibrary::MakeSharedMemoryCommunicator(TrainerProcess);
+
+	PPOTrainer = ULearningAgentsPPOTrainer::MakePPOTrainer(
+		LearningAgentsManager,
+		Interactor,
+		TrainingEnv,
+		Policy,
+		Critic,
+		Communicator,
+		ULearningAgentsPPOTrainer::StaticClass(),
+		TEXT("PPOTrainer"));
 }
 
 // Called every frame
 void AGoldRushLearningManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	PPOTrainer->RunTraining();
 }
