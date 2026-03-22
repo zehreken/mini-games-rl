@@ -5,6 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "LearningAgentsManager.h"
+#include "LearningAgentsInteractor.h"
+#include "LearningAgentsPolicy.h"
+#include "LearningAgentsCritic.h"
+#include "LearningAgentsTrainingEnvironment.h"
+#include "LearningAgentsPPOTrainer.h"
 #include "GoldRushLearningManager.generated.h"
 
 UCLASS()
@@ -26,5 +31,20 @@ public:
 
 	UPROPERTY(visibleAnywhere, Category = "GoldRush")
 	ULearningAgentsManager* LearningAgentsManager;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	ULearningAgentsInteractor* Interactor;
+	
+	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
+	ULearningAgentsPolicy* Policy;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
+	ULearningAgentsCritic* Critic;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
+	ULearningAgentsTrainingEnvironment* TrainingEnv;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
+	ULearningAgentsPPOTrainer* PPOTrainer;
 
 };
