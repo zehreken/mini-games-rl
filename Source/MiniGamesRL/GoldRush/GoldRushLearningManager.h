@@ -11,6 +11,7 @@
 #include "LearningAgentsTrainingEnvironment.h"
 #include "LearningAgentsPPOTrainer.h"
 #include "LearningAgentsCommunicator.h"
+#include "GoldRushTrainingConfig.h"
 #include "GoldRushLearningManager.generated.h"
 
 UCLASS()
@@ -39,31 +40,33 @@ public:
 	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsInteractor* Interactor;
 	
-	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsPolicy* Policy;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsCritic* Critic;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsTrainingEnvironment* TrainingEnv;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "Learning")
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsPPOTrainer* PPOTrainer;
 
-	UPROPERTY(EditAnywhere, Category = "Learning|Networks")
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Settings")
+	TObjectPtr<UGoldRushTrainingConfig> TrainerConfig;
+
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> CriticNetwork;
 
-	UPROPERTY(EditAnywhere, Category = "Learning|Networks")
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> DecoderNetwork;
 
-	UPROPERTY(EditAnywhere, Category = "Learning|Networks")
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> EncoderNetwork;
 
-	UPROPERTY(EditAnywhere, Category = "Learning|Networks")
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> PolicyNetwork;
 
-	FLearningAgentsTrainerProcess TrainerProcess;
-	FLearningAgentsCommunicator Communicator;
-
+	TUniquePtr<FLearningAgentsTrainerProcess> TrainerProcess;
+	TUniquePtr<FLearningAgentsCommunicator> Communicator;
 };

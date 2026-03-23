@@ -2,9 +2,9 @@
 
 
 #include "GoldRush/GoldRushLearningManager.h"
-#include "GoldRushPlayer.h"
-#include "GoldRushPlayerInteractor.h"
-#include "GoldRushTrainingEnvironment.h"
+#include "GoldRush/GoldRushPlayer.h"
+#include "GoldRush/GoldRushPlayerInteractor.h"
+#include "GoldRush/GoldRushTrainingEnvironment.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -34,7 +34,7 @@ void AGoldRushLearningManager::BeginPlay()
 		Actor->AddTickPrerequisiteActor(this);
 	}
 
-	Interactor = ULearningAgentsInteractor::MakeInteractor(
+	Interactor = UGoldRushPlayerInteractor::MakeInteractor(
 		LearningAgentsManager,
 		InteractorClass,
 		TEXT("Interactor")
@@ -64,14 +64,13 @@ void AGoldRushLearningManager::BeginPlay()
 		CriticNetwork,
 		ReinitializeNetwork);
 
-	TrainingEnv = ULearningAgentsTrainingEnvironment::MakeTrainingEnvironment(
+	TrainingEnv = UGoldRushTrainingEnvironment::MakeTrainingEnvironment(
 		LearningAgentsManager,
 		UGoldRushTrainingEnvironment::StaticClass(),
 		TEXT("TrainingEnvironment"));
 
-	TrainerProcess = ULearningAgentsCommunicatorLibrary::SpawnSharedMemoryTrainingProcess();
-
-	Communicator = ULearningAgentsCommunicatorLibrary::MakeSharedMemoryCommunicator(TrainerProcess);
+	TrainerProcess = MakeUnique<FLearningAgentsTrainerProcess>(ULearningAgentsCommunicatorLibrary::SpawnSharedMemoryTrainingProcess(TrainerConfig->TrainerProcessSettings));
+	Communicator = MakeUnique<FLearningAgentsCommunicator>(ULearningAgentsCommunicatorLibrary::MakeSharedMemoryCommunicator(*TrainerProcess));
 
 	PPOTrainer = ULearningAgentsPPOTrainer::MakePPOTrainer(
 		LearningAgentsManager,
@@ -79,7 +78,7 @@ void AGoldRushLearningManager::BeginPlay()
 		TrainingEnv,
 		Policy,
 		Critic,
-		Communicator,
+		*Communicator,
 		ULearningAgentsPPOTrainer::StaticClass(),
 		TEXT("PPOTrainer"));
 }

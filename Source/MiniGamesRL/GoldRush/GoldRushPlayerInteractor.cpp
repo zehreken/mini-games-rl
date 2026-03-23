@@ -2,15 +2,13 @@
 
 
 #include "GoldRush/GoldRushPlayerInteractor.h"
-
-#include "GoldRushPlayer.h"
+#include "GoldRush/GoldRushPlayer.h"
 
 void UGoldRushPlayerInteractor::SpecifyAgentObservation_Implementation(
 	FLearningAgentsObservationSchemaElement& OutObservationSchemaElement,
 	ULearningAgentsObservationSchema* InObservationSchema)
 {
-	Super::SpecifyAgentObservation_Implementation(OutObservationSchemaElement, InObservationSchema);
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("specify agent observation"));
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
 		InObservationSchema,
 		{
@@ -23,8 +21,6 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 	FLearningAgentsObservationObjectElement& OutObservationObjectElement,
 	ULearningAgentsObservationObject* InObservationObject, const int32 AgentId)
 {
-	Super::GatherAgentObservation_Implementation(OutObservationObjectElement, InObservationObject, AgentId);
-
 	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 	if (!IsValid(Player)) return;
 
@@ -45,13 +41,13 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 				ULearningAgentsObservations::MakeFloatObservation(InObservationObject, RelativeZToObstacle)
 			}
 		});
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("specify agent observation"));
 }
 
 void UGoldRushPlayerInteractor::SpecifyAgentAction_Implementation(
 	FLearningAgentsActionSchemaElement& OutActionSchemaElement, ULearningAgentsActionSchema* InActionSchema)
 {
-	Super::SpecifyAgentAction_Implementation(OutActionSchemaElement, InActionSchema);
-
 	OutActionSchemaElement = ULearningAgentsActions::SpecifyFloatAction(InActionSchema, 1.0f, "Direction");
 }
 
@@ -59,8 +55,6 @@ void UGoldRushPlayerInteractor::PerformAgentAction_Implementation(
 	const ULearningAgentsActionObject* InActionObject, const FLearningAgentsActionObjectElement& InActionObjectElement,
 	const int32 AgentId)
 {
-	Super::PerformAgentAction_Implementation(InActionObject, InActionObjectElement, AgentId);
-
 	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 	if (!IsValid(Player)) return;
 
@@ -68,6 +62,8 @@ void UGoldRushPlayerInteractor::PerformAgentAction_Implementation(
 	ULearningAgentsActions::GetFloatAction(Direction, InActionObject, InActionObjectElement, "Direction");
 
 	Player->Move(Direction);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("perform agent action"));
 }
 
 FVector UGoldRushPlayerInteractor::GetClosestObstacleLocation(const TArray<AActor*>& Obstacles, AActor* Player)

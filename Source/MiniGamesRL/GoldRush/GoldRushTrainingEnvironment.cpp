@@ -2,13 +2,10 @@
 
 
 #include "GoldRush/GoldRushTrainingEnvironment.h"
-
-#include "GoldRushPlayer.h"
+#include "GoldRush/GoldRushPlayer.h"
 
 void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutReward, const int32 AgentId)
 {
-	Super::GatherAgentReward_Implementation(OutReward, AgentId);
-
 	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 
 	if (!IsValid(Player)) return;
@@ -33,8 +30,6 @@ void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutRe
 void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearningAgentsCompletion& OutCompletion,
                                                                         const int32 AgentId)
 {
-	Super::GatherAgentCompletion_Implementation(OutCompletion, AgentId);
-
 	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 
 	if (!IsValid(Player)) return;
@@ -51,8 +46,6 @@ void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearnin
 
 void UGoldRushTrainingEnvironment::ResetAgentEpisode_Implementation(const int32 AgentId)
 {
-	Super::ResetAgentEpisode_Implementation(AgentId);
-
 	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 
 	if (!IsValid(Player)) return;
