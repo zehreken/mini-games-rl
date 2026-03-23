@@ -8,7 +8,6 @@ void UGoldRushPlayerInteractor::SpecifyAgentObservation_Implementation(
 	FLearningAgentsObservationSchemaElement& OutObservationSchemaElement,
 	ULearningAgentsObservationSchema* InObservationSchema)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("specify agent observation"));
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
 		InObservationSchema,
 		{
@@ -41,8 +40,6 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 				ULearningAgentsObservations::MakeFloatObservation(InObservationObject, RelativeZToObstacle)
 			}
 		});
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("specify agent observation"));
 }
 
 void UGoldRushPlayerInteractor::SpecifyAgentAction_Implementation(
@@ -62,8 +59,6 @@ void UGoldRushPlayerInteractor::PerformAgentAction_Implementation(
 	ULearningAgentsActions::GetFloatAction(Direction, InActionObject, InActionObjectElement, "Direction");
 
 	Player->Move(Direction);
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("perform agent action"));
 }
 
 FVector UGoldRushPlayerInteractor::GetClosestObstacleLocation(const TArray<AActor*>& Obstacles, AActor* Player)
