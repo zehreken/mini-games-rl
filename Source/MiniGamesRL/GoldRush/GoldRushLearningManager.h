@@ -31,7 +31,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(visibleAnywhere, Category = "GoldRush")
+	UPROPERTY(EditAnywhere, Category = "GoldRush")
+	bool RunInference = false;
+
+	UPROPERTY(VisibleAnywhere, Category = "GoldRush")
 	ULearningAgentsManager* LearningAgentsManager;
 
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
@@ -66,6 +69,18 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> PolicyNetwork;
+	
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Snapshots")
+	FFilePath CriticFilePath;
+
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Snapshots")
+	FFilePath DecoderFilePath;
+
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Snapshots")
+	FFilePath EncoderFilePath;
+
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Snapshots")
+	FFilePath PolicyFilePath;
 
 	TUniquePtr<FLearningAgentsTrainerProcess> TrainerProcess;
 	TUniquePtr<FLearningAgentsCommunicator> Communicator;

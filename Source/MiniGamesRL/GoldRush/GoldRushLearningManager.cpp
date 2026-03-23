@@ -21,6 +21,14 @@ void AGoldRushLearningManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (RunInference)
+	{
+		CriticNetwork->LoadNetworkFromSnapshot(CriticFilePath);
+		DecoderNetwork->LoadNetworkFromSnapshot(DecoderFilePath);
+		EncoderNetwork->LoadNetworkFromSnapshot(EncoderFilePath);
+		PolicyNetwork->LoadNetworkFromSnapshot(PolicyFilePath);
+	}
+
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGoldRushPlayer::StaticClass(), Actors);
 	const FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
@@ -40,9 +48,6 @@ void AGoldRushLearningManager::BeginPlay()
 		TEXT("Interactor")
 	);
 
-	// Can convert to RunInference later
-	const bool ReinitializeNetwork = true;
-
 	Policy = ULearningAgentsPolicy::MakePolicy(
 		LearningAgentsManager,
 		Interactor,
@@ -51,9 +56,9 @@ void AGoldRushLearningManager::BeginPlay()
 		EncoderNetwork,
 		PolicyNetwork,
 		DecoderNetwork,
-		ReinitializeNetwork,
-		ReinitializeNetwork,
-		ReinitializeNetwork);
+		!RunInference,
+		!RunInference,
+		!RunInference);
 
 	Critic = ULearningAgentsCritic::MakeCritic(
 		LearningAgentsManager,
@@ -62,15 +67,17 @@ void AGoldRushLearningManager::BeginPlay()
 		ULearningAgentsCritic::StaticClass(),
 		TEXT("Critic"),
 		CriticNetwork,
-		ReinitializeNetwork);
+		!RunInference);
 
 	TrainingEnv = UGoldRushTrainingEnvironment::MakeTrainingEnvironment(
 		LearningAgentsManager,
 		UGoldRushTrainingEnvironment::StaticClass(),
 		TEXT("TrainingEnvironment"));
 
-	TrainerProcess = MakeUnique<FLearningAgentsTrainerProcess>(ULearningAgentsCommunicatorLibrary::SpawnSharedMemoryTrainingProcess(TrainerConfig->TrainerProcessSettings));
-	Communicator = MakeUnique<FLearningAgentsCommunicator>(ULearningAgentsCommunicatorLibrary::MakeSharedMemoryCommunicator(*TrainerProcess));
+	TrainerProcess = MakeUnique<FLearningAgentsTrainerProcess>(
+		ULearningAgentsCommunicatorLibrary::SpawnSharedMemoryTrainingProcess(TrainerConfig->TrainerProcessSettings));
+	Communicator = MakeUnique<FLearningAgentsCommunicator>(
+		ULearningAgentsCommunicatorLibrary::MakeSharedMemoryCommunicator(*TrainerProcess));
 
 	PPOTrainer = ULearningAgentsPPOTrainer::MakePPOTrainer(
 		LearningAgentsManager,
@@ -88,5 +95,12 @@ void AGoldRushLearningManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	PPOTrainer->RunTraining();
+	if (RunInference)
+	{
+		Policy->RunInference();
+	}
+	else
+	{
+		PPOTrainer->RunTraining(TrainerConfig->PPOTrainingSettings);
+	}
 }
