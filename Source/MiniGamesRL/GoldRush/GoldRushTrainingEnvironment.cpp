@@ -16,13 +16,14 @@ void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutRe
 	if (Player->HasCollected)
 	{
 		Reward += 1.0f;
-		Player->HasCollected = false;
 	}
-	if (Player->HasMissed)
+	else if (Player->HasMissed)
 	{
 		Reward += -0.5f;
-		Player->HasMissed = false;
 	}
+
+	Player->HasCollected = false;
+	Player->HasMissed = false;
 
 	OutReward = Reward;
 }
@@ -34,7 +35,7 @@ void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearnin
 
 	if (!IsValid(Player)) return;
 
-	if (Player->MissCount > 10)
+	if (Player->MissCount > 20)
 	{
 		OutCompletion = ELearningAgentsCompletion::Termination;
 	}

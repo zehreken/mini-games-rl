@@ -25,8 +25,10 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 
 	const FVector ClosestObstacleLocation = GetClosestObstacleLocation(Player->Obstacles, Player);
 
-	const float RelativeYToObstacle = FMath::Clamp(ClosestObstacleLocation.Y / 800.0f, -1.0f, 1.0f);
-	const float RelativeZToObstacle = FMath::Clamp(ClosestObstacleLocation.Z / 650.0f, 0.0f, 1.0f);
+	const FVector RelativeLocation = ClosestObstacleLocation - Player->GetActorLocation();
+	
+	const float RelativeYToObstacle = FMath::Clamp(RelativeLocation.Y / 800.0f, -1.0f, 1.0f);
+	const float RelativeZToObstacle = FMath::Clamp(RelativeLocation.Z / 650.0f, 0.0f, 1.0f);
 
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,

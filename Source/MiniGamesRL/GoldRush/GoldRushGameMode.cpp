@@ -2,6 +2,7 @@
 
 
 #include "GoldRush/GoldRushGameMode.h"
+#include "GoldRushPlayer.h"
 #include "Kismet/GameplayStatics.h"
 
 AGoldRushGameMode::AGoldRushGameMode()
@@ -29,11 +30,14 @@ void AGoldRushGameMode::SpawnObstacle()
 	const FVector SpawnLocation(0.0f, RandomY, 300.0f);
 	const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation, FVector::OneVector);
 
-	AActor* NewObstacle = GetWorld()->SpawnActor<AActor>(ObstacleClass, SpawnTransform);
-
-	if (NewObstacle)
+	if (AActor* NewObstacle = GetWorld()->SpawnActor<AActor>(ObstacleClass, SpawnTransform))
 	{
 		Obstacles.Add(NewObstacle);
+
+		if (AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+		{
+			Player->Obstacles = Obstacles;
+		}
 	}
 }
 
@@ -53,7 +57,7 @@ void AGoldRushGameMode::HandleStartingNewPlayer_Implementation(APlayerController
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (PC && SpawnedPlayer)
 	{
-		if (APawn* PlayerPawn = Cast<APawn>(SpawnedPlayer)	)
+		if (APawn* PlayerPawn = Cast<APawn>(SpawnedPlayer))
 		{
 			PC->Possess(PlayerPawn);
 		}
