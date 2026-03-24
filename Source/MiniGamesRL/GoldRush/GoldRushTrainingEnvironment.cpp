@@ -11,17 +11,22 @@ void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutRe
 	if (!IsValid(Player)) return;
 
 	// Tiny punishment to create urgency
-	float Reward = -0.001f;
+	float Reward = 0.001f;
 
-	if (Player->HasCollected)
+	if (Player->WasHit)
 	{
-		Reward += 1.0f;
+		Reward -= 1.0f;
 	}
+	// if (Player->HasCollected)
+	// {
+	// 	Reward += 1.0f;
+	// }
 	else if (Player->HasMissed)
 	{
-		Reward += -0.5f;
+		Reward += 0.5f;
 	}
 
+	Player->WasHit = false;
 	Player->HasCollected = false;
 	Player->HasMissed = false;
 

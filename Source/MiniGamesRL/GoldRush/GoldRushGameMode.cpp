@@ -18,22 +18,22 @@ void AGoldRushGameMode::BeginPlay()
 		SpawnTimerHandle,
 		this,
 		&AGoldRushGameMode::SpawnObstacle,
-		3.0f,
+		1.0f,
 		true);
 
-	GetWorldTimerManager().SetTimer(
-		CollectibleSpawnTimerHandle,
-		this,
-		&AGoldRushGameMode::SpawnCollectible,
-		5.0f,
-		true);
+	// GetWorldTimerManager().SetTimer(
+	// 	CollectibleSpawnTimerHandle,
+	// 	this,
+	// 	&AGoldRushGameMode::SpawnCollectible,
+	// 	5.0f,
+	// 	true);
 }
 
 void AGoldRushGameMode::SpawnObstacle()
 {
 	if (!ObstacleClass) return;
 
-	const float RandomY = FMath::RandRange(-750.0f, 750.0f);
+	const float RandomY = FMath::RandRange(-1000.0f, 1000.0f);
 	const FVector SpawnLocation(0.0f, RandomY, 300.0f);
 	const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation, FVector::OneVector);
 

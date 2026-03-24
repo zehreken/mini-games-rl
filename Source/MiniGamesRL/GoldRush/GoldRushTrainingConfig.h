@@ -19,7 +19,7 @@ class MINIGAMESRL_API UGoldRushTrainingConfig : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere, Category = "Process")
 	FLearningAgentsTrainerProcessSettings TrainerProcessSettings;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Training")
 	FLearningAgentsPPOTrainingSettings PPOTrainingSettings;
 };

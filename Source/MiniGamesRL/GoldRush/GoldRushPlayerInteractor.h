@@ -21,5 +21,4 @@ public:
 	virtual void PerformAgentAction_Implementation(const ULearningAgentsActionObject* InActionObject, const FLearningAgentsActionObjectElement& InActionObjectElement, const int32 AgentId) override;
 
 	FVector GetClosestObstacleLocation(const TArray<AActor*>& Obstacles, AActor* Player);
-	
 };

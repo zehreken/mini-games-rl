@@ -20,7 +20,7 @@ void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	HasCollected = true;
+	WasHit = true;
 }
 
 // Called every frame
@@ -39,6 +39,7 @@ void AGoldRushPlayer::ResetAgent()
 {
 	SetActorLocation(FVector(0.0f, 0.0f, -300.0f));
 	Obstacles.Empty();
+	WasHit = false;
 	HasCollected = false;
 	HasMissed = false;
 	MissCount = 0;
