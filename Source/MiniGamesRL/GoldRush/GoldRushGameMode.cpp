@@ -2,12 +2,12 @@
 
 
 #include "GoldRush/GoldRushGameMode.h"
-#include "GoldRushPlayer.h"
+#include "GoldRush/GoldRushPlayer.h"
 #include "Kismet/GameplayStatics.h"
 
 AGoldRushGameMode::AGoldRushGameMode()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void AGoldRushGameMode::BeginPlay()
@@ -19,6 +19,13 @@ void AGoldRushGameMode::BeginPlay()
 		this,
 		&AGoldRushGameMode::SpawnObstacle,
 		3.0f,
+		true);
+
+	GetWorldTimerManager().SetTimer(
+		CollectibleSpawnTimerHandle,
+		this,
+		&AGoldRushGameMode::SpawnCollectible,
+		5.0f,
 		true);
 }
 
@@ -38,6 +45,20 @@ void AGoldRushGameMode::SpawnObstacle()
 		{
 			Player->Obstacles = Obstacles;
 		}
+	}
+}
+
+void AGoldRushGameMode::SpawnCollectible()
+{
+	if (!CollectibleClass) return;
+
+	const float RandomY = FMath::RandRange(-750.0f, 750.0f);
+	const FVector SpawnLocation(0.0f, RandomY, -300.0f);
+	const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation, FVector::OneVector);
+
+	if (AActor* NewCollectible = GetWorld()->SpawnActor<AActor>(CollectibleClass, SpawnTransform))
+	{
+		
 	}
 }
 
