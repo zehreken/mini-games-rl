@@ -14,6 +14,8 @@ AGoldRushLearningManager::AGoldRushLearningManager()
 	PrimaryActorTick.bCanEverTick = true;
 
 	LearningAgentsManager = CreateDefaultSubobject<ULearningAgentsManager>(TEXT("LearningAgentsManager"));
+
+	CurriculumManager = CreateDefaultSubobject<UCurriculumManager>(TEXT("CurriculumManager"));
 }
 
 // Called when the game starts or when spawned
@@ -102,5 +104,7 @@ void AGoldRushLearningManager::Tick(float DeltaTime)
 	else
 	{
 		PPOTrainer->RunTraining(TrainerConfig->PPOTrainingSettings);
+		
+		CurriculumManager->OnStep(0);
 	}
 }

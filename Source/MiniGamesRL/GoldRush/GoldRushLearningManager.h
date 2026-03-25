@@ -12,6 +12,7 @@
 #include "LearningAgentsPPOTrainer.h"
 #include "LearningAgentsCommunicator.h"
 #include "GoldRushTrainingConfig.h"
+#include "GoldRush/CurriculumManager.h"
 #include "GoldRushLearningManager.generated.h"
 
 UCLASS()
@@ -34,8 +35,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "GoldRush")
 	bool RunInference = false;
 
-	UPROPERTY(VisibleAnywhere, Category = "GoldRush")
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsManager* LearningAgentsManager;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	UCurriculumManager* CurriculumManager;
 
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
 	TSubclassOf<ULearningAgentsInteractor> InteractorClass;
