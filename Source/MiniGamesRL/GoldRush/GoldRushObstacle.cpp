@@ -2,7 +2,6 @@
 
 
 #include "GoldRush/GoldRushObstacle.h"
-#include "GoldRush/GoldRushGameMode.h"
 #include "GoldRush/GoldRushPlayer.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -20,11 +19,7 @@ void AGoldRushObstacle::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 	{
 		Player->MissObject();
-	}
-
-	if (AGoldRushGameMode* GameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
-	{
-		GameMode->Obstacles.RemoveSwap(this);
+		Player->Obstacles.RemoveSwap(this);
 	}
 
 	Destroy();

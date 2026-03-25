@@ -17,9 +17,6 @@ class MINIGAMESRL_API AGoldRushGameMode : public AGameModeBase
 
 public:
 	AGoldRushGameMode();
-	
-	UPROPERTY(EditAnywhere, Category = "GoldRush")
-	TArray<AActor*> Obstacles;
 
 protected:
 	virtual void BeginPlay() override;

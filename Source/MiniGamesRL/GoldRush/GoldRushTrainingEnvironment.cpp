@@ -7,28 +7,39 @@
 void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutReward, const int32 AgentId)
 {
 	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
-
+	
 	if (!IsValid(Player)) return;
+	
+	// Might not be necessary
+	constexpr float StepPenalty = -0.01f;
+	constexpr float HitReward = -1.0f;
+	constexpr float CollectReward = 5.0f;
+	constexpr float MissReward = 1.0f;
+	float Reward = StepPenalty;
 
-	// Tiny punishment to create urgency
-	float Reward = 0.001f;
-
-	if (Player->WasHit)
+	// The order defines the priority
+	if (Player->bWasHit)
 	{
-		Reward -= 1.0f;
+		Reward += HitReward;
+		
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit: %f"), Reward));
 	}
-	// if (Player->HasCollected)
-	// {
-	// 	Reward += 1.0f;
-	// }
-	else if (Player->HasMissed)
+	else if (Player->bHasCollected)
 	{
-		Reward += 0.5f;
+		Reward += CollectReward;
+		
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Collected: %f"), Reward));
+	}
+	else if (Player->bHasMissed)
+	{
+		Reward += MissReward;
+		
+		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Missed: %f"), Reward));
 	}
 
-	Player->WasHit = false;
-	Player->HasCollected = false;
-	Player->HasMissed = false;
+	Player->bWasHit = false;
+	Player->bHasCollected = false;
+	Player->bHasMissed = false;
 
 	OutReward = Reward;
 }

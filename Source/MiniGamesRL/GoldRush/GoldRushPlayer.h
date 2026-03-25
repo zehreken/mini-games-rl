@@ -14,36 +14,33 @@ class MINIGAMESRL_API AGoldRushPlayer : public APawn
 
 public:
 	AGoldRushPlayer();
-
-	UFUNCTION(BlueprintCallable)
-	void ResetAgent();
-
-	UFUNCTION(BlueprintCallable)
-	void Move(float Direction);
-	
-	UFUNCTION(BlueprintCallable)
-	void MissObject();
-
-	UPROPERTY(BlueprintReadWrite, Category = "GoldRush")
-	TArray<AActor*> Obstacles;
-
-	// True when player is hit by an obstacle
-	UPROPERTY(BlueprintReadWrite, Category = "GoldRush")
-	bool WasHit = false;
-
-	// True when player collects a collectible
-	UPROPERTY(BlueprintReadWrite, Category = "GoldRush")
-	bool HasCollected = false;
-
-	// True when an obstacle is avoided
-	UPROPERTY(BlueprintReadWrite, Category = "GoldRush")
-	bool HasMissed = false;
-
-	UPROPERTY(BlueprintReadWrite, Category = "GoldRush")
-	int32 MissCount = 0;
-
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	void ResetAgent();
+	void Move(float Direction);
+	void MissObject();
+
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	TArray<AActor*> Obstacles;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	TArray<AActor*> Collectibles;
+
+	// True when player is hit by an obstacle
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	bool bWasHit = false;
+
+	// True when player collects a collectible
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	bool bHasCollected = false;
+
+	// True when an obstacle is avoided
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	bool bHasMissed = false;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	int32 MissCount = 0;
 
 protected:
 	virtual void BeginPlay() override;

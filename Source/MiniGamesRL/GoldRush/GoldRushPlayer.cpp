@@ -3,6 +3,8 @@
 
 #include "GoldRush/GoldRushPlayer.h"
 
+#include "GoldRushObstacle.h"
+
 // Sets default values
 AGoldRushPlayer::AGoldRushPlayer()
 {
@@ -20,7 +22,12 @@ void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	WasHit = true;
+	if (OtherActor->IsA<AGoldRushObstacle>())
+	{
+		bWasHit = true;
+
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit")));
+	}
 }
 
 // Called every frame
@@ -39,9 +46,10 @@ void AGoldRushPlayer::ResetAgent()
 {
 	SetActorLocation(FVector(0.0f, 0.0f, -300.0f));
 	Obstacles.Empty();
-	WasHit = false;
-	HasCollected = false;
-	HasMissed = false;
+	Collectibles.Empty();
+	bWasHit = false;
+	bHasCollected = false;
+	bHasMissed = false;
 	MissCount = 0;
 }
 
@@ -55,6 +63,6 @@ void AGoldRushPlayer::Move(float Direction)
 
 void AGoldRushPlayer::MissObject()
 {
-	HasMissed = true;
+	bHasMissed = true;
 	MissCount += 1;
 }

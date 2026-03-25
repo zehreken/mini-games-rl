@@ -21,12 +21,12 @@ void AGoldRushGameMode::BeginPlay()
 		1.0f,
 		true);
 
-	// GetWorldTimerManager().SetTimer(
-	// 	CollectibleSpawnTimerHandle,
-	// 	this,
-	// 	&AGoldRushGameMode::SpawnCollectible,
-	// 	5.0f,
-	// 	true);
+	GetWorldTimerManager().SetTimer(
+		CollectibleSpawnTimerHandle,
+		this,
+		&AGoldRushGameMode::SpawnCollectible,
+		5.0f,
+		true);
 }
 
 void AGoldRushGameMode::SpawnObstacle()
@@ -39,11 +39,9 @@ void AGoldRushGameMode::SpawnObstacle()
 
 	if (AActor* NewObstacle = GetWorld()->SpawnActor<AActor>(ObstacleClass, SpawnTransform))
 	{
-		Obstacles.Add(NewObstacle);
-
 		if (AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 		{
-			Player->Obstacles = Obstacles;
+			Player->Obstacles.Add(NewObstacle);
 		}
 	}
 }
@@ -53,12 +51,15 @@ void AGoldRushGameMode::SpawnCollectible()
 	if (!CollectibleClass) return;
 
 	const float RandomY = FMath::RandRange(-750.0f, 750.0f);
-	const FVector SpawnLocation(0.0f, RandomY, -300.0f);
+	const FVector SpawnLocation(0.0f, RandomY, -250.0f);
 	const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation, FVector::OneVector);
 
 	if (AActor* NewCollectible = GetWorld()->SpawnActor<AActor>(CollectibleClass, SpawnTransform))
 	{
-		
+		if (AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+		{
+			Player->Collectibles.Add(NewCollectible);
+		}
 	}
 }
 

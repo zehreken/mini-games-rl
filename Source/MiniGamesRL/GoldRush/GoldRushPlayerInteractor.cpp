@@ -13,6 +13,7 @@ void UGoldRushPlayerInteractor::SpecifyAgentObservation_Implementation(
 		{
 			{"RelativeYToObstacle", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f)},
 			{"RelativeZToObstacle", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f)},
+			{"RelativeYToCollectible", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f)},
 		});
 }
 
@@ -23,12 +24,14 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 	if (!IsValid(Player)) return;
 
-	const FVector ClosestObstacleLocation = GetClosestObstacleLocation(Player->Obstacles, Player);
-
+	const FVector ClosestObstacleLocation = GetClosestObjectLocation(Player->Obstacles, Player);
 	const FVector RelativeLocation = ClosestObstacleLocation - Player->GetActorLocation();
-	
 	const float RelativeYToObstacle = FMath::Clamp(RelativeLocation.Y / 1100.0f, -1.0f, 1.0f);
 	const float RelativeZToObstacle = FMath::Clamp(RelativeLocation.Z / 650.0f, 0.0f, 1.0f);
+
+	const FVector ClosestCollectibleLocation = GetClosestObjectLocation(Player->Collectibles, Player);
+	const FVector CollectibleRelativeLocation = ClosestCollectibleLocation - Player->GetActorLocation();
+	const float RelativeYToCollectible = FMath::Clamp(CollectibleRelativeLocation.Y / 750.0f, -1.0f, 1.0f);
 
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,
@@ -40,7 +43,11 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 			{
 				"RelativeZToObstacle",
 				ULearningAgentsObservations::MakeFloatObservation(InObservationObject, RelativeZToObstacle)
-			}
+			},
+			{
+				"RelativeYToCollectible",
+				ULearningAgentsObservations::MakeFloatObservation(InObservationObject, RelativeYToCollectible)
+			},
 		});
 }
 
@@ -63,20 +70,20 @@ void UGoldRushPlayerInteractor::PerformAgentAction_Implementation(
 	Player->Move(Direction);
 }
 
-FVector UGoldRushPlayerInteractor::GetClosestObstacleLocation(const TArray<AActor*>& Obstacles, AActor* Player)
+FVector UGoldRushPlayerInteractor::GetClosestObjectLocation(const TArray<AActor*>& Objects, AActor* Player)
 {
 	float ClosestDistance = TNumericLimits<float>::Max();
 	FVector ClosestLocation = FVector::ZeroVector;
 
-	for (AActor* Obstacle : Obstacles)
+	for (AActor* Object : Objects)
 	{
-		if (!IsValid(Obstacle)) continue;
+		if (!IsValid(Object)) continue;
 
-		float Distance = Obstacle->GetDistanceTo(Player);
+		float Distance = Object->GetDistanceTo(Player);
 		if (Distance < ClosestDistance)
 		{
 			ClosestDistance = Distance;
-			ClosestLocation = Obstacle->GetActorLocation();
+			ClosestLocation = Object->GetActorLocation();
 		}
 	}
 
