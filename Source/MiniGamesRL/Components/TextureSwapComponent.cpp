@@ -16,6 +16,9 @@ void UTextureSwapComponent::BeginPlay()
 
 void UTextureSwapComponent::SwapTexture(int32 Index)
 {
+	if (Textures[Index].Priority < Textures[PreviousIndex].Priority)
+		return;
+	
 	GetWorld()->GetTimerManager().ClearTimer(RevertTimerHandle);
 
 	// Index 0 is the default — just apply it with no timer.
@@ -67,10 +70,12 @@ void UTextureSwapComponent::InitialiseMaterial()
 
 void UTextureSwapComponent::ApplyTexture(int32 Index)
 {
+	if (!IsValid(DynMat)) return;
 	if (!DynMat) return;
 	if (!Textures.IsValidIndex(Index) || !Textures[Index].Texture) return;
 
 	DynMat->SetTextureParameterValue(TextureParameterName, Textures[Index].Texture);
+	PreviousIndex = Index;
 }
 
 void UTextureSwapComponent::RevertToDefault()

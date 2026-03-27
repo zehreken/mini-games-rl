@@ -17,6 +17,10 @@ struct FTextureSlot
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TextureSlot",
 	          meta = (ClampMin = "0.0"))
 	float Duration = 1.0f;
+
+	// Higher is high priority
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TextureSlot")
+	int32 Priority = 0;
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -46,6 +50,8 @@ private:
 	UMaterialInstanceDynamic* DynMat = nullptr;
 
 	FTimerHandle RevertTimerHandle;
+
+	int32 PreviousIndex = 0;
 
 	void InitialiseMaterial();
 	void ApplyTexture(int32 Index);
