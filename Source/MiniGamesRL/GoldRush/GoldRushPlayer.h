@@ -45,4 +45,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "GoldRush")
+	TArray<UTexture2D*> TextureList;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* DynMat;
+
+	void SwapTexture(int32 Index);
 };

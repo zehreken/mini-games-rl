@@ -15,6 +15,11 @@ AGoldRushPlayer::AGoldRushPlayer()
 void AGoldRushPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (UStaticMeshComponent* Mesh = FindComponentByClass<UStaticMeshComponent>())
+	{
+		DynMat = Mesh->CreateAndSetMaterialInstanceDynamic(0);
+	}
 }
 
 void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -27,6 +32,16 @@ void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
 
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit")));
 	}
+}
+
+void AGoldRushPlayer::SwapTexture(int32 Index)
+{
+	if (!DynMat || !TextureList.IsValidIndex(Index))
+	{
+		return;
+	}
+
+	DynMat->SetTextureParameterValue(FName("EmojiTexture"), TextureList[Index]);
 }
 
 // Called every frame
@@ -64,4 +79,7 @@ void AGoldRushPlayer::MissObject()
 {
 	bHasMissed = true;
 	MissCount += 1;
+
+	if (TextureList.Num() > 0)
+		SwapTexture(MissCount % TextureList.Num());
 }
