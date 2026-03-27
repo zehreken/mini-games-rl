@@ -7,16 +7,18 @@
 #include "CurriculumManager.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class MINIGAMESRL_API UCurriculumManager : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UCurriculumManager();
 
 	void OnStep(float Reward);
+
+	FORCEINLINE int32 GetStepCount() const { return StepCount; }
 
 protected:
 	// Called when the game starts
@@ -24,6 +26,6 @@ protected:
 
 private:
 	void CheckPhase();
-	
+
 	int32 StepCount;
 };

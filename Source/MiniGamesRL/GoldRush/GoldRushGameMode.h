@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "GoldRush/GoldRushLearningManager.h"
 #include "GoldRushGameMode.generated.h"
 
 /**
@@ -38,6 +39,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
 	TSubclassOf<AActor> CollectibleClass;
+
+	UPROPERTY()
+	AGoldRushLearningManager* LearningManager;
 
 	FTimerHandle SpawnTimerHandle;
 

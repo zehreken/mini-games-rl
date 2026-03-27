@@ -2,8 +2,7 @@
 
 
 #include "GoldRush/GoldRushPlayer.h"
-
-#include "GoldRushObstacle.h"
+#include "GoldRush/GoldRushObstacle.h"
 
 // Sets default values
 AGoldRushPlayer::AGoldRushPlayer()

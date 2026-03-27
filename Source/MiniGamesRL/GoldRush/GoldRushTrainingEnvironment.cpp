@@ -12,7 +12,7 @@ void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutRe
 	
 	// Might not be necessary
 	constexpr float StepPenalty = -0.01f;
-	constexpr float HitReward = -1.0f;
+	constexpr float HitReward = -10.0f;
 	constexpr float CollectReward = 5.0f;
 	constexpr float MissReward = 1.0f;
 	float Reward = StepPenalty;

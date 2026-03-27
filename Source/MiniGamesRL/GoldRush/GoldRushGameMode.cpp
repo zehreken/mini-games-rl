@@ -2,6 +2,7 @@
 
 
 #include "GoldRush/GoldRushGameMode.h"
+#include "GoldRush/GoldRushLearningManager.h"
 #include "GoldRush/GoldRushPlayer.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -13,6 +14,11 @@ AGoldRushGameMode::AGoldRushGameMode()
 void AGoldRushGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	LearningManager = Cast<AGoldRushLearningManager>(
+		UGameplayStatics::GetActorOfClass(GetWorld(), AGoldRushLearningManager::StaticClass()));
+	if (!LearningManager)
+		UE_LOG(LogTemp, Error, TEXT("Couldn't find LearningManager"));
 
 	GetWorldTimerManager().SetTimer(
 		SpawnTimerHandle,
@@ -48,6 +54,9 @@ void AGoldRushGameMode::SpawnObstacle()
 
 void AGoldRushGameMode::SpawnCollectible()
 {
+	if (!LearningManager->RunInference && LearningManager->CurriculumManager->GetStepCount() < 1'000'000)
+		return;
+	
 	if (!CollectibleClass) return;
 
 	const float RandomY = FMath::RandRange(-750.0f, 750.0f);

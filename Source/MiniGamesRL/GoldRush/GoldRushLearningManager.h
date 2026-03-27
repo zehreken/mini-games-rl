@@ -11,7 +11,7 @@
 #include "LearningAgentsTrainingEnvironment.h"
 #include "LearningAgentsPPOTrainer.h"
 #include "LearningAgentsCommunicator.h"
-#include "GoldRushTrainingConfig.h"
+#include "GoldRush/GoldRushTrainingConfig.h"
 #include "GoldRush/CurriculumManager.h"
 #include "GoldRushLearningManager.generated.h"
 
