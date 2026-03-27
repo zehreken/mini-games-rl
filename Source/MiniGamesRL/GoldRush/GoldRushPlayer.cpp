@@ -3,23 +3,20 @@
 
 #include "GoldRush/GoldRushPlayer.h"
 #include "GoldRush/GoldRushObstacle.h"
+#include "Components/TextureSwapComponent.h"
 
 // Sets default values
 AGoldRushPlayer::AGoldRushPlayer()
 {
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	TextureSwap = CreateDefaultSubobject<UTextureSwapComponent>(TEXT("TextureSwap"));
 }
 
 // Called when the game starts or when spawned
 void AGoldRushPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (UStaticMeshComponent* Mesh = FindComponentByClass<UStaticMeshComponent>())
-	{
-		DynMat = Mesh->CreateAndSetMaterialInstanceDynamic(0);
-	}
 }
 
 void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -31,17 +28,9 @@ void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
 		bWasHit = true;
 
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit")));
-	}
-}
 
-void AGoldRushPlayer::SwapTexture(int32 Index)
-{
-	if (!DynMat || !TextureList.IsValidIndex(Index))
-	{
-		return;
+		TextureSwap->SwapTexture(2);
 	}
-
-	DynMat->SetTextureParameterValue(FName("EmojiTexture"), TextureList[Index]);
 }
 
 // Called every frame
@@ -73,13 +62,15 @@ void AGoldRushPlayer::Move(float Direction)
 	float NewPosY = Location.Y + Direction * GetWorld()->GetDeltaSeconds() * 500.0f;
 	NewPosY = FMath::Clamp(NewPosY, -750.0f, 750.0f);
 	SetActorLocation(FVector(Location.X, NewPosY, Location.Z));
+
+	if (FMath::Abs(Direction) > 0.7f)
+	{
+		TextureSwap->SwapTexture(1);
+	}
 }
 
 void AGoldRushPlayer::MissObject()
 {
 	bHasMissed = true;
 	MissCount += 1;
-
-	if (TextureList.Num() > 0)
-		SwapTexture(MissCount % TextureList.Num());
 }

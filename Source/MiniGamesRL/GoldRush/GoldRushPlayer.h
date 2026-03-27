@@ -7,6 +7,8 @@
 #include "GameFramework/Pawn.h"
 #include "GoldRushPlayer.generated.h"
 
+class UTextureSwapComponent;
+
 UCLASS()
 class MINIGAMESRL_API AGoldRushPlayer : public APawn
 {
@@ -47,11 +49,6 @@ protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 private:
-	UPROPERTY(EditAnywhere, Category = "GoldRush")
-	TArray<UTexture2D*> TextureList;
-
-	UPROPERTY()
-	UMaterialInstanceDynamic* DynMat;
-
-	void SwapTexture(int32 Index);
+	UPROPERTY(VisibleAnywhere, Category = "GoldRush")
+	UTextureSwapComponent* TextureSwap;
 };
