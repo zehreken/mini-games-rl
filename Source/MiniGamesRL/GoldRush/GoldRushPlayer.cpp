@@ -2,6 +2,7 @@
 
 
 #include "GoldRush/GoldRushPlayer.h"
+#include "GoldRush/GoldRushCollectible.h"
 #include "GoldRush/GoldRushObstacle.h"
 #include "Components/TextureSwapComponent.h"
 
@@ -30,6 +31,10 @@ void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit")));
 
 		TextureSwap->SwapTexture(2);
+	}
+	else if (OtherActor->IsA<AGoldRushCollectible>())
+	{
+		TextureSwap->SwapTexture(3);
 	}
 }
 
