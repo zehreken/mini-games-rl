@@ -73,7 +73,7 @@ void UGoldRushPlayerInteractor::PerformAgentAction_Implementation(
 FVector UGoldRushPlayerInteractor::GetClosestObjectLocation(const TArray<AActor*>& Objects, AActor* Player)
 {
 	float ClosestDistance = TNumericLimits<float>::Max();
-	FVector ClosestLocation = FVector::ZeroVector;
+	FVector ClosestLocation = Player->GetActorLocation();
 
 	for (AActor* Object : Objects)
 	{

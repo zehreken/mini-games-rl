@@ -22,13 +22,13 @@ void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutRe
 	{
 		Reward += HitReward;
 		
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit: %f"), Reward));
+		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit: %f"), Reward));
 	}
 	else if (Player->bHasCollected)
 	{
 		Reward += CollectReward;
 		
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Collected: %f"), Reward));
+		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Collected: %f"), Reward));
 	}
 	else if (Player->bHasMissed)
 	{

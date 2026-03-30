@@ -4,6 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GoldRush/GoldRushPlayer.h"
 #include "GameFramework/Actor.h"
 #include "GoldRushObstacle.generated.h"
 
@@ -18,6 +19,9 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY()
+	AGoldRushPlayer* Player;
 
 protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

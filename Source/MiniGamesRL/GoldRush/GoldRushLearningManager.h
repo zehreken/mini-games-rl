@@ -32,6 +32,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void Init();
+
 	UPROPERTY(EditAnywhere, Category = "GoldRush")
 	bool RunInference = false;
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GoldRush/GoldRushPlayer.h"
 #include "GameFramework/Actor.h"
 #include "GoldRushCollectible.generated.h"
 
@@ -14,6 +15,9 @@ class MINIGAMESRL_API AGoldRushCollectible : public AActor
 public:
 	// Sets default values for this actor's properties
 	AGoldRushCollectible();
+
+	UPROPERTY()
+	AGoldRushPlayer* Player;
 
 protected:
 	// Called when the game starts or when spawned

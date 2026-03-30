@@ -3,7 +3,6 @@
 
 #include "GoldRush/GoldRushCollectible.h"
 #include "GoldRush/GoldRushPlayer.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGoldRushCollectible::AGoldRushCollectible()
@@ -30,14 +29,12 @@ void AGoldRushCollectible::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-
 	if (!Player) return;
 
 	if (OtherActor == Player)
 	{
 		Player->bHasCollected = true;
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Collected")));
+		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Collected")));
 	}
 
 	Player->Collectibles.RemoveSwap(this);
@@ -46,7 +43,6 @@ void AGoldRushCollectible::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void AGoldRushCollectible::DestroyTimerExpired()
 {
-	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (!Player) return;
 
 	Player->Collectibles.RemoveSwap(this);

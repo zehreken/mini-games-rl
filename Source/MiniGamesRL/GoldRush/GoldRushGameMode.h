@@ -19,17 +19,8 @@ class MINIGAMESRL_API AGoldRushGameMode : public AGameModeBase
 public:
 	AGoldRushGameMode();
 
-protected:
-	virtual void BeginPlay() override;
-	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
-
-	
-private:
-	UFUNCTION()
-	void SpawnObstacle();
-
-	UFUNCTION()
-	void SpawnCollectible();
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
+	TSubclassOf<AActor> ArenaClass;
 
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
 	TSubclassOf<AActor> ObstacleClass;
@@ -40,10 +31,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
 	TSubclassOf<AActor> CollectibleClass;
 
+protected:
+	virtual void BeginPlay() override;
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+	
+private:
+
 	UPROPERTY()
 	AGoldRushLearningManager* LearningManager;
-
-	FTimerHandle SpawnTimerHandle;
-
-	FTimerHandle CollectibleSpawnTimerHandle;
 };

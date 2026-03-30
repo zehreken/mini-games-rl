@@ -22,7 +22,10 @@ AGoldRushLearningManager::AGoldRushLearningManager()
 void AGoldRushLearningManager::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+void AGoldRushLearningManager::Init()
+{
 	if (RunInference)
 	{
 		CriticNetwork->LoadNetworkFromSnapshot(CriticFilePath);

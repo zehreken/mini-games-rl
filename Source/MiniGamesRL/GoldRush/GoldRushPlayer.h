@@ -44,6 +44,9 @@ public:
 	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	int32 MissCount = 0;
 
+	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	FVector ArenaOffset;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

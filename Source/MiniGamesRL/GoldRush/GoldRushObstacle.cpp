@@ -3,7 +3,6 @@
 
 #include "GoldRush/GoldRushObstacle.h"
 #include "GoldRush/GoldRushPlayer.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGoldRushObstacle::AGoldRushObstacle()
@@ -16,8 +15,9 @@ void AGoldRushObstacle::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+	if (Player)
 	{
+		// if (!OtherActor->IsA<AGoldRushPlayer>())
 		Player->MissObject();
 		Player->Obstacles.RemoveSwap(this);
 	}

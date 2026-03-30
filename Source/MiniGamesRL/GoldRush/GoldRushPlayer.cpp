@@ -28,7 +28,7 @@ void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		bWasHit = true;
 
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit")));
+		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit")));
 
 		TextureSwap->SwapTexture(2);
 	}
@@ -52,7 +52,16 @@ void AGoldRushPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AGoldRushPlayer::ResetAgent()
 {
-	SetActorLocation(FVector(0.0f, 0.0f, -300.0f));
+	for (AActor* Obstacle : Obstacles)
+	{
+		if (IsValid(Obstacle)) Obstacle->Destroy();
+	}
+	for (AActor* Collectible : Collectibles)
+	{
+		if (IsValid(Collectible)) Collectible->Destroy();
+	}
+	
+	SetActorLocation(FVector(0.0f, 0.0f, 100.0f) + ArenaOffset);
 	Obstacles.Empty();
 	Collectibles.Empty();
 	bWasHit = false;
@@ -65,7 +74,7 @@ void AGoldRushPlayer::Move(float Direction)
 {
 	FVector Location = GetActorLocation();
 	float NewPosY = Location.Y + Direction * GetWorld()->GetDeltaSeconds() * 500.0f;
-	NewPosY = FMath::Clamp(NewPosY, -750.0f, 750.0f);
+	NewPosY = FMath::Clamp(NewPosY, -750.0f + ArenaOffset.Y, 750.0f + ArenaOffset.Y);
 	SetActorLocation(FVector(Location.X, NewPosY, Location.Z));
 
 	if (FMath::Abs(Direction) > 0.7f)

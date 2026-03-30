@@ -16,7 +16,7 @@ UCurriculumManager::UCurriculumManager()
 void UCurriculumManager::OnStep(float Reward)
 {
 	StepCount += 1;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Curriculum manager reporting: %d"), StepCount));
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Curriculum manager reporting: %d"), StepCount));
 }
 
 
