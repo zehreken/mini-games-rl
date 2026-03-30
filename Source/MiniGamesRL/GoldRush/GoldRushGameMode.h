@@ -19,6 +19,9 @@ class MINIGAMESRL_API AGoldRushGameMode : public AGameModeBase
 public:
 	AGoldRushGameMode();
 
+	UFUNCTION()
+	AGoldRushLearningManager* GetLearningManager();
+
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
 	TSubclassOf<AActor> ArenaClass;
 

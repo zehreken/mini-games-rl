@@ -2,10 +2,9 @@
 
 
 #include "GoldRush/GoldRushArenaManager.h"
-
-#include "GoldRushCollectible.h"
-#include "GoldRushGameMode.h"
-#include "GoldRushObstacle.h"
+#include "GoldRush/GoldRushCollectible.h"
+#include "GoldRush/GoldRushGameMode.h"
+#include "GoldRush/GoldRushObstacle.h"
 
 // Sets default values
 AGoldRushArenaManager::AGoldRushArenaManager()
@@ -88,10 +87,11 @@ void AGoldRushArenaManager::SpawnObstacle()
 
 void AGoldRushArenaManager::SpawnCollectible()
 {
-	// if (!LearningManager->RunInference && LearningManager->CurriculumManager->GetStepCount() < 1'000'000)
-	// 	return;
 	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
 	{
+		// if (!GoldRushGameMode->GetLearningManager()->RunInference && GoldRushGameMode->GetLearningManager()->CurriculumManager->GetStepCount() < 1'000'000)
+		// 	return;
+		
 		if (!GoldRushGameMode->CollectibleClass) return;
 
 		const float RandomY = FMath::RandRange(-750.0f, 750.0f);

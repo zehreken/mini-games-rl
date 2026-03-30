@@ -11,11 +11,16 @@ AGoldRushGameMode::AGoldRushGameMode()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+AGoldRushLearningManager* AGoldRushGameMode::GetLearningManager()
+{
+	return LearningManager;
+}
+
 void AGoldRushGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (int32 i = 0; i < 64; i++)
+	for (int32 i = 0; i < 1; i++)
 	{
 		AGoldRushArenaManager* Arena = GetWorld()->SpawnActor<AGoldRushArenaManager>();
 		Arena->InitArena(i);

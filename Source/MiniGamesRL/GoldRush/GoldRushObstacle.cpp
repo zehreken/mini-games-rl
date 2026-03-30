@@ -17,8 +17,8 @@ void AGoldRushObstacle::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (Player)
 	{
-		// if (!OtherActor->IsA<AGoldRushPlayer>())
-		Player->MissObject();
+		if (!OtherActor->IsA<AGoldRushPlayer>())
+			Player->MissObject();
 		Player->Obstacles.RemoveSwap(this);
 	}
 
