@@ -2,6 +2,8 @@
 
 
 #include "GoldRush/GoldRushPlayer.h"
+
+#include "GoldRushConstants.h"
 #include "GoldRush/GoldRushCollectible.h"
 #include "GoldRush/GoldRushObstacle.h"
 #include "Components/TextureSwapComponent.h"
@@ -74,7 +76,7 @@ void AGoldRushPlayer::Move(float Direction)
 {
 	FVector Location = GetActorLocation();
 	float NewPosY = Location.Y + Direction * GetWorld()->GetDeltaSeconds() * 500.0f;
-	NewPosY = FMath::Clamp(NewPosY, -750.0f + ArenaOffset.Y, 750.0f + ArenaOffset.Y);
+	NewPosY = FMath::Clamp(NewPosY, GoldRushConstants::LeftBorder + ArenaOffset.Y, GoldRushConstants::RightBorder + ArenaOffset.Y);
 	SetActorLocation(FVector(Location.X, NewPosY, Location.Z));
 
 	if (FMath::Abs(Direction) > 0.7f)

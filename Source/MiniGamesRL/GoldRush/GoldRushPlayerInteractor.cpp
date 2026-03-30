@@ -2,6 +2,7 @@
 
 
 #include "GoldRush/GoldRushPlayerInteractor.h"
+#include "GoldRush/GoldRushConstants.h"
 #include "GoldRush/GoldRushPlayer.h"
 
 void UGoldRushPlayerInteractor::SpecifyAgentObservation_Implementation(
@@ -26,12 +27,12 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 
 	const FVector ClosestObstacleLocation = GetClosestObjectLocation(Player->Obstacles, Player);
 	const FVector RelativeLocation = ClosestObstacleLocation - Player->GetActorLocation();
-	const float RelativeYToObstacle = FMath::Clamp(RelativeLocation.Y / 1100.0f, -1.0f, 1.0f);
-	const float RelativeZToObstacle = FMath::Clamp(RelativeLocation.Z / 650.0f, 0.0f, 1.0f);
+	const float RelativeYToObstacle = FMath::Clamp(RelativeLocation.Y / GoldRushConstants::ArenaWidth, -1.0f, 1.0f);
+	const float RelativeZToObstacle = FMath::Clamp(RelativeLocation.Z / GoldRushConstants::ArenaHeight, 0.0f, 1.0f);
 
 	const FVector ClosestCollectibleLocation = GetClosestObjectLocation(Player->Collectibles, Player);
 	const FVector CollectibleRelativeLocation = ClosestCollectibleLocation - Player->GetActorLocation();
-	const float RelativeYToCollectible = FMath::Clamp(CollectibleRelativeLocation.Y / 750.0f, -1.0f, 1.0f);
+	const float RelativeYToCollectible = FMath::Clamp(CollectibleRelativeLocation.Y / GoldRushConstants::ArenaWidth, -1.0f, 1.0f);
 
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,

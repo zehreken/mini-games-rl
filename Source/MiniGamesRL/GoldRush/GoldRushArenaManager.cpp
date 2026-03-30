@@ -2,6 +2,8 @@
 
 
 #include "GoldRush/GoldRushArenaManager.h"
+
+#include "GoldRushConstants.h"
 #include "GoldRush/GoldRushCollectible.h"
 #include "GoldRush/GoldRushGameMode.h"
 #include "GoldRush/GoldRushObstacle.h"
@@ -17,8 +19,8 @@ void AGoldRushArenaManager::InitArena(int32 ArenaIndex)
 {
 	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		float VerticalSpacing = 700.0f;
-		float HorizontalSpacing = 1600.0f;
+		constexpr float VerticalSpacing = 700.0f;
+		constexpr float HorizontalSpacing = 1600.0f;
 		int32 Col = ArenaIndex % 8;
 		int32 Row = ArenaIndex / 8;
 		ArenaOffset = FVector(0.0f, Col * HorizontalSpacing, Row * VerticalSpacing);
@@ -73,7 +75,7 @@ void AGoldRushArenaManager::SpawnObstacle()
 	{
 		if (!GoldRushGameMode->ObstacleClass) return;
 
-		const float RandomY = FMath::RandRange(-750.0f, 750.0f);
+		const float RandomY = FMath::RandRange(GoldRushConstants::LeftBorder, GoldRushConstants::RightBorder);
 		const FVector SpawnLocation(0.0f, RandomY, 599.0f);
 		const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation + ArenaOffset, FVector::OneVector);
 
@@ -94,7 +96,7 @@ void AGoldRushArenaManager::SpawnCollectible()
 		
 		if (!GoldRushGameMode->CollectibleClass) return;
 
-		const float RandomY = FMath::RandRange(-750.0f, 750.0f);
+		const float RandomY = FMath::RandRange(GoldRushConstants::LeftBorder, GoldRushConstants::RightBorder);
 		const FVector SpawnLocation(0.0f, RandomY, 100.0f);
 		const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation + ArenaOffset, FVector::OneVector);
 
