@@ -55,12 +55,12 @@ void AGoldRushArenaManager::BeginPlay()
 		1.0f,
 		true);
 
-	GetWorldTimerManager().SetTimer(
-		CollectibleSpawnTimerHandle,
-		this,
-		&AGoldRushArenaManager::SpawnCollectible,
-		5.0f,
-		true);
+	// GetWorldTimerManager().SetTimer(
+              	//	// 	CollectibleSpawnTimerHandle,
+              	//	// 	this,
+              	//	// 	&AGoldRushArenaManager::SpawnCollectible,
+              	//	// 	5.0f,
+              	//	// 	true);
 }
 
 // Called every frame

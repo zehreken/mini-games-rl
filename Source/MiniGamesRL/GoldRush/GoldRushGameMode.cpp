@@ -4,11 +4,13 @@
 #include "GoldRush/GoldRushGameMode.h"
 #include "GoldRush/GoldRushArenaManager.h"
 #include "GoldRush/GoldRushLearningManager.h"
+#include "GoldRush/GoldRushPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
 AGoldRushGameMode::AGoldRushGameMode()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	PlayerControllerClass = AGoldRushPlayerController::StaticClass();
 }
 
 AGoldRushLearningManager* AGoldRushGameMode::GetLearningManager()
