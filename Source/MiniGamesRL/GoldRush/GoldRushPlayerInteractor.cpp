@@ -12,6 +12,7 @@ void UGoldRushPlayerInteractor::SpecifyAgentObservation_Implementation(
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
 		InObservationSchema,
 		{
+			{"AgentLocalY", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f)},
 			{"RelativeYToObstacle", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f)},
 			{"RelativeZToObstacle", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f)},
 			{"RelativeYToObstacle_1", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f)},
@@ -28,6 +29,10 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 {
 	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 	if (!IsValid(Player)) return;
+
+	const FVector AgentLocal = Player->GetActorLocation() - Player->ArenaOffset;
+	const float NormalizedAgentLocalY = FMath::Clamp(AgentLocal.Y / (GoldRushConstants::RightBorder - 100.f), -1.0f,
+	                                                 1.0f);
 
 	const TArray<FVector> ClosestObstaclesLocation = GetClosestObjectsLocation(Player->Obstacles, Player);
 	const FVector RelativeLocation = ClosestObstaclesLocation.Num() > 0
@@ -56,6 +61,10 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,
 		{
+			{
+				"AgentLocalY",
+				ULearningAgentsObservations::MakeFloatObservation(InObservationObject, NormalizedAgentLocalY)
+			},
 			{
 				"RelativeYToObstacle",
 				ULearningAgentsObservations::MakeFloatObservation(InObservationObject, RelativeYToObstacle)
@@ -135,7 +144,8 @@ TArray<FVector> UGoldRushPlayerInteractor::GetClosestObjectsLocation(const TArra
 		if (!IsValid(Object)) continue;
 
 		float Distance = Object->GetDistanceTo(Player);
-		DistanceToLocation.Add(MakeTuple(Distance, Object->GetActorLocation()));
+		float DistanceZ = Object->GetActorLocation().Z - Player->GetActorLocation().Z;
+		DistanceToLocation.Add(MakeTuple(DistanceZ, Object->GetActorLocation()));
 	}
 
 	DistanceToLocation.Sort([](const TTuple<float, FVector>& A, const TTuple<float, FVector>& B)

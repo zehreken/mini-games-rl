@@ -42,7 +42,7 @@ public:
 	bool bHasMissed = false;
 
 	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
-	int32 MissCount = 0;
+	int32 HitCount = 0;
 
 	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	FVector ArenaOffset;

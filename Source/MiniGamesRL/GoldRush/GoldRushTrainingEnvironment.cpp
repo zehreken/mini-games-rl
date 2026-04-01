@@ -12,7 +12,7 @@ void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutRe
 	
 	// Might not be necessary
 	constexpr float StepPenalty = -0.01f;
-	constexpr float HitReward = -10.0f;
+	constexpr float HitReward = -5.0f;
 	constexpr float CollectReward = 5.0f;
 	constexpr float MissReward = 1.0f;
 	float Reward = StepPenalty;
@@ -51,8 +51,9 @@ void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearnin
 
 	if (!IsValid(Player)) return;
 
-	if (Player->MissCount > 20)
+	if (Player->HitCount > 0)
 	{
+		// UE_LOG(LogTemp, Warning, TEXT("Agent %d terminating, HitCount: %d"), AgentId, Player->HitCount);
 		OutCompletion = ELearningAgentsCompletion::Termination;
 	}
 	else

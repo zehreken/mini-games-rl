@@ -29,6 +29,7 @@ void AGoldRushPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		bWasHit = true;
 
+		HitCount += 1;
 		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Hit")));
 
 		TextureSwap->SwapTexture(2);
@@ -68,7 +69,7 @@ void AGoldRushPlayer::ResetAgent()
 	bWasHit = false;
 	bHasCollected = false;
 	bHasMissed = false;
-	MissCount = 0;
+	HitCount = 0;
 }
 
 void AGoldRushPlayer::Move(float Direction)
@@ -88,5 +89,4 @@ void AGoldRushPlayer::Move(float Direction)
 void AGoldRushPlayer::MissObject()
 {
 	bHasMissed = true;
-	MissCount += 1;
 }
