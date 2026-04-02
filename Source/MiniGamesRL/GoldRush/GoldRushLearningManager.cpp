@@ -61,9 +61,9 @@ void AGoldRushLearningManager::Init()
 		EncoderNetwork,
 		PolicyNetwork,
 		DecoderNetwork,
-		!RunInference,
-		!RunInference,
-		!RunInference);
+		ReinitialiseNetworks,
+		ReinitialiseNetworks,
+		ReinitialiseNetworks);
 
 	Critic = ULearningAgentsCritic::MakeCritic(
 		LearningAgentsManager,
@@ -72,7 +72,7 @@ void AGoldRushLearningManager::Init()
 		ULearningAgentsCritic::StaticClass(),
 		TEXT("Critic"),
 		CriticNetwork,
-		!RunInference);
+		ReinitialiseNetworks);
 
 	TrainingEnv = UGoldRushTrainingEnvironment::MakeTrainingEnvironment(
 		LearningAgentsManager,

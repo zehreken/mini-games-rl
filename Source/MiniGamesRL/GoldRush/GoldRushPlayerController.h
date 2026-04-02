@@ -33,5 +33,5 @@ private:
 	float ZoomDuration = 0.5f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
-	float ZoomTargetWidth = 3000.f;
+	float ZoomTargetWidth = 3200.f;
 };

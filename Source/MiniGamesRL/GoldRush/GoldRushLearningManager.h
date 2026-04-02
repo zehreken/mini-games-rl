@@ -37,6 +37,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "GoldRush")
 	bool RunInference = false;
 
+	UPROPERTY(EditAnywhere, Category = "GoldRush")
+	bool ReinitialiseNetworks = false;
+
 	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsManager* LearningAgentsManager;
 
