@@ -41,4 +41,9 @@ private:
 	FTimerHandle SpawnTimerHandle;
 
 	FTimerHandle CollectibleSpawnTimerHandle;
+
+	UPROPERTY(EditAnywhere)
+	int32 Seed = 42;
+
+	FRandomStream RandomStream;
 };

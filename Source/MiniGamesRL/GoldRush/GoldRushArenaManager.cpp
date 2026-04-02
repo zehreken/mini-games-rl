@@ -24,6 +24,7 @@ void AGoldRushArenaManager::InitArena(int32 ArenaIndex)
 		int32 Col = ArenaIndex % 8;
 		int32 Row = ArenaIndex / 8;
 		ArenaOffset = FVector(0.0f, Col * HorizontalSpacing, Row * VerticalSpacing);
+		RandomStream.Initialize(Seed + ArenaIndex);
 
 		GetWorld()->SpawnActor<AActor>(
 			GoldRushGameMode->ArenaClass,
@@ -75,7 +76,7 @@ void AGoldRushArenaManager::SpawnObstacle()
 	{
 		if (!GoldRushGameMode->ObstacleClass) return;
 
-		const float RandomY = FMath::RandRange(GoldRushConstants::LeftBorder, GoldRushConstants::RightBorder);
+		const float RandomY = RandomStream.FRandRange(GoldRushConstants::LeftBorder, GoldRushConstants::RightBorder);
 		const FVector SpawnLocation(0.0f, RandomY, 599.0f);
 		const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation + ArenaOffset, FVector::OneVector);
 
@@ -96,7 +97,7 @@ void AGoldRushArenaManager::SpawnCollectible()
 		
 		if (!GoldRushGameMode->CollectibleClass) return;
 
-		const float RandomY = FMath::RandRange(GoldRushConstants::LeftBorder, GoldRushConstants::RightBorder);
+		const float RandomY = RandomStream.FRandRange(GoldRushConstants::LeftBorder, GoldRushConstants::RightBorder);
 		const FVector SpawnLocation(0.0f, RandomY, 100.0f);
 		const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation + ArenaOffset, FVector::OneVector);
 
