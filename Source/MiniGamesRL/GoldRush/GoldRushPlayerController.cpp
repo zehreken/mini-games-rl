@@ -28,11 +28,8 @@ void AGoldRushPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	FInputKeyBinding& Binding = InputComponent->BindKey(
-		EKeys::SpaceBar, IE_Pressed, this, &AGoldRushPlayerController::StartZoom
+		EKeys::SpaceBar, IE_Pressed, this, &AGoldRushPlayerController::ToggleZoom
 	);
-
-	UE_LOG(LogTemp, Warning, TEXT("Binding registered: %s"),
-	       Binding.KeyDelegate.IsBound() ? TEXT("YES") : TEXT("NO"));
 }
 
 void AGoldRushPlayerController::Tick(float DeltaTime)
@@ -45,23 +42,25 @@ void AGoldRushPlayerController::Tick(float DeltaTime)
 	}
 
 	ZoomElapsed += DeltaTime;
-	const float Alpha = FMath::Clamp(ZoomElapsed / ZoomDuration, 0.f, 1.f);
+	const float Alpha = FMath::Clamp(ZoomElapsed / ZoomDuration, 0.0f, 1.0f);
 	LevelCamera->GetCameraComponent()->SetOrthoWidth(FMath::Lerp(ZoomStartWidth, ZoomTargetWidth, Alpha));
 
-	if (Alpha >= 1.f)
+	if (Alpha >= 1.0f)
 	{
 		bIsZooming = false;
 	}
 }
 
-void AGoldRushPlayerController::StartZoom()
+void AGoldRushPlayerController::ToggleZoom()
 {
 	if (!LevelCamera.IsValid())
 	{
 		return;
 	}
 
-	ZoomElapsed = 0.f;
-	ZoomStartWidth = LevelCamera->GetCameraComponent()->OrthoWidth;
+	ZoomElapsed = 0.0f;
+	ZoomStartWidth = bIsZoomingIn ? ZoomFar : ZoomNear;
+	ZoomTargetWidth = bIsZoomingIn ? ZoomNear : ZoomFar;
+	bIsZoomingIn = !bIsZoomingIn;
 	bIsZooming = true;
 }

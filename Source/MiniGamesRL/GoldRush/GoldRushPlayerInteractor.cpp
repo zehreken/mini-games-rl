@@ -4,6 +4,7 @@
 #include "GoldRush/GoldRushPlayerInteractor.h"
 #include "GoldRush/GoldRushConstants.h"
 #include "GoldRush/GoldRushPlayer.h"
+#include "GoldRush/GoldRushGameMode.h"
 
 static const TArray<FName> AgentObservationNames = {
 	"RelativeYToObstacle",
@@ -20,6 +21,8 @@ static const TArray<FName> AgentObservationNames = {
 	"RelativeZToObstacle_5",
 	"RelativeYToCollectible",
 	"AgentLocalY",
+	"DistanceToLeftBorder",
+	"DistanceToRightBorder",
 };
 
 void UGoldRushPlayerInteractor::SpecifyAgentObservation_Implementation(
@@ -76,7 +79,12 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 	                                                 1.0f);
 	ObservationValues.Add(NormalizedAgentLocalY);
 
+	const float DistanceToLeftBorder = (AgentLocal.Y - (GoldRushConstants::LeftBorder + 100.0f)) / GoldRushConstants::ArenaWidth;
+	ObservationValues.Add(DistanceToLeftBorder);
 
+	const float DistanceToRightBorder = ((GoldRushConstants::RightBorder - 100.0f) - AgentLocal.Y) / GoldRushConstants::ArenaWidth;
+	ObservationValues.Add(DistanceToRightBorder);
+	
 	TMap<FName, FLearningAgentsObservationObjectElement> ObservationSchemaMap;
 	for (int32 i = 0; i < AgentObservationNames.Num(); i++)
 	{
@@ -84,7 +92,6 @@ void UGoldRushPlayerInteractor::GatherAgentObservation_Implementation(
 		                         ULearningAgentsObservations::MakeFloatObservation(
 			                         InObservationObject, ObservationValues[i]));
 	}
-
 
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,

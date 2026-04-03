@@ -21,17 +21,22 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	void StartZoom();
+	void ToggleZoom();
 
 	TWeakObjectPtr<ACameraActor> LevelCamera;
 
 	bool bIsZooming = false;
-	float ZoomElapsed = 0.f;
-	float ZoomStartWidth = 0.f;
+	bool bIsZoomingIn = false;
+	float ZoomElapsed = 0.0f;
+	float ZoomStartWidth = 0.0f;
+	float ZoomTargetWidth = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float ZoomDuration = 0.5f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
-	float ZoomTargetWidth = 3200.f;
+	float ZoomFar = 13000.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Camera")
+	float ZoomNear = 3200.0f;
 };
