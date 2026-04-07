@@ -2,6 +2,8 @@
 
 
 #include "GoldRush/GoldRushObstacle.h"
+#include "GoldRush/GoldRushConstants.h"
+#include "GoldRush/GoldRushGameMode.h"
 #include "GoldRush/GoldRushPlayer.h"
 
 // Sets default values
@@ -30,6 +32,11 @@ void AGoldRushObstacle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const FVector Velocity(0.0f, 0.0f, -200.0f);
-	AddActorLocalOffset(DeltaTime * Velocity);
+	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		int32 PhaseId = GoldRushGameMode->GetLearningManager()->CurriculumManager->GetCurrentPhaseId();
+		float Speed = GoldRushConstants::Phases[PhaseId].ObstacleSpeed;
+		const FVector Velocity(0.0f, 0.0f, -Speed);
+		AddActorLocalOffset(DeltaTime * Velocity);
+	}
 }

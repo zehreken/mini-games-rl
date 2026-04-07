@@ -22,16 +22,16 @@ void AGoldRushGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	LearningManager = Cast<AGoldRushLearningManager>(
+		UGameplayStatics::GetActorOfClass(GetWorld(), AGoldRushLearningManager::StaticClass()));
+	if (!LearningManager)
+		UE_LOG(LogTemp, Error, TEXT("Couldn't find LearningManager"));
+
 	for (int32 i = 0; i < 64; i++)
 	{
 		AGoldRushArenaManager* Arena = GetWorld()->SpawnActor<AGoldRushArenaManager>();
 		Arena->InitArena(i);
 	}
-
-	LearningManager = Cast<AGoldRushLearningManager>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), AGoldRushLearningManager::StaticClass()));
-	if (!LearningManager)
-		UE_LOG(LogTemp, Error, TEXT("Couldn't find LearningManager"));
 
 	LearningManager->Init();
 }

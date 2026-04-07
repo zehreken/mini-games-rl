@@ -1,6 +1,8 @@
 // Guchan Alkan - Licensed under GPLv3
 
 #include "GoldRush/GoldRushTrainingEnvironment.h"
+#include "GoldRush/GoldRushConstants.h"
+#include "GoldRush/GoldRushGameMode.h"
 #include "GoldRush/GoldRushPlayer.h"
 
 void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float &OutReward, const int32 AgentId)
@@ -52,10 +54,20 @@ void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearnin
 	if (!IsValid(Player))
 		return;
 
-	if (Player->HitCount >= 3)
+	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("Agent %d terminating, HitCount: %d"), AgentId, Player->HitCount);
-		OutCompletion = ELearningAgentsCompletion::Termination;
+		int32 PhaseId = GoldRushGameMode->GetLearningManager()->CurriculumManager->GetCurrentPhaseId();
+		int32 TerminationLimit = GoldRushConstants::Phases[PhaseId].TerminationHitLimit;
+		
+		if (Player->HitCount >= TerminationLimit)
+		{
+			// UE_LOG(LogTemp, Warning, TEXT("Agent %d terminating, HitCount: %d"), AgentId, Player->HitCount);
+			OutCompletion = ELearningAgentsCompletion::Termination;
+		}
+		else
+		{
+			OutCompletion = ELearningAgentsCompletion::Running;
+		}
 	}
 	else
 	{
@@ -69,6 +81,12 @@ void UGoldRushTrainingEnvironment::ResetAgentEpisode_Implementation(const int32 
 
 	if (!IsValid(Player))
 		return;
+
+	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		int32 StepCount = GoldRushGameMode->GetLearningManager()->PPOTrainer->GetEpisodeStepNum(AgentId);
+		GoldRushGameMode->GetLearningManager()->CurriculumManager->EnqueueEpisodeLength(StepCount);
+	}
 
 	Player->ResetAgent();
 }

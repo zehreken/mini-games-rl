@@ -108,6 +108,6 @@ void AGoldRushLearningManager::Tick(float DeltaTime)
 	{
 		PPOTrainer->RunTraining(TrainerConfig->PPOTrainingSettings);
 		
-		CurriculumManager->OnStep(0);
+		CurriculumManager->NextStep();
 	}
 }
