@@ -59,8 +59,8 @@ void AGoldRushPlayerController::ToggleZoom()
 	}
 
 	ZoomElapsed = 0.0f;
+	bIsZoomingIn = !bIsZoomingIn;
 	ZoomStartWidth = bIsZoomingIn ? ZoomFar : ZoomNear;
 	ZoomTargetWidth = bIsZoomingIn ? ZoomNear : ZoomFar;
-	bIsZoomingIn = !bIsZoomingIn;
 	bIsZooming = true;
 }
