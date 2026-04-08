@@ -1,6 +1,7 @@
 // Guchan Alkan - Licensed under GPLv3
 
 #include "GoldRush/GoldRushTrainingEnvironment.h"
+#include "GoldRush/GoldRushArenaManager.h"
 #include "GoldRush/GoldRushConstants.h"
 #include "GoldRush/GoldRushGameMode.h"
 #include "GoldRush/GoldRushPlayer.h"
@@ -87,6 +88,9 @@ void UGoldRushTrainingEnvironment::ResetAgentEpisode_Implementation(const int32 
 		int32 StepCount = GoldRushGameMode->GetLearningManager()->PPOTrainer->GetEpisodeStepNum(AgentId);
 		GoldRushGameMode->GetLearningManager()->CurriculumManager->EnqueueEpisodeLength(StepCount);
 	}
+
+	if (Player->ArenaManager)
+		Player->ArenaManager->ResetEpisode();
 
 	Player->ResetAgent();
 }

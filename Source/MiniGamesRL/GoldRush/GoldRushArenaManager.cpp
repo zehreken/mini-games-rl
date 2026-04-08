@@ -23,6 +23,7 @@ void AGoldRushArenaManager::InitArena(int32 ArenaIndex)
 		int32 Col = ArenaIndex % 8;
 		int32 Row = ArenaIndex / 8;
 		ArenaOffset = FVector(0.0f, Col * HorizontalSpacing, Row * VerticalSpacing);
+		CachedArenaIndex = ArenaIndex;
 		RandomStream.Initialize(Seed + ArenaIndex);
 
 		GetWorld()->SpawnActor<AActor>(
@@ -39,8 +40,16 @@ void AGoldRushArenaManager::InitArena(int32 ArenaIndex)
 		Player = GetWorld()->SpawnActor<AGoldRushPlayer>(GoldRushGameMode->PlayerClass, PlayerSpawnTransform,
 		                                                 SpawnParameters);
 		if (Player)
+		{
 			Player->ArenaOffset = ArenaOffset;
+			Player->ArenaManager = this;
+		}
 	}
+}
+
+void AGoldRushArenaManager::ResetEpisode()
+{
+	RandomStream.Initialize(Seed + CachedArenaIndex);
 }
 
 // Called when the game starts or when spawned

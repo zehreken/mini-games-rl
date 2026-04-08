@@ -17,6 +17,7 @@ public:
 	AGoldRushArenaManager();
 
 	void InitArena(int32 ArenaIndex);
+	void ResetEpisode();
 
 protected:
 	// Called when the game starts or when spawned
@@ -44,6 +45,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 Seed = 42;
+
+	int32 CachedArenaIndex = 0;
 
 	FRandomStream RandomStream;
 

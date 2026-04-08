@@ -47,6 +47,9 @@ public:
 	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	FVector ArenaOffset;
 
+	UPROPERTY()
+	class AGoldRushArenaManager* ArenaManager = nullptr;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
