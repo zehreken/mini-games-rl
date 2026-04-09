@@ -2,9 +2,6 @@
 
 
 #include "Learning/LearningManager.h"
-#include "GoldRush/GoldRushPlayer.h"
-#include "GoldRush/GoldRushPlayerInteractor.h"
-#include "GoldRush/GoldRushTrainingEnvironment.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -36,7 +33,7 @@ void ALearningManager::Init()
 	}
 
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGoldRushPlayer::StaticClass(), Actors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), PlayerClass, Actors);
 	const FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
 
 	for (AActor* Actor : Actors)
@@ -47,7 +44,7 @@ void ALearningManager::Init()
 
 		Actor->AddTickPrerequisiteActor(this);
 	}
-	Interactor = UGoldRushPlayerInteractor::MakeInteractor(
+	Interactor = ULearningAgentsInteractor::MakeInteractor(
 		LearningAgentsManager,
 		InteractorClass,
 		TEXT("Interactor")
@@ -74,9 +71,10 @@ void ALearningManager::Init()
 		CriticNetwork,
 		ReinitialiseNetworks);
 
-	TrainingEnv = UGoldRushTrainingEnvironment::MakeTrainingEnvironment(
+	
+	TrainingEnv = ULearningAgentsTrainingEnvironment::MakeTrainingEnvironment(
 		LearningAgentsManager,
-		UGoldRushTrainingEnvironment::StaticClass(),
+		EnvironmentClass,
 		TEXT("TrainingEnvironment"));
 
 	TrainerProcess = MakeUnique<FLearningAgentsTrainerProcess>(

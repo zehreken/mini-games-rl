@@ -11,8 +11,8 @@
 #include "LearningAgentsTrainingEnvironment.h"
 #include "LearningAgentsPPOTrainer.h"
 #include "LearningAgentsCommunicator.h"
-#include "GoldRush/GoldRushTrainingConfig.h"
 #include "Learning/CurriculumManager.h"
+#include "Learning/TrainingConfig.h"
 #include "LearningManager.generated.h"
 
 UCLASS()
@@ -34,61 +34,67 @@ public:
 
 	void Init();
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush")
+	UPROPERTY(EditAnywhere, Category = "LearningManager")
 	bool RunInference = false;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush")
+	UPROPERTY(EditAnywhere, Category = "LearningManager")
 	bool ReinitialiseNetworks = false;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	UPROPERTY(VisibleInstanceOnly, Category = "LearningManager")
 	ULearningAgentsManager* LearningAgentsManager;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	UPROPERTY(VisibleInstanceOnly, Category = "LearningManager")
 	UCurriculumManager* CurriculumManager;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Classes")
 	TSubclassOf<ULearningAgentsInteractor> InteractorClass;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Classes")
+	TSubclassOf<ULearningAgentsTrainingEnvironment> EnvironmentClass;
+
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Classes")
+	TSubclassOf<APawn> PlayerClass;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "LearningManager")
 	ULearningAgentsInteractor* Interactor;
 	
-	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	UPROPERTY(VisibleInstanceOnly, Category = "LearningManager")
 	ULearningAgentsPolicy* Policy;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	UPROPERTY(VisibleInstanceOnly, Category = "LearningManager")
 	ULearningAgentsCritic* Critic;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	UPROPERTY(VisibleInstanceOnly, Category = "LearningManager")
 	ULearningAgentsTrainingEnvironment* TrainingEnv;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
+	UPROPERTY(VisibleInstanceOnly, Category = "LearningManager")
 	ULearningAgentsPPOTrainer* PPOTrainer;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Settings")
-	TObjectPtr<UGoldRushTrainingConfig> TrainerConfig;
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Settings")
+	TObjectPtr<UTrainingConfig> TrainerConfig;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> CriticNetwork;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> DecoderNetwork;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> EncoderNetwork;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Networks")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Networks")
 	TObjectPtr<ULearningAgentsNeuralNetwork> PolicyNetwork;
 	
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Snapshots")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Snapshots")
 	FFilePath CriticFilePath;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Snapshots")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Snapshots")
 	FFilePath DecoderFilePath;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Snapshots")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Snapshots")
 	FFilePath EncoderFilePath;
 
-	UPROPERTY(EditAnywhere, Category = "GoldRush|Snapshots")
+	UPROPERTY(EditAnywhere, Category = "LearningManager|Snapshots")
 	FFilePath PolicyFilePath;
 
 	TUniquePtr<FLearningAgentsTrainerProcess> TrainerProcess;
