@@ -48,6 +48,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
 	TSubclassOf<ULearningAgentsInteractor> InteractorClass;
+	
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
+	TSubclassOf<ULearningAgentsTrainingEnvironment> EnvironmentClass;
+
+	UPROPERTY(EditAnywhere, Category = "GoldRush|Classes")
+	TSubclassOf<APawn> PlayerClass;
 
 	UPROPERTY(VisibleInstanceOnly, Category = "GoldRush")
 	ULearningAgentsInteractor* Interactor;
