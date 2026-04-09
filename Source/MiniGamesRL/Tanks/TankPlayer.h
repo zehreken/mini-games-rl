@@ -30,4 +30,17 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Body;
+
+	void LeftForwardOn();
+	void LeftForwardOff();
+	void LeftBackOn();
+	void LeftBackOff();
+
+	void RightForwardOn();
+	void RightForwardOff();
+	void RightBackOn();
+	void RightBackOff();
+
+	float LeftInput;
+	float RightInput;
 };
