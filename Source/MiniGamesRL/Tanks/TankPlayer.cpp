@@ -4,6 +4,7 @@
 #include "TankPlayer.h"
 
 #include "Components/BoxComponent.h"
+#include "DrawDebugHelpers.h"
 
 
 // Sets default values
@@ -49,6 +50,10 @@ void ATankPlayer::Tick(float DeltaTime)
 
 	Body->AddForceAtLocation(LeftForce, LeftPos);
 	Body->AddForceAtLocation(RightForce, RightPos);
+
+	constexpr float ForceDrawScale = 1.0f / 1000.0f;
+	DrawDebugDirectionalArrow(GetWorld(), LeftPos,  LeftPos  + LeftForce  * ForceDrawScale, 20.f, FColor::Blue,  false, -1.f, 0, 2.f);
+	DrawDebugDirectionalArrow(GetWorld(), RightPos, RightPos + RightForce * ForceDrawScale, 20.f, FColor::Red,   false, -1.f, 0, 2.f);
 }
 
 // Called to bind functionality to input
@@ -134,6 +139,8 @@ void ATankPlayer::ApplySuspension()
 			if (TotalForce > 0.0f)
 			{
 				Body->AddForceAtLocation(FVector::UpVector * TotalForce, CornerWorld);
+				constexpr float SuspensionDrawScale = 1.0f / 100.0f;
+				DrawDebugDirectionalArrow(GetWorld(), CornerWorld, CornerWorld + FVector::UpVector * TotalForce * SuspensionDrawScale, 10.f, FColor::Green, false, -1.f, 0, 1.5f);
 			}
 		}
 	}

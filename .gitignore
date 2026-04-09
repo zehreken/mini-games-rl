@@ -59,3 +59,4 @@ DerivedDataCache/
 # If you include third party libs with build artifacts
 ThirdParty/**/Binaries/
 ThirdParty/**/Lib/
+/MiniGamesRL.sln.DotSettings.user
