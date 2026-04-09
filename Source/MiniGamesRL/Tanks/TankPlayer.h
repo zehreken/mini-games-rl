@@ -31,6 +31,31 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Body;
 
+	UPROPERTY(EditAnywhere, Category = "Tank")
+	float LinearDamping = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Tank")
+	float AngularDamping = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Tank")
+	float SpringStiffness = 5000.f;
+
+	UPROPERTY(EditAnywhere, Category = "Tank")
+	float SpringDamping = 500.f;
+
+	UPROPERTY(EditAnywhere, Category = "Tank")
+	float RestLength = 100.f;
+
+	TArray<FVector> CornerOffsets = {
+		FVector(100.f, 50.f, 0.f),
+		FVector(100.f, -50.f, 0.f),
+		FVector(-100.f, 50.f, 0.f),
+		FVector(-100.f, -50.f, 0.f),
+	};
+
+	float LeftInput;
+	float RightInput;
+
 	void LeftForwardOn();
 	void LeftForwardOff();
 	void LeftBackOn();
@@ -41,6 +66,5 @@ private:
 	void RightBackOn();
 	void RightBackOff();
 
-	float LeftInput;
-	float RightInput;
+	void ApplySuspension();
 };

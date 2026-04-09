@@ -25,6 +25,9 @@ ATankPlayer::ATankPlayer()
 void ATankPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Body->SetLinearDamping(LinearDamping);
+	Body->SetAngularDamping(AngularDamping);
 }
 
 // Called every frame
@@ -32,16 +35,17 @@ void ATankPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	ApplySuspension();
+
 	constexpr float TrackForce = 200'000.0f;
-	constexpr float HalfWidth = 25.0f;
+	constexpr float HalfWidth = 50.0f;
 	FVector LeftForce = GetActorForwardVector() * LeftInput * TrackForce;
 	FVector RightForce = GetActorForwardVector() * RightInput * TrackForce;
 
 	FVector LeftPos = GetActorLocation() + GetActorRightVector() * -HalfWidth;
 	FVector RightPos = GetActorLocation() + GetActorRightVector() * HalfWidth;
-	
+
 	if (!Body) return;
-	UE_LOG(LogTemp, Display, TEXT("left: %f"), LeftInput);
 
 	Body->AddForceAtLocation(LeftForce, LeftPos);
 	Body->AddForceAtLocation(RightForce, RightPos);
@@ -65,15 +69,71 @@ void ATankPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ATankPlayer::LeftForwardOn()
 {
-	UE_LOG(LogTemp, Display, TEXT("left forward on"));
 	LeftInput = 1.f;
 }
 
-void ATankPlayer::LeftForwardOff() { LeftInput = 0.f; }
-void ATankPlayer::LeftBackOn() { LeftInput = -1.f; }
-void ATankPlayer::LeftBackOff() { LeftInput = 0.f; }
+void ATankPlayer::LeftForwardOff()
+{
+	LeftInput = 0.f;
+}
 
-void ATankPlayer::RightForwardOn() { RightInput = 1.f; }
-void ATankPlayer::RightForwardOff() { RightInput = 0.f; }
-void ATankPlayer::RightBackOn() { RightInput = -1.f; }
-void ATankPlayer::RightBackOff() { RightInput = 0.f; }
+void ATankPlayer::LeftBackOn()
+{
+	LeftInput = -1.f;
+}
+
+void ATankPlayer::LeftBackOff()
+{
+	LeftInput = 0.f;
+}
+
+void ATankPlayer::RightForwardOn()
+{
+	RightInput = 1.f;
+}
+
+void ATankPlayer::RightForwardOff()
+{
+	RightInput = 0.f;
+}
+
+void ATankPlayer::RightBackOn()
+{
+	RightInput = -1.f;
+}
+
+void ATankPlayer::RightBackOff()
+{
+	RightInput = 0.f;
+}
+
+void ATankPlayer::ApplySuspension()
+{
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	for (const FVector& CornerOffset : CornerOffsets)
+	{
+		FVector CornerWorld = GetActorTransform().TransformPosition(CornerOffset);
+		FVector TraceEnd = CornerWorld - FVector::UpVector * RestLength;
+
+		FHitResult Hit;
+		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, CornerWorld, TraceEnd, ECC_WorldStatic, Params);
+		if (bHit)
+		{
+			float Compression = RestLength - Hit.Distance;
+
+			float SpringForce  = Compression * SpringStiffness;
+
+			FVector PointVelocity = Body->GetPhysicsLinearVelocityAtPoint(CornerWorld);
+			float DampingForce = PointVelocity.Z * SpringDamping;
+
+			float TotalForce = SpringForce - DampingForce;
+
+			if (TotalForce > 0.0f)
+			{
+				Body->AddForceAtLocation(FVector::UpVector * TotalForce, CornerWorld);
+			}
+		}
+	}
+}
