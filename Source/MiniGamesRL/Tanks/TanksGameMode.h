@@ -13,5 +13,7 @@ UCLASS()
 class MINIGAMESRL_API ATanksGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	ATanksGameMode();
 };

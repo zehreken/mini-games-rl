@@ -69,6 +69,7 @@ void ATankPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ATankPlayer::LeftForwardOn()
 {
+	UE_LOG(LogTemp, Display, TEXT("left forward on"));
 	LeftInput = 1.f;
 }
 
@@ -123,7 +124,7 @@ void ATankPlayer::ApplySuspension()
 		{
 			float Compression = RestLength - Hit.Distance;
 
-			float SpringForce  = Compression * SpringStiffness;
+			float SpringForce = Compression * SpringStiffness;
 
 			FVector PointVelocity = Body->GetPhysicsLinearVelocityAtPoint(CornerWorld);
 			float DampingForce = PointVelocity.Z * SpringDamping;
