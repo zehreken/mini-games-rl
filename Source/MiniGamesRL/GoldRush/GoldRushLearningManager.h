@@ -1,5 +1,7 @@
 // Guchan Alkan - Licensed under GPLv3
 
+// OBSOLETE
+
 #pragma once
 
 #include "CoreMinimal.h"
