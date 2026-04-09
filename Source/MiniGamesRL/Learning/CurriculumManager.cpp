@@ -1,7 +1,7 @@
 // Guchan Alkan - Licensed under GPLv3
 
 
-#include "GoldRush/CurriculumManager.h"
+#include "Learning/CurriculumManager.h"
 #include "GoldRush/GoldRushConstants.h"
 
 // Sets default values for this component's properties

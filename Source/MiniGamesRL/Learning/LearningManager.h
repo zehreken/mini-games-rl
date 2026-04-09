@@ -13,22 +13,22 @@
 #include "LearningAgentsCommunicator.h"
 #include "GoldRush/GoldRushTrainingConfig.h"
 #include "Learning/CurriculumManager.h"
-#include "GoldRushLearningManager.generated.h"
+#include "LearningManager.generated.h"
 
 UCLASS()
-class MINIGAMESRL_API AGoldRushLearningManager : public AActor
+class MINIGAMESRL_API ALearningManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
-	AGoldRushLearningManager();
+	ALearningManager();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
