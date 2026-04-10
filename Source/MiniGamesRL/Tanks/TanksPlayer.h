@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Components/BoxComponent.h"
-#include "TankPlayer.generated.h"
+#include "TanksPlayer.generated.h"
 
 UCLASS()
-class MINIGAMESRL_API ATankPlayer : public APawn
+class MINIGAMESRL_API ATanksPlayer : public APawn
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	ATankPlayer();
+	ATanksPlayer();
 
 protected:
 	// Called when the game starts or when spawned

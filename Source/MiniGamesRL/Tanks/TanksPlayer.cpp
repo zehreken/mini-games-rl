@@ -1,14 +1,13 @@
 // Guchan Alkan - Licensed under GPLv3
 
 
-#include "TankPlayer.h"
-
+#include "Tanks/TanksPlayer.h"
 #include "Components/BoxComponent.h"
 #include "DrawDebugHelpers.h"
 
 
 // Sets default values
-ATankPlayer::ATankPlayer()
+ATanksPlayer::ATanksPlayer()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,7 +22,7 @@ ATankPlayer::ATankPlayer()
 }
 
 // Called when the game starts or when spawned
-void ATankPlayer::BeginPlay()
+void ATanksPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -32,7 +31,7 @@ void ATankPlayer::BeginPlay()
 }
 
 // Called every frame
-void ATankPlayer::Tick(float DeltaTime)
+void ATanksPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -57,63 +56,63 @@ void ATankPlayer::Tick(float DeltaTime)
 }
 
 // Called to bind functionality to input
-void ATankPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ATanksPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("LeftForward", IE_Pressed, this, &ATankPlayer::LeftForwardOn);
-	PlayerInputComponent->BindAction("LeftForward", IE_Released, this, &ATankPlayer::LeftForwardOff);
-	PlayerInputComponent->BindAction("LeftBack", IE_Pressed, this, &ATankPlayer::LeftBackOn);
-	PlayerInputComponent->BindAction("LeftBack", IE_Released, this, &ATankPlayer::LeftBackOff);
+	PlayerInputComponent->BindAction("LeftForward", IE_Pressed, this, &ATanksPlayer::LeftForwardOn);
+	PlayerInputComponent->BindAction("LeftForward", IE_Released, this, &ATanksPlayer::LeftForwardOff);
+	PlayerInputComponent->BindAction("LeftBack", IE_Pressed, this, &ATanksPlayer::LeftBackOn);
+	PlayerInputComponent->BindAction("LeftBack", IE_Released, this, &ATanksPlayer::LeftBackOff);
 
-	PlayerInputComponent->BindAction("RightForward", IE_Pressed, this, &ATankPlayer::RightForwardOn);
-	PlayerInputComponent->BindAction("RightForward", IE_Released, this, &ATankPlayer::RightForwardOff);
-	PlayerInputComponent->BindAction("RightBack", IE_Pressed, this, &ATankPlayer::RightBackOn);
-	PlayerInputComponent->BindAction("RightBack", IE_Released, this, &ATankPlayer::RightBackOff);
+	PlayerInputComponent->BindAction("RightForward", IE_Pressed, this, &ATanksPlayer::RightForwardOn);
+	PlayerInputComponent->BindAction("RightForward", IE_Released, this, &ATanksPlayer::RightForwardOff);
+	PlayerInputComponent->BindAction("RightBack", IE_Pressed, this, &ATanksPlayer::RightBackOn);
+	PlayerInputComponent->BindAction("RightBack", IE_Released, this, &ATanksPlayer::RightBackOff);
 }
 
-void ATankPlayer::LeftForwardOn()
+void ATanksPlayer::LeftForwardOn()
 {
 	UE_LOG(LogTemp, Display, TEXT("left forward on"));
 	LeftInput = 1.f;
 }
 
-void ATankPlayer::LeftForwardOff()
+void ATanksPlayer::LeftForwardOff()
 {
 	LeftInput = 0.f;
 }
 
-void ATankPlayer::LeftBackOn()
+void ATanksPlayer::LeftBackOn()
 {
 	LeftInput = -1.f;
 }
 
-void ATankPlayer::LeftBackOff()
+void ATanksPlayer::LeftBackOff()
 {
 	LeftInput = 0.f;
 }
 
-void ATankPlayer::RightForwardOn()
+void ATanksPlayer::RightForwardOn()
 {
 	RightInput = 1.f;
 }
 
-void ATankPlayer::RightForwardOff()
+void ATanksPlayer::RightForwardOff()
 {
 	RightInput = 0.f;
 }
 
-void ATankPlayer::RightBackOn()
+void ATanksPlayer::RightBackOn()
 {
 	RightInput = -1.f;
 }
 
-void ATankPlayer::RightBackOff()
+void ATanksPlayer::RightBackOff()
 {
 	RightInput = 0.f;
 }
 
-void ATankPlayer::ApplySuspension()
+void ATanksPlayer::ApplySuspension()
 {
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
