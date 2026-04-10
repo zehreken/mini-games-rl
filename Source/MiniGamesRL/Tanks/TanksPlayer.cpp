@@ -21,6 +21,17 @@ ATanksPlayer::ATanksPlayer()
 	RightInput = 0.0f;
 }
 
+void ATanksPlayer::ResetAgent()
+{
+	SetActorLocation(FVector(1000.0f, 1000.0f, 50.0f));
+	SetActorRotation(FRotator::ZeroRotator);
+}
+
+FVector ATanksPlayer::GetActorPreviousLocation() const
+{
+	return PreviousLocation;
+}
+
 // Called when the game starts or when spawned
 void ATanksPlayer::BeginPlay()
 {
@@ -35,8 +46,6 @@ void ATanksPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ApplySuspension();
-
 	constexpr float TrackForce = 200'000.0f;
 	constexpr float HalfWidth = 50.0f;
 	FVector LeftForce = GetActorForwardVector() * LeftInput * TrackForce;
@@ -47,12 +56,18 @@ void ATanksPlayer::Tick(float DeltaTime)
 
 	if (!Body) return;
 
+	PreviousLocation = GetActorLocation();
+
+	ApplySuspension();
+
 	Body->AddForceAtLocation(LeftForce, LeftPos);
 	Body->AddForceAtLocation(RightForce, RightPos);
 
 	constexpr float ForceDrawScale = 1.0f / 1000.0f;
-	DrawDebugDirectionalArrow(GetWorld(), LeftPos,  LeftPos  + LeftForce  * ForceDrawScale, 20.f, FColor::Blue,  false, -1.f, 0, 2.f);
-	DrawDebugDirectionalArrow(GetWorld(), RightPos, RightPos + RightForce * ForceDrawScale, 20.f, FColor::Red,   false, -1.f, 0, 2.f);
+	DrawDebugDirectionalArrow(GetWorld(), LeftPos, LeftPos + LeftForce * ForceDrawScale, 20.f, FColor::Blue, false,
+	                          -1.f, 0, 2.f);
+	DrawDebugDirectionalArrow(GetWorld(), RightPos, RightPos + RightForce * ForceDrawScale, 20.f, FColor::Red, false,
+	                          -1.f, 0, 2.f);
 }
 
 // Called to bind functionality to input
@@ -69,6 +84,12 @@ void ATanksPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("RightForward", IE_Released, this, &ATanksPlayer::RightForwardOff);
 	PlayerInputComponent->BindAction("RightBack", IE_Pressed, this, &ATanksPlayer::RightBackOn);
 	PlayerInputComponent->BindAction("RightBack", IE_Released, this, &ATanksPlayer::RightBackOff);
+}
+
+void ATanksPlayer::SetThrottle(float LeftThrottle, float RightThrottle)
+{
+	LeftInput = LeftThrottle;
+	RightInput = RightThrottle;
 }
 
 void ATanksPlayer::LeftForwardOn()
@@ -139,7 +160,9 @@ void ATanksPlayer::ApplySuspension()
 			{
 				Body->AddForceAtLocation(FVector::UpVector * TotalForce, CornerWorld);
 				constexpr float SuspensionDrawScale = 1.0f / 100.0f;
-				DrawDebugDirectionalArrow(GetWorld(), CornerWorld, CornerWorld + FVector::UpVector * TotalForce * SuspensionDrawScale, 10.f, FColor::Green, false, -1.f, 0, 1.5f);
+				DrawDebugDirectionalArrow(GetWorld(), CornerWorld,
+				                          CornerWorld + FVector::UpVector * TotalForce * SuspensionDrawScale, 10.f,
+				                          FColor::Green, false, -1.f, 0, 1.5f);
 			}
 		}
 	}

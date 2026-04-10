@@ -6,9 +6,9 @@
 #include "GoldRush/GoldRushGameMode.h"
 #include "GoldRush/GoldRushPlayer.h"
 
-void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float &OutReward, const int32 AgentId)
+void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float& OutReward, const int32 AgentId)
 {
-	AGoldRushPlayer *Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
+	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 
 	if (!IsValid(Player))
 		return;
@@ -47,10 +47,10 @@ void UGoldRushTrainingEnvironment::GatherAgentReward_Implementation(float &OutRe
 	OutReward = Reward;
 }
 
-void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearningAgentsCompletion &OutCompletion,
-																		const int32 AgentId)
+void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearningAgentsCompletion& OutCompletion,
+                                                                        const int32 AgentId)
 {
-	AGoldRushPlayer *Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
+	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 
 	if (!IsValid(Player))
 		return;
@@ -59,7 +59,7 @@ void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearnin
 	{
 		int32 PhaseId = GoldRushGameMode->GetLearningManager()->CurriculumManager->GetCurrentPhaseId();
 		int32 TerminationLimit = GoldRushConstants::Phases[PhaseId].TerminationHitLimit;
-		
+
 		if (Player->HitCount >= TerminationLimit)
 		{
 			// UE_LOG(LogTemp, Warning, TEXT("Agent %d terminating, HitCount: %d"), AgentId, Player->HitCount);
@@ -78,7 +78,7 @@ void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearnin
 
 void UGoldRushTrainingEnvironment::ResetAgentEpisode_Implementation(const int32 AgentId)
 {
-	AGoldRushPlayer *Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
+	AGoldRushPlayer* Player = Cast<AGoldRushPlayer>(GetAgent(AgentId));
 
 	if (!IsValid(Player))
 		return;

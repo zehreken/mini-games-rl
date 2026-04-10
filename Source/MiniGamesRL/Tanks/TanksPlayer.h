@@ -16,6 +16,10 @@ public:
 	// Sets default values for this pawn's properties
 	ATanksPlayer();
 
+	void ResetAgent();
+
+	FVector GetActorPreviousLocation() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -27,9 +31,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void SetThrottle(float LeftThrottle, float RightThrottle);
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Body;
+
+	UPROPERTY(VisibleInstanceOnly)
+	FVector PreviousLocation;
 
 	UPROPERTY(EditAnywhere, Category = "Tank")
 	float LinearDamping = 10.0f;
