@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Learning/LearningManager.h"
 #include "TanksGameMode.generated.h"
 
 /**
@@ -16,4 +17,15 @@ class MINIGAMESRL_API ATanksGameMode : public AGameModeBase
 
 public:
 	ATanksGameMode();
+
+	UFUNCTION()
+	ALearningManager* GetLearningManager();
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+
+private:
+	UPROPERTY()
+	ALearningManager* LearningManager;
 };

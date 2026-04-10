@@ -39,7 +39,6 @@ protected:
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 	
 private:
-
 	UPROPERTY()
 	AGoldRushLearningManager* LearningManager;
 };
