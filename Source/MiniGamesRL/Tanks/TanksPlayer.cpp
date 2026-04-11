@@ -95,37 +95,37 @@ void ATanksPlayer::SetThrottle(float LeftThrottle, float RightThrottle)
 void ATanksPlayer::LeftForwardOn()
 {
 	UE_LOG(LogTemp, Display, TEXT("left forward on"));
-	LeftInput = 1.f;
+	LeftInput = 1.0f;
 }
 
 void ATanksPlayer::LeftForwardOff()
 {
-	LeftInput = 0.f;
+	LeftInput = 0.0f;
 }
 
 void ATanksPlayer::LeftBackOn()
 {
-	LeftInput = -1.f;
+	LeftInput = -1.0f;
 }
 
 void ATanksPlayer::LeftBackOff()
 {
-	LeftInput = 0.f;
+	LeftInput = 0.0f;
 }
 
 void ATanksPlayer::RightForwardOn()
 {
-	RightInput = 1.f;
+	RightInput = 1.0f;
 }
 
 void ATanksPlayer::RightForwardOff()
 {
-	RightInput = 0.f;
+	RightInput = 0.0f;
 }
 
 void ATanksPlayer::RightBackOn()
 {
-	RightInput = -1.f;
+	RightInput = -1.0f;
 }
 
 void ATanksPlayer::RightBackOff()
