@@ -2,7 +2,7 @@
 
 
 #include "Tanks/TanksGameMode.h"
-
+#include "Tanks/TanksPlayer.h"
 #include "Kismet/GameplayStatics.h"
 #include "Tanks/TanksPlayerController.h"
 
@@ -14,6 +14,16 @@ ATanksGameMode::ATanksGameMode()
 ALearningManager* ATanksGameMode::GetLearningManager()
 {
 	return LearningManager;
+}
+
+void ATanksGameMode::SetTargetLocation(FVector Location)
+{
+	ATanksPlayer* Player = Cast<ATanksPlayer>(
+		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
+
+	if (!IsValid(Player)) return;
+
+	Player->TargetLocation = Location;
 }
 
 void ATanksGameMode::BeginPlay()

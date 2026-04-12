@@ -19,6 +19,9 @@ public:
 	void ResetAgent();
 
 	FVector GetActorPreviousLocation() const;
+	
+	UPROPERTY(VisibleInstanceOnly)
+	FVector TargetLocation;
 
 protected:
 	// Called when the game starts or when spawned

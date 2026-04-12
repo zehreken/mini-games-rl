@@ -9,16 +9,34 @@ void UTanksPlayerInteractor::SpecifyAgentObservation_Implementation(
 	FLearningAgentsObservationSchemaElement& OutObservationSchemaElement,
 	ULearningAgentsObservationSchema* InObservationSchema)
 {
-	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyLocationObservation(
-		InObservationSchema, 100.0f, "LocationObservation");
+	TMap<FName, FLearningAgentsObservationSchemaElement> ObservationSchemaMap;
+	ObservationSchemaMap.Add("AlignX", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("AlignY", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
+		InObservationSchema,
+		ObservationSchemaMap);
 }
 
 void UTanksPlayerInteractor::GatherAgentObservation_Implementation(
 	FLearningAgentsObservationObjectElement& OutObservationObjectElement,
 	ULearningAgentsObservationObject* InObservationObject, const int32 AgentId)
 {
-	OutObservationObjectElement = ULearningAgentsObservations::MakeLocationObservation(
-		InObservationObject, FVector::Zero());
+	ATanksPlayer* Player = Cast<ATanksPlayer>(GetAgent(AgentId));
+	if (!IsValid(Player)) return;
+
+	FVector WorldOffset = Player->TargetLocation - Player->GetActorLocation();
+	// This is what makes the observation egocentric(from the player's perspective)
+	FVector LocalOffset = Player->GetActorTransform().InverseTransformVector(WorldOffset);
+	FVector LocalDir = LocalOffset.GetSafeNormal();
+	float AlignX = LocalDir.X;
+	float AlignY = LocalDir.Y;
+
+	TMap<FName, FLearningAgentsObservationObjectElement> ObservationSchemaMap;
+	ObservationSchemaMap.Add("AlignX", ULearningAgentsObservations::MakeFloatObservation(InObservationObject, AlignX));
+	ObservationSchemaMap.Add("AlignY", ULearningAgentsObservations::MakeFloatObservation(InObservationObject, AlignY));
+	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
+		InObservationObject,
+		ObservationSchemaMap);
 }
 
 void UTanksPlayerInteractor::SpecifyAgentAction_Implementation(
@@ -40,7 +58,7 @@ void UTanksPlayerInteractor::PerformAgentAction_Implementation(const ULearningAg
 	TMap<FName, FLearningAgentsActionObjectElement> ActionMap;
 	ULearningAgentsActions::GetStructAction(ActionMap, InActionObject, InActionObjectElement);
 
-	const FLearningAgentsActionObjectElement* LeftElem  = ActionMap.Find(TEXT("LeftThrottle"));
+	const FLearningAgentsActionObjectElement* LeftElem = ActionMap.Find(TEXT("LeftThrottle"));
 	const FLearningAgentsActionObjectElement* RightElem = ActionMap.Find(TEXT("RightThrottle"));
 
 	if (!LeftElem || !RightElem) return;

@@ -71,7 +71,6 @@ void ALearningManager::Init()
 		CriticNetwork,
 		ReinitialiseNetworks);
 
-	
 	TrainingEnv = ULearningAgentsTrainingEnvironment::MakeTrainingEnvironment(
 		LearningAgentsManager,
 		EnvironmentClass,
@@ -96,6 +95,7 @@ void ALearningManager::Init()
 // Called every frame
 void ALearningManager::Tick(float DeltaTime)
 {
+
 	Super::Tick(DeltaTime);
 
 	if (RunInference)
@@ -105,7 +105,7 @@ void ALearningManager::Tick(float DeltaTime)
 	else
 	{
 		PPOTrainer->RunTraining(TrainerConfig->PPOTrainingSettings);
-		
+
 		CurriculumManager->NextStep();
 	}
 }
