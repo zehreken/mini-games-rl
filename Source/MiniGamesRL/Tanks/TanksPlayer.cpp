@@ -159,7 +159,7 @@ void ATanksPlayer::ApplySuspension()
 	for (const FVector& CornerOffset : CornerOffsets)
 	{
 		FVector CornerWorld = GetActorTransform().TransformPosition(CornerOffset);
-		FVector TraceEnd = CornerWorld - FVector::UpVector * RestLength;
+		FVector TraceEnd = CornerWorld + FVector::DownVector * RestLength;
 
 		FHitResult Hit;
 		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, CornerWorld, TraceEnd, ECC_WorldStatic, Params);

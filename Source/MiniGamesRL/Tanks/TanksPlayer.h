@@ -50,7 +50,7 @@ private:
 	float AngularDamping = 10.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Tank")
-	float SpringStiffness = 5000.f;
+	float SpringStiffness = 3000.f;
 
 	UPROPERTY(EditAnywhere, Category = "Tank")
 	float SpringDamping = 500.f;
