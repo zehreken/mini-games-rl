@@ -82,10 +82,10 @@ void ATanksPlayer::Tick(float DeltaTime)
 	Body->AddForceAtLocation(RightForce, RightPos);
 
 	constexpr float ForceDrawScale = 1.0f / 1000.0f;
-	DrawDebugDirectionalArrow(GetWorld(), LeftPos, LeftPos + LeftForce * ForceDrawScale, 20.f, FColor::Blue, false,
-	                          -1.f, 0, 2.f);
-	DrawDebugDirectionalArrow(GetWorld(), RightPos, RightPos + RightForce * ForceDrawScale, 20.f, FColor::Red, false,
-	                          -1.f, 0, 2.f);
+	// DrawDebugDirectionalArrow(GetWorld(), LeftPos, LeftPos + LeftForce * ForceDrawScale, 20.0f, FColor::Blue, false,
+	//                           -1.0f, 0, 2.0f);
+	// DrawDebugDirectionalArrow(GetWorld(), RightPos, RightPos + RightForce * ForceDrawScale, 20.0f, FColor::Red, false,
+	//                           -1.0f, 0, 2.0f);
 }
 
 // Called to bind functionality to input
@@ -148,7 +148,7 @@ void ATanksPlayer::RightBackOn()
 
 void ATanksPlayer::RightBackOff()
 {
-	RightInput = 0.f;
+	RightInput = 0.0f;
 }
 
 void ATanksPlayer::ApplySuspension()
@@ -178,9 +178,9 @@ void ATanksPlayer::ApplySuspension()
 			{
 				Body->AddForceAtLocation(FVector::UpVector * TotalForce, CornerWorld);
 				constexpr float SuspensionDrawScale = 1.0f / 100.0f;
-				DrawDebugDirectionalArrow(GetWorld(), CornerWorld,
-				                          CornerWorld + FVector::UpVector * TotalForce * SuspensionDrawScale, 10.f,
-				                          FColor::Green, false, -1.f, 0, 1.5f);
+				// DrawDebugDirectionalArrow(GetWorld(), CornerWorld,
+				//                           CornerWorld + FVector::UpVector * TotalForce * SuspensionDrawScale, 10.0f,
+				//                           FColor::Green, false, -1.0f, 0, 1.5f);
 			}
 		}
 	}
@@ -195,18 +195,18 @@ void ATanksPlayer::MoveWheels()
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(this);
 		FVector WorldRestPos = GetActorTransform().TransformPosition(WheelRestPositions[i]);
-    
-		FVector TraceStart = WorldRestPos + FVector::UpVector * 50.f;
-		FVector TraceEnd   = WorldRestPos + FVector::DownVector * 1000.f;
+
+		FVector TraceStart = WorldRestPos + FVector::UpVector * 50.0f;
+		FVector TraceEnd = WorldRestPos + FVector::DownVector * 1000.0f;
 
 		FHitResult Hit;
 		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_WorldStatic, Params);
 		if (bHit)
 		{
 			UE_LOG(LogTemp, Display, TEXT("hit"));
-			
-			// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.f, 0, 2.f);
-			// DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 10.f, 8, FColor::Yellow, false, 1.f);
+
+			// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, -1.0f, 0, 2.0f);
+			// DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 10.0f, 8, FColor::Yellow, false, -1.0f);
 
 			Wheels[i]->SetWorldLocation(FVector(Hit.ImpactPoint + FVector::UpVector * 25.0f));
 		}
