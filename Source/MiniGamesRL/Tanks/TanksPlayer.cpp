@@ -17,20 +17,28 @@ ATanksPlayer::ATanksPlayer()
 	Body->SetBoxExtent(FVector(100.0f, 50.0f, 25.0f)); // half-extents in cm
 	Body->SetCollisionProfileName(TEXT("BlockAll"));
 	Body->SetSimulatePhysics(true);
-
+	
 	LeftInput = 0.0f;
 	RightInput = 0.0f;
+	bHitTarget = false;
 }
 
 void ATanksPlayer::ResetAgent()
 {
 	SetActorLocation(FVector(1000.0f, 1000.0f, 50.0f));
 	SetActorRotation(FRotator::ZeroRotator);
+	bHitTarget = false;
 }
 
 FVector ATanksPlayer::GetActorPreviousLocation() const
 {
 	return PreviousLocation;
+}
+
+void ATanksPlayer::SetTargetLocation(FVector Location)
+{
+	TargetLocation = Location;
+	bHitTarget = true; // HitTarget is true since the agent is overlapped and the target is assigned to a new location
 }
 
 // Called when the game starts or when spawned
@@ -203,8 +211,6 @@ void ATanksPlayer::MoveWheels()
 		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_WorldStatic, Params);
 		if (bHit)
 		{
-			UE_LOG(LogTemp, Display, TEXT("hit"));
-
 			// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, -1.0f, 0, 2.0f);
 			// DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 10.0f, 8, FColor::Yellow, false, -1.0f);
 

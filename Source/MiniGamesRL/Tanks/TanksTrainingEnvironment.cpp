@@ -30,7 +30,13 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 	// UE_LOG(LogTemp, Display, TEXT("pd: %f d: %f, f: %f"), pd, d, pd - d);
 
 	float DistanceDelta = pd - d;
-	OutReward = DistanceDelta + AlignX;
+	float Reward = DistanceDelta + AlignX;
+	if (Player->bHitTarget)
+	{
+		Reward += 10.0f;
+		Player->bHitTarget = false;
+	}
+	OutReward = Reward;
 }
 
 void UTanksTrainingEnvironment::GatherAgentCompletion_Implementation(ELearningAgentsCompletion& OutCompletion,

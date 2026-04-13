@@ -23,7 +23,7 @@ void ATanksGameMode::SetTargetLocation(FVector Location)
 
 	if (!IsValid(Player)) return;
 
-	Player->TargetLocation = Location;
+	Player->SetTargetLocation(Location);
 }
 
 void ATanksGameMode::BeginPlay()
