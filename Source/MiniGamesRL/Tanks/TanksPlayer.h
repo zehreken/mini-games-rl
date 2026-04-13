@@ -58,6 +58,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Tank")
 	float RestLength = 100.f;
 
+	UPROPERTY()
+	TArray<UStaticMeshComponent*> Wheels;
+
+	UPROPERTY()
+	TArray<FVector> WheelRestPositions;
+
 	TArray<FVector> CornerOffsets = {
 		FVector(100.f, 50.f, 0.f),
 		FVector(100.f, -50.f, 0.f),
@@ -79,4 +85,5 @@ private:
 	void RightBackOff();
 
 	void ApplySuspension();
+	void MoveWheels();
 };

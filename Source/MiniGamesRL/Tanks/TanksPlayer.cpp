@@ -4,6 +4,7 @@
 #include "Tanks/TanksPlayer.h"
 #include "Components/BoxComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Tanks/TanksGameMode.h"
 
 
 // Sets default values
@@ -39,6 +40,22 @@ void ATanksPlayer::BeginPlay()
 
 	Body->SetLinearDamping(LinearDamping);
 	Body->SetAngularDamping(AngularDamping);
+
+	TArray<UActorComponent*> WheelActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Wheel"));
+	for (UActorComponent* Comp : GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Wheel")))
+	{
+		if (UStaticMeshComponent* Wheel = Cast<UStaticMeshComponent>(Comp))
+		{
+			Wheels.Add(Wheel);
+		}
+	}
+
+	WheelRestPositions.Empty();
+	for (UStaticMeshComponent* Wheel : Wheels)
+	{
+		// RelativeLocation is already in local space relative to the parent
+		WheelRestPositions.Add(Wheel->GetRelativeLocation());
+	}
 }
 
 // Called every frame
@@ -59,6 +76,7 @@ void ATanksPlayer::Tick(float DeltaTime)
 	PreviousLocation = GetActorLocation();
 
 	ApplySuspension();
+	MoveWheels();
 
 	Body->AddForceAtLocation(LeftForce, LeftPos);
 	Body->AddForceAtLocation(RightForce, RightPos);
@@ -164,6 +182,33 @@ void ATanksPlayer::ApplySuspension()
 				                          CornerWorld + FVector::UpVector * TotalForce * SuspensionDrawScale, 10.f,
 				                          FColor::Green, false, -1.f, 0, 1.5f);
 			}
+		}
+	}
+}
+
+void ATanksPlayer::MoveWheels()
+{
+	ATanksGameMode* GameMode = Cast<ATanksGameMode>(GetWorld()->GetAuthGameMode());
+	if (!IsValid(GameMode) || !GameMode->GetLearningManager()->RunInference) return;
+	for (int32 i = 0; i < Wheels.Num(); i++)
+	{
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+		FVector WorldRestPos = GetActorTransform().TransformPosition(WheelRestPositions[i]);
+    
+		FVector TraceStart = WorldRestPos + FVector::UpVector * 50.f;
+		FVector TraceEnd   = WorldRestPos + FVector::DownVector * 1000.f;
+
+		FHitResult Hit;
+		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_WorldStatic, Params);
+		if (bHit)
+		{
+			UE_LOG(LogTemp, Display, TEXT("hit"));
+			
+			// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.f, 0, 2.f);
+			// DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 10.f, 8, FColor::Yellow, false, 1.f);
+
+			Wheels[i]->SetWorldLocation(FVector(Hit.ImpactPoint + FVector::UpVector * 25.0f));
 		}
 	}
 }
