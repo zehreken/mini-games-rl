@@ -64,6 +64,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Tank")
 	float RestLength = 100.f;
 
+	UPROPERTY(EditAnywhere, Category = "Tank")
+	TSubclassOf<AActor> ShellClass;
+
 	UPROPERTY()
 	TArray<UStaticMeshComponent*> Wheels;
 
@@ -92,4 +95,6 @@ private:
 
 	void ApplySuspension();
 	void MoveWheels();
+
+	void Shoot();
 };

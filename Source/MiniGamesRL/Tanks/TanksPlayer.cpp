@@ -4,6 +4,7 @@
 #include "Tanks/TanksPlayer.h"
 #include "Components/BoxComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Tanks/TanksShell.h"
 #include "Tanks/TanksGameMode.h"
 
 
@@ -17,7 +18,7 @@ ATanksPlayer::ATanksPlayer()
 	Body->SetBoxExtent(FVector(100.0f, 50.0f, 25.0f)); // half-extents in cm
 	Body->SetCollisionProfileName(TEXT("BlockAll"));
 	Body->SetSimulatePhysics(true);
-	
+
 	LeftInput = 0.0f;
 	RightInput = 0.0f;
 	bHitTarget = false;
@@ -110,6 +111,8 @@ void ATanksPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("RightForward", IE_Released, this, &ATanksPlayer::RightForwardOff);
 	PlayerInputComponent->BindAction("RightBack", IE_Pressed, this, &ATanksPlayer::RightBackOn);
 	PlayerInputComponent->BindAction("RightBack", IE_Released, this, &ATanksPlayer::RightBackOff);
+
+	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &ATanksPlayer::Shoot);
 }
 
 void ATanksPlayer::SetThrottle(float LeftThrottle, float RightThrottle)
@@ -217,4 +220,14 @@ void ATanksPlayer::MoveWheels()
 			Wheels[i]->SetWorldLocation(FVector(Hit.ImpactPoint + FVector::UpVector * 25.0f));
 		}
 	}
+}
+
+void ATanksPlayer::Shoot()
+{
+	UE_LOG(LogTemp, Display, TEXT("Bam!"));
+	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, GetActorLocation() - GetActorForwardVector() * 50.0f + FVector(0.0f, 0.0f, 50.0f));
+	ATanksShell* Shell = GetWorld()->SpawnActor<ATanksShell>(ShellClass, SpawnTransform);
+	FVector RandomDirection = FMath::VRand();
+	FVector ClampedDirection = FVector(RandomDirection.X, RandomDirection.Y, FMath::Abs(RandomDirection.Z));
+	Shell->Launch(ClampedDirection, 1000.0f);
 }
