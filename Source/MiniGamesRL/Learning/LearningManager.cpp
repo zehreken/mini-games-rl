@@ -105,7 +105,7 @@ void ALearningManager::Tick(float DeltaTime)
 	else
 	{
 		PPOTrainer->RunTraining(TrainerConfig->PPOTrainingSettings);
-
+	
 		CurriculumManager->NextStep();
 	}
 }

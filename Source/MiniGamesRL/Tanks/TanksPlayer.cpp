@@ -90,10 +90,10 @@ void ATanksPlayer::Tick(float DeltaTime)
 	Body->AddForceAtLocation(RightForce, RightPos);
 
 	constexpr float ForceDrawScale = 1.0f / 1000.0f;
-	// DrawDebugDirectionalArrow(GetWorld(), LeftPos, LeftPos + LeftForce * ForceDrawScale, 20.0f, FColor::Blue, false,
-	//                           -1.0f, 0, 2.0f);
-	// DrawDebugDirectionalArrow(GetWorld(), RightPos, RightPos + RightForce * ForceDrawScale, 20.0f, FColor::Red, false,
-	//                           -1.0f, 0, 2.0f);
+	DrawDebugDirectionalArrow(GetWorld(), LeftPos, LeftPos + LeftForce * ForceDrawScale, 20.0f, FColor::Blue, false,
+	                          -1.0f, 0, 2.0f);
+	DrawDebugDirectionalArrow(GetWorld(), RightPos, RightPos + RightForce * ForceDrawScale, 20.0f, FColor::Red, false,
+	                          -1.0f, 0, 2.0f);
 }
 
 // Called to bind functionality to input
