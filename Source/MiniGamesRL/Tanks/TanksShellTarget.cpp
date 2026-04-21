@@ -2,8 +2,9 @@
 
 
 #include "TanksShellTarget.h"
-
-#include "TanksShell.h"
+#include "Tanks/TanksPlayer.h"
+#include "Tanks/TanksShell.h"
+#include "Kismet/GameplayStatics.h"
 #include "Tanks/TanksGameMode.h"
 #include "Utils/MiniGamesUtils.h"
 
@@ -40,8 +41,16 @@ void ATanksShellTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		NewLocation = GroundedLocation;
 	}
+	ATanksPlayer* Player = Cast<ATanksPlayer>(
+		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
+
+	if (IsValid(Player))
+	{
+		Player->SetShellHit(OtherActor->GetActorLocation());
+	}
+
 	SetActorLocation(NewLocation);
-	GameMode->SetTargetLocation(NewLocation);
+	GameMode->SetShellTargetLocation(NewLocation);
 }
 
 // Called every frame

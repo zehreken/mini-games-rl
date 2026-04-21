@@ -16,7 +16,7 @@ ALearningManager* ATanksGameMode::GetLearningManager()
 	return LearningManager;
 }
 
-void ATanksGameMode::SetTargetLocation(FVector Location)
+void ATanksGameMode::SetTargetLocation(const FVector& Location)
 {
 	ATanksPlayer* Player = Cast<ATanksPlayer>(
 		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
@@ -26,7 +26,7 @@ void ATanksGameMode::SetTargetLocation(FVector Location)
 	Player->SetTargetLocation(Location);
 }
 
-void ATanksGameMode::SetShellTargetLocation(FVector Location)
+void ATanksGameMode::SetShellTargetLocation(const FVector& Location)
 {
 	ATanksPlayer* Player = Cast<ATanksPlayer>(
 		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
@@ -44,7 +44,10 @@ void ATanksGameMode::BeginPlay()
 	LearningManager = Cast<ALearningManager>(
 		UGameplayStatics::GetActorOfClass(GetWorld(), ALearningManager::StaticClass()));
 	if (!LearningManager)
+	{
 		UE_LOG(LogTemp, Error, TEXT("Couldn't find LearningManager"));
+		return;
+	}
 
 	LearningManager->Init();
 }

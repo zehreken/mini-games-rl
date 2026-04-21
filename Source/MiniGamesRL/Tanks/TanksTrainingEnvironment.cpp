@@ -36,10 +36,12 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 		Player->bHitTarget = false;
 	}
 
-	if (Player->bShellHitTarget)
+	if (Player->bShellHit)
 	{
-		Reward += 10.0f;
-		Player->bShellHitTarget = false;
+		float MaxDistance = 2000.0f;
+		float Closeness = FMath::Max(0.0f, 1.0f - Player->ShellHitDelta.Length() / MaxDistance);
+		Reward += 5.0f * Closeness;
+		Player->bShellHit = false;
 	}
 	OutReward = Reward;
 }

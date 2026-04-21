@@ -22,10 +22,10 @@ public:
 	ALearningManager* GetLearningManager();
 	
 	UFUNCTION(BlueprintCallable, Category = "Tanks")
-	void SetTargetLocation(FVector Location);
+	void SetTargetLocation(const FVector& Location);
 	
 	UFUNCTION(Category = "Tanks")
-	void SetShellTargetLocation(FVector Location);
+	void SetShellTargetLocation(const FVector& Location);
 
 protected:
 	virtual void BeginPlay() override;

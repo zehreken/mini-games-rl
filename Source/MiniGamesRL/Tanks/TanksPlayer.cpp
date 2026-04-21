@@ -22,7 +22,7 @@ ATanksPlayer::ATanksPlayer()
 	LeftInput = 0.0f;
 	RightInput = 0.0f;
 	bHitTarget = false;
-	bShellHitTarget = false;
+	bShellHit = false;
 }
 
 void ATanksPlayer::ResetAgent()
@@ -30,7 +30,8 @@ void ATanksPlayer::ResetAgent()
 	SetActorLocation(FVector(1000.0f, 1000.0f, 50.0f));
 	SetActorRotation(FRotator::ZeroRotator);
 	bHitTarget = false;
-	bShellHitTarget = false;
+	bShellHit = false;
+	bCanShoot = true;
 }
 
 FVector ATanksPlayer::GetActorPreviousLocation() const
@@ -47,7 +48,6 @@ void ATanksPlayer::SetTargetLocation(FVector Location)
 void ATanksPlayer::SetShellTargetLocation(FVector Location)
 {
 	ShellTargetLocation = Location;
-	bShellHitTarget = true;
 }
 
 
@@ -60,7 +60,7 @@ void ATanksPlayer::BeginPlay()
 	Body->SetAngularDamping(AngularDamping);
 
 	TArray<UActorComponent*> WheelActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Wheel"));
-	for (UActorComponent* Comp : GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Wheel")))
+	for (UActorComponent* Comp : WheelActors)
 	{
 		if (UStaticMeshComponent* Wheel = Cast<UStaticMeshComponent>(Comp))
 		{
@@ -74,6 +74,13 @@ void ATanksPlayer::BeginPlay()
 		// RelativeLocation is already in local space relative to the parent
 		WheelRestPositions.Add(Wheel->GetRelativeLocation());
 	}
+
+	GetWorldTimerManager().SetTimer(
+		ShootTimerHandle,
+		[this]() { bCanShoot = true; },
+		1.0f,
+		true);
+	bCanShoot = true;
 }
 
 // Called every frame
@@ -197,7 +204,7 @@ void ATanksPlayer::ApplySuspension()
 			if (TotalForce > 0.0f)
 			{
 				Body->AddForceAtLocation(FVector::UpVector * TotalForce, CornerWorld);
-				constexpr float SuspensionDrawScale = 1.0f / 100.0f;
+				// constexpr float SuspensionDrawScale = 1.0f / 100.0f;
 				// DrawDebugDirectionalArrow(GetWorld(), CornerWorld,
 				//                           CornerWorld + FVector::UpVector * TotalForce * SuspensionDrawScale, 10.0f,
 				//                           FColor::Green, false, -1.0f, 0, 1.5f);
@@ -233,10 +240,45 @@ void ATanksPlayer::MoveWheels()
 
 void ATanksPlayer::Shoot()
 {
+	if (!bCanShoot)
+		return;
+
+	bCanShoot = false;
+
 	UE_LOG(LogTemp, Display, TEXT("Bam!"));
-	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, GetActorLocation() - GetActorForwardVector() * 50.0f + FVector(0.0f, 0.0f, 50.0f));
+	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator,
+	                                       GetActorLocation() - GetActorForwardVector() * 50.0f + FVector(
+		                                       0.0f, 0.0f, 50.0f));
 	ATanksShell* Shell = GetWorld()->SpawnActor<ATanksShell>(ShellClass, SpawnTransform);
+	if (!IsValid(Shell)) return;
 	FVector RandomDirection = FMath::VRand();
 	FVector ClampedDirection = FVector(RandomDirection.X, RandomDirection.Y, FMath::Abs(RandomDirection.Z));
-	Shell->Launch(ClampedDirection, 1000.0f);
+	Shell->Launch(ClampedDirection, 1500.0f);
+}
+
+
+void ATanksPlayer::ShootAt(const FVector& Direction)
+{
+	if (!bCanShoot)
+		return;
+
+	bCanShoot = false;
+
+	UE_LOG(LogTemp, Display, TEXT("Bam!"));
+	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator,
+	                                       GetActorLocation() - GetActorForwardVector() * 50.0f + FVector(
+		                                       0.0f, 0.0f, 50.0f));
+	ATanksShell* Shell = GetWorld()->SpawnActor<ATanksShell>(ShellClass, SpawnTransform);
+	if (!IsValid(Shell)) return;
+	FVector ClampedDirection = FVector(Direction.X, Direction.Y, FMath::Abs(Direction.Z));
+	Shell->Launch(ClampedDirection, 1500.0f);
+}
+
+void ATanksPlayer::SetShellHit(const FVector& Location)
+{
+	if (!bShellHit) // Added this guard because there is timing issue, first caller wins
+	{
+		bShellHit = true;
+		ShellHitDelta = ShellTargetLocation - Location;
+	}
 }

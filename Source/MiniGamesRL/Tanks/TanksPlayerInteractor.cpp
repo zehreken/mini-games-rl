@@ -12,6 +12,8 @@ void UTanksPlayerInteractor::SpecifyAgentObservation_Implementation(
 	TMap<FName, FLearningAgentsObservationSchemaElement> ObservationSchemaMap;
 	ObservationSchemaMap.Add("AlignX", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
 	ObservationSchemaMap.Add("AlignY", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("TargetLocation",
+	                         ULearningAgentsObservations::SpecifyLocationObservation(InObservationSchema));
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
 		InObservationSchema,
 		ObservationSchemaMap);
@@ -30,10 +32,16 @@ void UTanksPlayerInteractor::GatherAgentObservation_Implementation(
 	FVector LocalDir = LocalOffset.GetSafeNormal();
 	float AlignX = LocalDir.X;
 	float AlignY = LocalDir.Y;
+	FVector GunOrigin = Player->GetActorLocation() - Player->GetActorForwardVector() * 50.0f + FVector(
+		0.0f, 0.0f, 50.0f);
+	FVector WorldDelta = Player->ShellTargetLocation - GunOrigin;
+	FVector LocalDelta = Player->GetActorTransform().InverseTransformVector(WorldDelta);
 
 	TMap<FName, FLearningAgentsObservationObjectElement> ObservationSchemaMap;
 	ObservationSchemaMap.Add("AlignX", ULearningAgentsObservations::MakeFloatObservation(InObservationObject, AlignX));
 	ObservationSchemaMap.Add("AlignY", ULearningAgentsObservations::MakeFloatObservation(InObservationObject, AlignY));
+	ObservationSchemaMap.Add("TargetLocation",
+	                         ULearningAgentsObservations::MakeLocationObservation(InObservationObject, LocalDelta));
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,
 		ObservationSchemaMap);
@@ -45,6 +53,7 @@ void UTanksPlayerInteractor::SpecifyAgentAction_Implementation(
 	TMap<FName, FLearningAgentsActionSchemaElement> ActionSchemaMap;
 	ActionSchemaMap.Add("LeftThrottle", ULearningAgentsActions::SpecifyFloatAction(InActionSchema, 1.0f));
 	ActionSchemaMap.Add("RightThrottle", ULearningAgentsActions::SpecifyFloatAction(InActionSchema, 1.0f));
+	ActionSchemaMap.Add("ShootingDirection", ULearningAgentsActions::SpecifyDirectionAction(InActionSchema));
 	OutActionSchemaElement = ULearningAgentsActions::SpecifyStructAction(InActionSchema, ActionSchemaMap);
 }
 
@@ -60,13 +69,17 @@ void UTanksPlayerInteractor::PerformAgentAction_Implementation(const ULearningAg
 
 	const FLearningAgentsActionObjectElement* LeftElem = ActionMap.Find(TEXT("LeftThrottle"));
 	const FLearningAgentsActionObjectElement* RightElem = ActionMap.Find(TEXT("RightThrottle"));
+	const FLearningAgentsActionObjectElement* ShootingDirectionElem = ActionMap.Find(TEXT("ShootingDirection"));
 
-	if (!LeftElem || !RightElem) return;
+	if (!LeftElem || !RightElem || !ShootingDirectionElem) return;
 
 	float LeftThrottle;
 	ULearningAgentsActions::GetFloatAction(LeftThrottle, InActionObject, *LeftElem);
 	float RightThrottle;
 	ULearningAgentsActions::GetFloatAction(RightThrottle, InActionObject, *RightElem);
+	FVector ShootingDirection;
+	ULearningAgentsActions::GetDirectionAction(ShootingDirection, InActionObject, *ShootingDirectionElem);
 
 	Player->SetThrottle(LeftThrottle, RightThrottle);
+	Player->ShootAt(ShootingDirection);
 }

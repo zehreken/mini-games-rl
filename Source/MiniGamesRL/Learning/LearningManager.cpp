@@ -95,7 +95,6 @@ void ALearningManager::Init()
 // Called every frame
 void ALearningManager::Tick(float DeltaTime)
 {
-
 	Super::Tick(DeltaTime);
 
 	if (RunInference)

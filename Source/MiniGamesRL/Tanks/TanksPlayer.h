@@ -36,7 +36,10 @@ public:
 	bool bHitTarget;
 
 	UPROPERTY(VisibleInstanceOnly)
-	bool bShellHitTarget;
+	bool bShellHit;
+
+	UPROPERTY(VisibleInstanceOnly)
+	FVector ShellHitDelta;
 
 protected:
 	// Called when the game starts or when spawned
@@ -50,6 +53,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void SetThrottle(float LeftThrottle, float RightThrottle);
+
+	void ShootAt(const FVector& Direction);
+
+	void SetShellHit(const FVector& Location);
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -104,6 +111,9 @@ private:
 
 	void ApplySuspension();
 	void MoveWheels();
-
+	
 	void Shoot();
+	
+	FTimerHandle ShootTimerHandle;
+	bool bCanShoot;
 };

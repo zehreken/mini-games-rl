@@ -20,9 +20,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -31,5 +28,10 @@ public:
 	UStaticMeshComponent* Mesh;
 
 	UFUNCTION()
-	void Launch(FVector Direction, float Speed);
+	void Launch(const FVector& Direction, float Speed);
+
+private:
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+	           const FHitResult& Hit);
 };
