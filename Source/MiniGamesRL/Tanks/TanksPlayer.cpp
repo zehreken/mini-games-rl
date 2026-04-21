@@ -22,6 +22,7 @@ ATanksPlayer::ATanksPlayer()
 	LeftInput = 0.0f;
 	RightInput = 0.0f;
 	bHitTarget = false;
+	bShellHitTarget = false;
 }
 
 void ATanksPlayer::ResetAgent()
@@ -29,6 +30,7 @@ void ATanksPlayer::ResetAgent()
 	SetActorLocation(FVector(1000.0f, 1000.0f, 50.0f));
 	SetActorRotation(FRotator::ZeroRotator);
 	bHitTarget = false;
+	bShellHitTarget = false;
 }
 
 FVector ATanksPlayer::GetActorPreviousLocation() const
@@ -41,6 +43,13 @@ void ATanksPlayer::SetTargetLocation(FVector Location)
 	TargetLocation = Location;
 	bHitTarget = true; // HitTarget is true since the agent is overlapped and the target is assigned to a new location
 }
+
+void ATanksPlayer::SetShellTargetLocation(FVector Location)
+{
+	ShellTargetLocation = Location;
+	bShellHitTarget = true;
+}
+
 
 // Called when the game starts or when spawned
 void ATanksPlayer::BeginPlay()

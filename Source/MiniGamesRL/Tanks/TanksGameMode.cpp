@@ -26,6 +26,17 @@ void ATanksGameMode::SetTargetLocation(FVector Location)
 	Player->SetTargetLocation(Location);
 }
 
+void ATanksGameMode::SetShellTargetLocation(FVector Location)
+{
+	ATanksPlayer* Player = Cast<ATanksPlayer>(
+		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
+
+	if (!IsValid(Player)) return;
+
+	Player->SetShellTargetLocation(Location);
+}
+
+
 void ATanksGameMode::BeginPlay()
 {
 	Super::BeginPlay();

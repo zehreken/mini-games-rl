@@ -2,7 +2,6 @@
 
 
 #include "Tanks/TanksTrainingEnvironment.h"
-
 #include "TanksPlayer.h"
 
 void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutReward, const int32 AgentId)
@@ -35,6 +34,12 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 	{
 		Reward += 10.0f;
 		Player->bHitTarget = false;
+	}
+
+	if (Player->bShellHitTarget)
+	{
+		Reward += 10.0f;
+		Player->bShellHitTarget = false;
 	}
 	OutReward = Reward;
 }

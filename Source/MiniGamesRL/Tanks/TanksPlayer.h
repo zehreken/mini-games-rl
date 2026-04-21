@@ -22,12 +22,21 @@ public:
 
 	UFUNCTION()
 	void SetTargetLocation(FVector Location);
+
+	UFUNCTION()
+	void SetShellTargetLocation(FVector Location);
 	
 	UPROPERTY(VisibleInstanceOnly)
 	FVector TargetLocation;
 
 	UPROPERTY(VisibleInstanceOnly)
+	FVector ShellTargetLocation;
+
+	UPROPERTY(VisibleInstanceOnly)
 	bool bHitTarget;
+
+	UPROPERTY(VisibleInstanceOnly)
+	bool bShellHitTarget;
 
 protected:
 	// Called when the game starts or when spawned

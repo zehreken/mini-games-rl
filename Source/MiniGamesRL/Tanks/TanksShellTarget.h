@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TanksTarget.generated.h"
+#include "TanksShellTarget.generated.h"
 
 UCLASS()
-class MINIGAMESRL_API ATanksTarget : public AActor
+class MINIGAMESRL_API ATanksShellTarget : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ATanksTarget();
+	ATanksShellTarget();
 
 protected:
 	// Called when the game starts or when spawned

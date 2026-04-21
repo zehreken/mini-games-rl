@@ -1,32 +1,33 @@
 // Guchan Alkan - Licensed under GPLv3
 
 
-#include "TanksTarget.h"
-#include "Tanks/TanksPlayer.h"
+#include "TanksShellTarget.h"
+
+#include "TanksShell.h"
 #include "Tanks/TanksGameMode.h"
 #include "Utils/MiniGamesUtils.h"
 
 
 // Sets default values
-ATanksTarget::ATanksTarget()
+ATanksShellTarget::ATanksShellTarget()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called when the game starts or when spawned
-void ATanksTarget::BeginPlay()
+void ATanksShellTarget::BeginPlay()
 {
 	Super::BeginPlay();
-
-	RandomStream.Initialize(42);
+	
+	RandomStream.Initialize(43);
 }
 
-void ATanksTarget::NotifyActorBeginOverlap(AActor* OtherActor)
+void ATanksShellTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (!OtherActor->IsA<ATanksPlayer>())
+	if (!OtherActor->IsA<ATanksShell>())
 		return;
 
 	ATanksGameMode* GameMode = Cast<ATanksGameMode>(GetWorld()->GetAuthGameMode());
@@ -44,7 +45,8 @@ void ATanksTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 }
 
 // Called every frame
-void ATanksTarget::Tick(float DeltaTime)
+void ATanksShellTarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+

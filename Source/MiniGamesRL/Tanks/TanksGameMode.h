@@ -23,6 +23,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Tanks")
 	void SetTargetLocation(FVector Location);
+	
+	UFUNCTION(Category = "Tanks")
+	void SetShellTargetLocation(FVector Location);
 
 protected:
 	virtual void BeginPlay() override;
