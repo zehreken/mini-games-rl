@@ -30,18 +30,53 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 
 	float DistanceDelta = pd - d;
 	float Reward = DistanceDelta + AlignX;
-	if (Player->bHitTarget)
+	Reward = 0.0f;
+	if (Player->bHasArrived)
 	{
 		Reward += 10.0f;
-		Player->bHitTarget = false;
+		Player->bHasArrived = false;
 	}
 
-	if (Player->bShellHit)
+	// if (Player->bShellHit)
+	// {
+	// 	// float MaxDistance = 2000.0f;
+	// 	// float Closeness = FMath::Max(0.0f, 1.0f - Player->ShellHitDelta.Length() / MaxDistance);
+	// 	// Reward += 5.0f * Closeness;
+	// 	float FalloffRadius = 1000.0f;
+	// 	float Closeness = FMath::Exp(-Player->ShellHitDelta.Length() / FalloffRadius);
+	// 	Reward += 5.0f * Closeness;
+	// 	Player->bShellHit = false;
+	// 	UE_LOG(LogTemp, Display, TEXT("shell reward: %f"), 5.0f * Closeness);
+	// }
+
+	if (Player->bHasShot) // set this on the tick the cooldown resets and fires
 	{
-		float MaxDistance = 2000.0f;
-		float Closeness = FMath::Max(0.0f, 1.0f - Player->ShellHitDelta.Length() / MaxDistance);
-		Reward += 5.0f * Closeness;
-		Player->bShellHit = false;
+		Player->bHasShot = false;
+		float Gravity = FMath::Abs(GetWorld()->GetGravityZ());
+		FVector ToTarget = Player->ShellTargetLocation - Player->GunComponent->GetComponentLocation();
+		float HorizDist = FVector2D(ToTarget.X, ToTarget.Y).Size();
+		float HeightDiff = ToTarget.Z;
+		float Speed = 1500.0f;
+		float SpeedSq = Speed * Speed;
+
+		float Discriminant = SpeedSq * SpeedSq - Gravity * (Gravity * HorizDist * HorizDist + 2.f * HeightDiff *
+			SpeedSq);
+		if (Discriminant >= 0.f)
+		{
+			float Angle = FMath::Atan2(SpeedSq - FMath::Sqrt(Discriminant), Gravity * HorizDist);
+			FVector2D Horizontal = FVector2D(ToTarget.X, ToTarget.Y).GetSafeNormal();
+			FVector IdealDir = FVector(Horizontal.X * FMath::Cos(Angle),
+			                           Horizontal.Y * FMath::Cos(Angle),
+			                           FMath::Sin(Angle));
+			float Alignment = FVector::DotProduct(Player->LastFiredDirection.GetSafeNormal(), IdealDir);
+			Reward += FMath::Pow(Alignment, 20.0f);
+		}
+		else
+		{
+			Reward -= 1.0f;
+		}
+		
+		UE_LOG(LogTemp, Display, TEXT("shell reward: %f"), Reward);
 	}
 	OutReward = Reward;
 }

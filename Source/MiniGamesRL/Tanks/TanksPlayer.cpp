@@ -21,17 +21,19 @@ ATanksPlayer::ATanksPlayer()
 
 	LeftInput = 0.0f;
 	RightInput = 0.0f;
-	bHitTarget = false;
+	bHasArrived = false;
 	bShellHit = false;
+	bHasShot = false;
 }
 
 void ATanksPlayer::ResetAgent()
 {
 	SetActorLocation(FVector(1000.0f, 1000.0f, 50.0f));
 	SetActorRotation(FRotator::ZeroRotator);
-	bHitTarget = false;
+	bHasArrived = false;
 	bShellHit = false;
 	bCanShoot = true;
+	bHasShot = false;
 }
 
 FVector ATanksPlayer::GetActorPreviousLocation() const
@@ -42,7 +44,7 @@ FVector ATanksPlayer::GetActorPreviousLocation() const
 void ATanksPlayer::SetTargetLocation(FVector Location)
 {
 	TargetLocation = Location;
-	bHitTarget = true; // HitTarget is true since the agent is overlapped and the target is assigned to a new location
+	bHasArrived = true; // HitTarget is true since the agent is overlapped and the target is assigned to a new location
 }
 
 void ATanksPlayer::SetShellTargetLocation(FVector Location)
@@ -67,6 +69,12 @@ void ATanksPlayer::BeginPlay()
 			Wheels.Add(Wheel);
 		}
 	}
+	
+	TArray<UActorComponent*> GunComponents = GetComponentsByTag(USceneComponent::StaticClass(), FName("Gun"));
+	if (GunComponents.Num() > 0)
+	{
+		GunComponent = Cast<USceneComponent>(GunComponents[0]);
+	}
 
 	WheelRestPositions.Empty();
 	for (UStaticMeshComponent* Wheel : Wheels)
@@ -78,7 +86,7 @@ void ATanksPlayer::BeginPlay()
 	GetWorldTimerManager().SetTimer(
 		ShootTimerHandle,
 		[this]() { bCanShoot = true; },
-		1.0f,
+		ShootPeriod,
 		true);
 	bCanShoot = true;
 }
@@ -250,10 +258,39 @@ void ATanksPlayer::Shoot()
 	                                       GetActorLocation() - GetActorForwardVector() * 50.0f + FVector(
 		                                       0.0f, 0.0f, 50.0f));
 	ATanksShell* Shell = GetWorld()->SpawnActor<ATanksShell>(ShellClass, SpawnTransform);
+	MoveIgnoreActorAdd(Shell);
 	if (!IsValid(Shell)) return;
-	FVector RandomDirection = FMath::VRand();
+	FVector RandomDirection = FVector::ForwardVector * 300.0f; //FMath::VRand();
 	FVector ClampedDirection = FVector(RandomDirection.X, RandomDirection.Y, FMath::Abs(RandomDirection.Z));
-	Shell->Launch(ClampedDirection, 1500.0f);
+	Shell->Launch(ClampedDirection, 1500.0f, this);
+
+	// Temp ========
+	float Reward = 0.0f;
+	float Gravity = FMath::Abs(GetWorld()->GetGravityZ());
+	FVector ToTarget = ShellTargetLocation - GunComponent->GetComponentLocation();
+	float HorizDist = FVector2D(ToTarget.X, ToTarget.Y).Size();
+	float HeightDiff = ToTarget.Z;
+	float Speed = 1500.0f;
+	float SpeedSq = Speed * Speed;
+
+	float Discriminant = SpeedSq * SpeedSq - Gravity * (Gravity * HorizDist * HorizDist + 2.f * HeightDiff *
+		SpeedSq);
+	if (Discriminant >= 0.f)
+	{
+		float Angle = FMath::Atan2(SpeedSq - FMath::Sqrt(Discriminant), Gravity * HorizDist);
+		FVector2D Horizontal = FVector2D(ToTarget.X, ToTarget.Y).GetSafeNormal();
+		FVector IdealDir = FVector(Horizontal.X * FMath::Cos(Angle),
+								   Horizontal.Y * FMath::Cos(Angle),
+								   FMath::Sin(Angle));
+		float Alignment = FVector::DotProduct(ClampedDirection.GetSafeNormal(), IdealDir);
+		Reward += FMath::Pow(Alignment, 20.0f);
+	}
+	else
+	{
+		Reward -= 1.0f;
+	}
+		
+	UE_LOG(LogTemp, Display, TEXT("shell reward: %f"), Reward);
 }
 
 
@@ -263,15 +300,18 @@ void ATanksPlayer::ShootAt(const FVector& Direction)
 		return;
 
 	bCanShoot = false;
+	bHasShot = true;
 
-	UE_LOG(LogTemp, Display, TEXT("Bam!"));
+	// UE_LOG(LogTemp, Display, TEXT("Bam!"));
 	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator,
 	                                       GetActorLocation() - GetActorForwardVector() * 50.0f + FVector(
 		                                       0.0f, 0.0f, 50.0f));
 	ATanksShell* Shell = GetWorld()->SpawnActor<ATanksShell>(ShellClass, SpawnTransform);
+	MoveIgnoreActorAdd(Shell);
 	if (!IsValid(Shell)) return;
 	FVector ClampedDirection = FVector(Direction.X, Direction.Y, FMath::Abs(Direction.Z));
-	Shell->Launch(ClampedDirection, 1500.0f);
+	LastFiredDirection = ClampedDirection;
+	Shell->Launch(ClampedDirection, 1500.0f, this);
 }
 
 void ATanksPlayer::SetShellHit(const FVector& Location)
@@ -280,5 +320,13 @@ void ATanksPlayer::SetShellHit(const FVector& Location)
 	{
 		bShellHit = true;
 		ShellHitDelta = ShellTargetLocation - Location;
+		UE_LOG(LogTemp, Display, TEXT("Target: %s  Impact: %s  Delta: %s  Len: %.1f"),
+			*ShellTargetLocation.ToString(), *Location.ToString(),
+			*ShellHitDelta.ToString(), ShellHitDelta.Length());
 	}
+}
+
+float ATanksPlayer::GetNormalizedShootTime() const
+{
+	return GetWorld()->GetTimerManager().GetTimerElapsed(ShootTimerHandle) / ShootPeriod;
 }

@@ -31,8 +31,9 @@ void ATanksShell::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ATanksShell::Launch(const FVector& Direction, float Speed)
+void ATanksShell::Launch(const FVector& Direction, float Speed, AActor* Tank)
 {
+	Mesh->IgnoreActorWhenMoving(Tank, true);
 	Mesh->AddImpulse(Direction.GetSafeNormal() * Speed, NAME_None, true);
 }
 

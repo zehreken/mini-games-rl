@@ -28,7 +28,7 @@ public:
 	UStaticMeshComponent* Mesh;
 
 	UFUNCTION()
-	void Launch(const FVector& Direction, float Speed);
+	void Launch(const FVector& Direction, float Speed, AActor* Tank);
 
 private:
 	UFUNCTION()

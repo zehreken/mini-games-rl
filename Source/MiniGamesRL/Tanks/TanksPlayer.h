@@ -33,7 +33,13 @@ public:
 	FVector ShellTargetLocation;
 
 	UPROPERTY(VisibleInstanceOnly)
-	bool bHitTarget;
+	bool bHasArrived;
+
+	UPROPERTY(VisibleInstanceOnly)
+	bool bHasShot;
+
+	UPROPERTY(VisibleInstanceOnly)
+	FVector LastFiredDirection;
 
 	UPROPERTY(VisibleInstanceOnly)
 	bool bShellHit;
@@ -41,11 +47,6 @@ public:
 	UPROPERTY(VisibleInstanceOnly)
 	FVector ShellHitDelta;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -58,6 +59,14 @@ public:
 
 	void SetShellHit(const FVector& Location);
 
+	float GetNormalizedShootTime() const;
+
+	USceneComponent* GunComponent;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
 private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Body;
@@ -113,6 +122,9 @@ private:
 	void MoveWheels();
 	
 	void Shoot();
+
+	UPROPERTY(EditAnywhere, Category = "Tank")
+	float ShootPeriod;
 	
 	FTimerHandle ShootTimerHandle;
 	bool bCanShoot;

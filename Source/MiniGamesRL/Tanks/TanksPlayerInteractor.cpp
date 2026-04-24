@@ -12,8 +12,13 @@ void UTanksPlayerInteractor::SpecifyAgentObservation_Implementation(
 	TMap<FName, FLearningAgentsObservationSchemaElement> ObservationSchemaMap;
 	ObservationSchemaMap.Add("AlignX", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
 	ObservationSchemaMap.Add("AlignY", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
-	ObservationSchemaMap.Add("TargetLocation",
-	                         ULearningAgentsObservations::SpecifyLocationObservation(InObservationSchema));
+	ObservationSchemaMap.Add("ShellCooldown",
+	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("ShellTargetDirection",
+	                         ULearningAgentsObservations::SpecifyDirectionObservation(InObservationSchema));
+	ObservationSchemaMap.Add("ShellTargetDistance",
+	                         ULearningAgentsObservations::SpecifyFloatObservation(
+		                         InObservationSchema, MaxShellTargetDistance));
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
 		InObservationSchema,
 		ObservationSchemaMap);
@@ -26,25 +31,35 @@ void UTanksPlayerInteractor::GatherAgentObservation_Implementation(
 	ATanksPlayer* Player = Cast<ATanksPlayer>(GetAgent(AgentId));
 	if (!IsValid(Player)) return;
 
+	// Egocentric driving direction
 	FVector WorldOffset = Player->TargetLocation - Player->GetActorLocation();
-	// This is what makes the observation egocentric(from the player's perspective)
-	FVector LocalOffset = Player->GetActorTransform().InverseTransformVector(WorldOffset);
-	FVector LocalDir = LocalOffset.GetSafeNormal();
-	float AlignX = LocalDir.X;
-	float AlignY = LocalDir.Y;
-	FVector GunOrigin = Player->GetActorLocation() - Player->GetActorForwardVector() * 50.0f + FVector(
-		0.0f, 0.0f, 50.0f);
-	FVector WorldDelta = Player->ShellTargetLocation - GunOrigin;
-	FVector LocalDelta = Player->GetActorTransform().InverseTransformVector(WorldDelta);
+	FVector LocalDir = Player->GetActorTransform().InverseTransformVector(WorldOffset).GetSafeNormal();
+	float AlignX = bDrivingEnabled ? LocalDir.X : 0.0f;
+	float AlignY = bDrivingEnabled ? LocalDir.Y : 0.0f;
 
-	TMap<FName, FLearningAgentsObservationObjectElement> ObservationSchemaMap;
-	ObservationSchemaMap.Add("AlignX", ULearningAgentsObservations::MakeFloatObservation(InObservationObject, AlignX));
-	ObservationSchemaMap.Add("AlignY", ULearningAgentsObservations::MakeFloatObservation(InObservationObject, AlignY));
-	ObservationSchemaMap.Add("TargetLocation",
-	                         ULearningAgentsObservations::MakeLocationObservation(InObservationObject, LocalDelta));
+	// Egocentric shell target direction and distance from gun
+	FVector WorldDelta = Player->ShellTargetLocation - Player->GunComponent->GetComponentLocation();
+	FVector ShellLocalDir = Player->GetActorTransform().InverseTransformVector(WorldDelta).GetSafeNormal();
+	float ShellTargetDist = WorldDelta.Length();
+
+	float NormalizedCooldown = Player->GetNormalizedShootTime();
+
+	TMap<FName, FLearningAgentsObservationObjectElement> ObservationMap;
+	// Navigation observations
+	ObservationMap.Add("AlignX", ULearningAgentsObservations::MakeFloatObservation(InObservationObject, AlignX));
+	ObservationMap.Add("AlignY", ULearningAgentsObservations::MakeFloatObservation(InObservationObject, AlignY));
+	// Shooting observations
+	ObservationMap.Add("ShellCooldown", ULearningAgentsObservations::MakeFloatObservation(
+		                   InObservationObject, bShootingEnabled ? NormalizedCooldown : 0.0f));
+	ObservationMap.Add("ShellTargetDirection",
+	                   ULearningAgentsObservations::MakeDirectionObservation(
+		                   InObservationObject, bShootingEnabled ? ShellLocalDir : FVector::ForwardVector));
+	ObservationMap.Add("ShellTargetDistance",
+	                   ULearningAgentsObservations::MakeFloatObservation(
+		                   InObservationObject, bShootingEnabled ? ShellTargetDist : 0.0f));
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,
-		ObservationSchemaMap);
+		ObservationMap);
 }
 
 void UTanksPlayerInteractor::SpecifyAgentAction_Implementation(
@@ -80,6 +95,8 @@ void UTanksPlayerInteractor::PerformAgentAction_Implementation(const ULearningAg
 	FVector ShootingDirection;
 	ULearningAgentsActions::GetDirectionAction(ShootingDirection, InActionObject, *ShootingDirectionElem);
 
-	Player->SetThrottle(LeftThrottle, RightThrottle);
-	Player->ShootAt(ShootingDirection);
+	if (bDrivingEnabled)
+		Player->SetThrottle(LeftThrottle, RightThrottle);
+	if (bShootingEnabled)
+		Player->ShootAt(ShootingDirection);
 }

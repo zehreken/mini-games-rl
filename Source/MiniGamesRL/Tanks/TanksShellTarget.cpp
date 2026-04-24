@@ -20,8 +20,12 @@ ATanksShellTarget::ATanksShellTarget()
 void ATanksShellTarget::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	RandomStream.Initialize(43);
+
+	ATanksGameMode* GameMode = Cast<ATanksGameMode>(GetWorld()->GetAuthGameMode());
+	if (IsValid(GameMode))
+		GameMode->SetShellTargetLocation(GetActorLocation());
 }
 
 void ATanksShellTarget::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -33,16 +37,17 @@ void ATanksShellTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	ATanksGameMode* GameMode = Cast<ATanksGameMode>(GetWorld()->GetAuthGameMode());
 	if (!IsValid(GameMode)) return;
+	
+	ATanksPlayer* Player = Cast<ATanksPlayer>(
+		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
 
-	FVector RandomVector = RandomStream.GetUnitVector() * 2000.0f;
+	FVector RandomVector = Player->GetActorLocation() + RandomStream.GetUnitVector() * 2000.0f;
 	FVector GroundedLocation;
 	FVector NewLocation = FVector(RandomVector.X, RandomVector.Y, 0.0f);
 	if (FMiniGamesUtils::GetGroundedLocation(GetWorld(), this, RandomVector.X, RandomVector.Y, GroundedLocation))
 	{
 		NewLocation = GroundedLocation;
 	}
-	ATanksPlayer* Player = Cast<ATanksPlayer>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
 
 	if (IsValid(Player))
 	{
