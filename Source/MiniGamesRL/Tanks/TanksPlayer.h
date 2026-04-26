@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Tanks/TanksShellTarget.h"
 #include "Components/BoxComponent.h"
 #include "TanksPlayer.generated.h"
 
@@ -22,15 +23,9 @@ public:
 
 	UFUNCTION()
 	void SetTargetLocation(FVector Location);
-
-	UFUNCTION()
-	void SetShellTargetLocation(FVector Location);
 	
 	UPROPERTY(VisibleInstanceOnly)
 	FVector TargetLocation;
-
-	UPROPERTY(VisibleInstanceOnly)
-	FVector ShellTargetLocation;
 
 	UPROPERTY(VisibleInstanceOnly)
 	bool bHasArrived;
@@ -61,6 +56,10 @@ public:
 
 	float GetNormalizedShootTime() const;
 
+	UPROPERTY()
+	ATanksShellTarget* ShellTarget;
+
+	UPROPERTY()
 	USceneComponent* GunComponent;
 
 protected:
@@ -74,23 +73,26 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	FVector PreviousLocation;
 
-	UPROPERTY(EditAnywhere, Category = "Tank")
+	UPROPERTY(EditAnywhere, Category = "Tanks")
 	float LinearDamping = 10.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Tank")
+	UPROPERTY(EditAnywhere, Category = "Tanks")
 	float AngularDamping = 10.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Tank")
+	UPROPERTY(EditAnywhere, Category = "Tanks")
 	float SpringStiffness = 3000.f;
 
-	UPROPERTY(EditAnywhere, Category = "Tank")
+	UPROPERTY(EditAnywhere, Category = "Tanks")
 	float SpringDamping = 500.f;
 
-	UPROPERTY(EditAnywhere, Category = "Tank")
+	UPROPERTY(EditAnywhere, Category = "Tanks")
 	float RestLength = 100.f;
 
-	UPROPERTY(EditAnywhere, Category = "Tank")
+	UPROPERTY(EditAnywhere, Category = "Tanks")
 	TSubclassOf<AActor> ShellClass;
+
+	UPROPERTY(EditAnywhere, Category = "Tanks")
+	TSubclassOf<ATanksShellTarget> ShellTargetClass;
 
 	UPROPERTY()
 	TArray<UStaticMeshComponent*> Wheels;

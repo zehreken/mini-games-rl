@@ -23,5 +23,5 @@ public:
 	bool bDrivingEnabled = false;
 	bool bShootingEnabled = true;
 
-	float MaxShellTargetDistance = 2000.f;
+	float MaxShellTargetDistance = 1000.f;
 };

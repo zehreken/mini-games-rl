@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Tanks/TanksPlayer.h"
 #include "GameFramework/GameModeBase.h"
 #include "Learning/LearningManager.h"
 #include "TanksGameMode.generated.h"
@@ -24,9 +25,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tanks")
 	void SetTargetLocation(const FVector& Location);
 	
-	UFUNCTION(Category = "Tanks")
-	void SetShellTargetLocation(const FVector& Location);
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
@@ -34,4 +32,7 @@ protected:
 private:
 	UPROPERTY()
 	ALearningManager* LearningManager;
+
+	UPROPERTY()
+	ATanksPlayer* TanksPlayer;
 };

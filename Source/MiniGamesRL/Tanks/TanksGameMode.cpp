@@ -26,20 +26,13 @@ void ATanksGameMode::SetTargetLocation(const FVector& Location)
 	Player->SetTargetLocation(Location);
 }
 
-void ATanksGameMode::SetShellTargetLocation(const FVector& Location)
-{
-	ATanksPlayer* Player = Cast<ATanksPlayer>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
-
-	if (!IsValid(Player)) return;
-
-	Player->SetShellTargetLocation(Location);
-}
-
-
 void ATanksGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TanksPlayer = Cast<ATanksPlayer>(UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
+	if (!IsValid(TanksPlayer)) return;
+	UE_LOG(LogTemp, Warning, TEXT("Found TanksPlayer"));
 
 	LearningManager = Cast<ALearningManager>(
 		UGameplayStatics::GetActorOfClass(GetWorld(), ALearningManager::StaticClass()));

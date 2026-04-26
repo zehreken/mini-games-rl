@@ -53,7 +53,7 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 	{
 		Player->bHasShot = false;
 		float Gravity = FMath::Abs(GetWorld()->GetGravityZ());
-		FVector ToTarget = Player->ShellTargetLocation - Player->GunComponent->GetComponentLocation();
+		FVector ToTarget = Player->ShellTarget->GetActorLocation() - Player->GunComponent->GetComponentLocation();
 		float HorizDist = FVector2D(ToTarget.X, ToTarget.Y).Size();
 		float HeightDiff = ToTarget.Z;
 		float Speed = 1500.0f;
@@ -76,7 +76,7 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 			Reward -= 1.0f;
 		}
 		
-		UE_LOG(LogTemp, Display, TEXT("shell reward: %f"), Reward);
+		// UE_LOG(LogTemp, Display, TEXT("shell reward: %f"), Reward);
 	}
 	OutReward = Reward;
 }

@@ -28,8 +28,10 @@ ATanksPlayer::ATanksPlayer()
 
 void ATanksPlayer::ResetAgent()
 {
-	SetActorLocation(FVector(1000.0f, 1000.0f, 50.0f));
-	SetActorRotation(FRotator::ZeroRotator);
+	FVector RandomLocation = FMath::VRand();
+	SetActorLocation(FVector(RandomLocation.X * 500.0f, RandomLocation.Y * 500.0f, 100.0f));
+	FRotator RandomRotation = FRotator(0.f, FMath::RandRange(0.f, 360.f), 0.f);
+	SetActorRotation(RandomRotation);
 	bHasArrived = false;
 	bShellHit = false;
 	bCanShoot = true;
@@ -47,16 +49,12 @@ void ATanksPlayer::SetTargetLocation(FVector Location)
 	bHasArrived = true; // HitTarget is true since the agent is overlapped and the target is assigned to a new location
 }
 
-void ATanksPlayer::SetShellTargetLocation(FVector Location)
-{
-	ShellTargetLocation = Location;
-}
-
-
 // Called when the game starts or when spawned
 void ATanksPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ShellTarget = GetWorld()->SpawnActor<ATanksShellTarget>(ShellTargetClass);
 
 	Body->SetLinearDamping(LinearDamping);
 	Body->SetAngularDamping(AngularDamping);
@@ -267,7 +265,7 @@ void ATanksPlayer::Shoot()
 	// Temp ========
 	float Reward = 0.0f;
 	float Gravity = FMath::Abs(GetWorld()->GetGravityZ());
-	FVector ToTarget = ShellTargetLocation - GunComponent->GetComponentLocation();
+	FVector ToTarget = ShellTarget->GetActorLocation() - GunComponent->GetComponentLocation();
 	float HorizDist = FVector2D(ToTarget.X, ToTarget.Y).Size();
 	float HeightDiff = ToTarget.Z;
 	float Speed = 1500.0f;
@@ -319,9 +317,9 @@ void ATanksPlayer::SetShellHit(const FVector& Location)
 	if (!bShellHit) // Added this guard because there is timing issue, first caller wins
 	{
 		bShellHit = true;
-		ShellHitDelta = ShellTargetLocation - Location;
+		ShellHitDelta = ShellTarget->GetActorLocation() - Location;
 		UE_LOG(LogTemp, Display, TEXT("Target: %s  Impact: %s  Delta: %s  Len: %.1f"),
-			*ShellTargetLocation.ToString(), *Location.ToString(),
+			*ShellTarget->GetActorLocation().ToString(), *Location.ToString(),
 			*ShellHitDelta.ToString(), ShellHitDelta.Length());
 	}
 }

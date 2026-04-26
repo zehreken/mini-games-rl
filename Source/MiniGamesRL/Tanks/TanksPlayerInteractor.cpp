@@ -38,8 +38,7 @@ void UTanksPlayerInteractor::GatherAgentObservation_Implementation(
 	float AlignY = bDrivingEnabled ? LocalDir.Y : 0.0f;
 
 	// Egocentric shell target direction and distance from gun
-	FVector WorldDelta = Player->ShellTargetLocation - Player->GunComponent->GetComponentLocation();
-	FVector ShellLocalDir = Player->GetActorTransform().InverseTransformVector(WorldDelta).GetSafeNormal();
+	FVector WorldDelta = Player->ShellTarget->GetActorLocation() - Player->GunComponent->GetComponentLocation();
 	float ShellTargetDist = WorldDelta.Length();
 
 	float NormalizedCooldown = Player->GetNormalizedShootTime();
@@ -53,7 +52,8 @@ void UTanksPlayerInteractor::GatherAgentObservation_Implementation(
 		                   InObservationObject, bShootingEnabled ? NormalizedCooldown : 0.0f));
 	ObservationMap.Add("ShellTargetDirection",
 	                   ULearningAgentsObservations::MakeDirectionObservation(
-		                   InObservationObject, bShootingEnabled ? ShellLocalDir : FVector::ForwardVector));
+		                   InObservationObject, bShootingEnabled ? WorldDelta : FVector::ForwardVector,
+		                   Player->GetActorTransform()));
 	ObservationMap.Add("ShellTargetDistance",
 	                   ULearningAgentsObservations::MakeFloatObservation(
 		                   InObservationObject, bShootingEnabled ? ShellTargetDist : 0.0f));
@@ -93,7 +93,8 @@ void UTanksPlayerInteractor::PerformAgentAction_Implementation(const ULearningAg
 	float RightThrottle;
 	ULearningAgentsActions::GetFloatAction(RightThrottle, InActionObject, *RightElem);
 	FVector ShootingDirection;
-	ULearningAgentsActions::GetDirectionAction(ShootingDirection, InActionObject, *ShootingDirectionElem);
+	ULearningAgentsActions::GetDirectionAction(ShootingDirection, InActionObject, *ShootingDirectionElem,
+	                                           Player->GetActorTransform());
 
 	if (bDrivingEnabled)
 		Player->SetThrottle(LeftThrottle, RightThrottle);
