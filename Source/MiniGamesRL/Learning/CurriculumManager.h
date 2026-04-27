@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "CurriculumManager.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnPhaseChanged, int32 /*NewPhaseId*/)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCheckPhase, int32 /*StepCount*/)
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class MINIGAMESRL_API UCurriculumManager : public UActorComponent
@@ -25,22 +25,14 @@ public:
 
 	int32 GetAverageEpisodeLength();
 
-	int32 GetCurrentPhaseId();
-
-	FOnPhaseChanged PhaseChangedDelegate;
+	FOnCheckPhase CheckPhaseDelegate;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
-	void CheckPhase();
-
 	int32 StepCount;
-
-	int32 PreviousChangeStepCount;
-
-	int32 CurrentPhaseId;
 
 	TArray<int32> EpisodeLengthBuffer;
 };

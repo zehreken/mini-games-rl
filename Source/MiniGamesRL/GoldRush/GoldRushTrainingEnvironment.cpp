@@ -57,7 +57,7 @@ void UGoldRushTrainingEnvironment::GatherAgentCompletion_Implementation(ELearnin
 
 	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		int32 PhaseId = GoldRushGameMode->GetLearningManager()->CurriculumManager->GetCurrentPhaseId();
+		int32 PhaseId = GoldRushGameMode->GetCurrentPhaseId();
 		int32 TerminationLimit = GoldRushConstants::Phases[PhaseId].TerminationHitLimit;
 
 		if (Player->HitCount >= TerminationLimit)

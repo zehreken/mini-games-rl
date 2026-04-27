@@ -19,6 +19,8 @@ public:
 	void InitArena(int32 ArenaIndex);
 	void ResetEpisode();
 
+	void SetTimer(float Period);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,6 +51,4 @@ private:
 	int32 CachedArenaIndex = 0;
 
 	FRandomStream RandomStream;
-
-	void OnPhaseChanged(int32 PhaseId);
 };

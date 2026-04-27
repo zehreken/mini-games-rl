@@ -34,7 +34,7 @@ void AGoldRushObstacle::Tick(float DeltaTime)
 
 	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		int32 PhaseId = GoldRushGameMode->GetLearningManager()->CurriculumManager->GetCurrentPhaseId();
+		int32 PhaseId = GoldRushGameMode->GetCurrentPhaseId();
 		float Speed = GoldRushConstants::Phases[PhaseId].ObstacleSpeed;
 		const FVector Velocity(0.0f, 0.0f, -Speed);
 		AddActorLocalOffset(DeltaTime * Velocity);

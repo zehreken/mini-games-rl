@@ -2,7 +2,6 @@
 
 
 #include "Learning/CurriculumManager.h"
-#include "GoldRush/GoldRushConstants.h"
 
 // Sets default values for this component's properties
 UCurriculumManager::UCurriculumManager()
@@ -12,15 +11,13 @@ UCurriculumManager::UCurriculumManager()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	StepCount = 0;
-	PreviousChangeStepCount = 0;
-	CurrentPhaseId = 0;
 }
 
 void UCurriculumManager::NextStep()
 {
 	StepCount += 1;
 	if (StepCount % 100 == 0)
-		CheckPhase();
+		CheckPhaseDelegate.Broadcast(StepCount);
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Curriculum manager reporting: %d"), StepCount));
 }
 
@@ -47,26 +44,8 @@ int32 UCurriculumManager::GetAverageEpisodeLength()
 	return Sum / EpisodeLengthBuffer.Num();
 }
 
-int32 UCurriculumManager::GetCurrentPhaseId()
-{
-	return FMath::Min(CurrentPhaseId, GoldRushConstants::Phases.Num() - 1);
-}
-
 // Called when the game starts
 void UCurriculumManager::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-void UCurriculumManager::CheckPhase()
-{
-	if (GetAverageEpisodeLength() > GoldRushConstants::Phases[CurrentPhaseId].PhaseThreshold && StepCount >
-		PreviousChangeStepCount + 4096)
-	// I guess this is very very strict since MAX is 512
-	{
-		CurrentPhaseId += 1;
-		PreviousChangeStepCount = StepCount;
-		PhaseChangedDelegate.Broadcast(CurrentPhaseId);
-		UE_LOG(LogTemp, Log, TEXT("Phase changed: %d TStep: %d"), CurrentPhaseId, StepCount);
-	}
 }

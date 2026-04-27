@@ -52,6 +52,11 @@ void AGoldRushArenaManager::ResetEpisode()
 	RandomStream.Initialize(Seed + CachedArenaIndex);
 }
 
+void AGoldRushArenaManager::SetTimer(float Period)
+{
+	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AGoldRushArenaManager::SpawnObstacle, Period, true);
+}
+
 // Called when the game starts or when spawned
 void AGoldRushArenaManager::BeginPlay()
 {
@@ -59,8 +64,8 @@ void AGoldRushArenaManager::BeginPlay()
 
 	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		int32 PhaseId = GoldRushGameMode->GetLearningManager()->CurriculumManager->GetCurrentPhaseId();
-		float SpawnPeriod = GoldRushConstants::Phases[PhaseId].SpawnPeriod;
+		int32 CurrentPhaseId = GoldRushGameMode->GetCurrentPhaseId();
+		float SpawnPeriod = GoldRushConstants::Phases[CurrentPhaseId].SpawnPeriod;
 		GetWorldTimerManager().SetTimer(
 			SpawnTimerHandle,
 			this,
@@ -74,9 +79,6 @@ void AGoldRushArenaManager::BeginPlay()
 		//	// 	&AGoldRushArenaManager::SpawnCollectible,
 		//	// 	5.0f,
 		//	// 	true);
-
-		GoldRushGameMode->GetLearningManager()->CurriculumManager->PhaseChangedDelegate.AddUObject(
-			this, &AGoldRushArenaManager::OnPhaseChanged);
 	}
 }
 
@@ -125,10 +127,4 @@ void AGoldRushArenaManager::SpawnCollectible()
 			Player->Collectibles.Add(NewCollectible);
 		}
 	}
-}
-
-void AGoldRushArenaManager::OnPhaseChanged(int32 PhaseId)
-{
-	float SpawnPeriod = GoldRushConstants::Phases[PhaseId].SpawnPeriod;
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AGoldRushArenaManager::SpawnObstacle, SpawnPeriod, true);
 }
