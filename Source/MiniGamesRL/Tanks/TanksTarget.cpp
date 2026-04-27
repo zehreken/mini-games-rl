@@ -27,8 +27,11 @@ void ATanksTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (!OtherActor->IsA<ATanksPlayer>())
+	ATanksPlayer* Player = Cast<ATanksPlayer>(OtherActor);
+	if (!IsValid(Player))
 		return;
+
+	Player->bHasArrived = true;
 
 	SetRandomLocation();
 }
