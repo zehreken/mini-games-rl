@@ -45,6 +45,7 @@ void ATanksShellTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 		NewLocation = GroundedLocation;
 	}
 
+	// Obsolete
 	Player->SetShellHit(OtherActor->GetActorLocation());
 
 	SetActorLocation(NewLocation);

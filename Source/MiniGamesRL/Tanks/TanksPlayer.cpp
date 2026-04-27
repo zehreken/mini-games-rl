@@ -43,16 +43,12 @@ FVector ATanksPlayer::GetActorPreviousLocation() const
 	return PreviousLocation;
 }
 
-void ATanksPlayer::SetTargetLocation(FVector Location)
-{
-	TargetLocation = Location;
-	bHasArrived = true; // HitTarget is true since the agent is overlapped and the target is assigned to a new location
-}
-
 // Called when the game starts or when spawned
 void ATanksPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Target = GetWorld()->SpawnActor<ATanksTarget>(TargetClass);
 
 	ShellTarget = GetWorld()->SpawnActor<ATanksShellTarget>(ShellTargetClass);
 

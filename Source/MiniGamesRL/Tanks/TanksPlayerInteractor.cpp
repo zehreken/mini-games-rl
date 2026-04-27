@@ -32,7 +32,7 @@ void UTanksPlayerInteractor::GatherAgentObservation_Implementation(
 	if (!IsValid(Player)) return;
 
 	// Egocentric driving direction
-	FVector WorldOffset = Player->TargetLocation - Player->GetActorLocation();
+	FVector WorldOffset = Player->Target->GetActorLocation() - Player->GetActorLocation();
 	FVector LocalDir = Player->GetActorTransform().InverseTransformVector(WorldOffset).GetSafeNormal();
 	float AlignX = bDrivingEnabled ? LocalDir.X : 0.0f;
 	float AlignY = bDrivingEnabled ? LocalDir.Y : 0.0f;

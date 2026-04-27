@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Tanks/TanksTarget.h"
 #include "Tanks/TanksShellTarget.h"
 #include "Components/BoxComponent.h"
 #include "TanksPlayer.generated.h"
@@ -20,12 +21,6 @@ public:
 	void ResetAgent();
 
 	FVector GetActorPreviousLocation() const;
-
-	UFUNCTION()
-	void SetTargetLocation(FVector Location);
-	
-	UPROPERTY(VisibleInstanceOnly)
-	FVector TargetLocation;
 
 	UPROPERTY(VisibleInstanceOnly)
 	bool bHasArrived;
@@ -57,7 +52,10 @@ public:
 	float GetNormalizedShootTime() const;
 
 	UPROPERTY()
-	ATanksShellTarget* ShellTarget;
+	ATanksTarget* Target; // For driving
+
+	UPROPERTY()
+	ATanksShellTarget* ShellTarget; // For shooting
 
 	UPROPERTY()
 	USceneComponent* GunComponent;
@@ -90,6 +88,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	TSubclassOf<AActor> ShellClass;
+
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
+	TSubclassOf<ATanksTarget> TargetClass;
 
 	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	TSubclassOf<ATanksShellTarget> ShellTargetClass;

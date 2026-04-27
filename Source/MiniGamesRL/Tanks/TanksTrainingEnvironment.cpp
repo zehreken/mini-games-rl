@@ -10,14 +10,15 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 
 	if (!IsValid(Player)) return;
 
-	FVector PreviousDistance = Player->TargetLocation - Player->GetActorPreviousLocation();
-	FVector Distance = Player->TargetLocation - Player->GetActorLocation();
+	FVector TargetLocation = Player->Target->GetActorLocation();
+	FVector PreviousDistance = TargetLocation - Player->GetActorPreviousLocation();
+	FVector Distance = TargetLocation - Player->GetActorLocation();
 
 	float pd = PreviousDistance.Length();
 	float d = Distance.Length();
 
 	// Temp
-	FVector WorldOffset = Player->TargetLocation - Player->GetActorLocation();
+	FVector WorldOffset = TargetLocation - Player->GetActorLocation();
 	// This is what makes the observation egocentric(from the player's perspective)
 	FVector LocalOffset = Player->GetActorTransform().InverseTransformVector(WorldOffset);
 	FVector LocalDir = LocalOffset.GetSafeNormal();
@@ -30,7 +31,7 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 
 	float DistanceDelta = pd - d;
 	float Reward = DistanceDelta + AlignX;
-	Reward = 0.0f;
+	// Reward = 0.0f;
 	if (Player->bHasArrived)
 	{
 		Reward += 10.0f;

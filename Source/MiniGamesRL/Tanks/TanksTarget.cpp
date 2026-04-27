@@ -3,7 +3,6 @@
 
 #include "TanksTarget.h"
 #include "Tanks/TanksPlayer.h"
-#include "Tanks/TanksGameMode.h"
 #include "Utils/MiniGamesUtils.h"
 
 
@@ -20,6 +19,8 @@ void ATanksTarget::BeginPlay()
 	Super::BeginPlay();
 
 	RandomStream.Initialize(42);
+
+	SetRandomLocation();
 }
 
 void ATanksTarget::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -29,9 +30,11 @@ void ATanksTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (!OtherActor->IsA<ATanksPlayer>())
 		return;
 
-	ATanksGameMode* GameMode = Cast<ATanksGameMode>(GetWorld()->GetAuthGameMode());
-	if (!IsValid(GameMode)) return;
+	SetRandomLocation();
+}
 
+void ATanksTarget::SetRandomLocation()
+{
 	FVector RandomVector = RandomStream.GetUnitVector() * 2000.0f;
 	FVector GroundedLocation;
 	FVector NewLocation = FVector(RandomVector.X, RandomVector.Y, 0.0f);
@@ -39,8 +42,8 @@ void ATanksTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		NewLocation = GroundedLocation;
 	}
+	
 	SetActorLocation(NewLocation);
-	GameMode->SetTargetLocation(NewLocation);
 }
 
 // Called every frame

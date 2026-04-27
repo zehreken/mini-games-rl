@@ -22,9 +22,6 @@ public:
 	UFUNCTION()
 	ALearningManager* GetLearningManager();
 	
-	UFUNCTION(BlueprintCallable, Category = "Tanks")
-	void SetTargetLocation(const FVector& Location);
-	
 protected:
 	virtual void BeginPlay() override;
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;

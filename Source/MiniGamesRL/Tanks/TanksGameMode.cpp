@@ -16,16 +16,6 @@ ALearningManager* ATanksGameMode::GetLearningManager()
 	return LearningManager;
 }
 
-void ATanksGameMode::SetTargetLocation(const FVector& Location)
-{
-	ATanksPlayer* Player = Cast<ATanksPlayer>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
-
-	if (!IsValid(Player)) return;
-
-	Player->SetTargetLocation(Location);
-}
-
 void ATanksGameMode::BeginPlay()
 {
 	Super::BeginPlay();
