@@ -73,25 +73,25 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	FVector PreviousLocation;
 
-	UPROPERTY(EditAnywhere, Category = "Tanks")
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	float LinearDamping = 10.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Tanks")
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	float AngularDamping = 10.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Tanks")
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	float SpringStiffness = 3000.f;
 
-	UPROPERTY(EditAnywhere, Category = "Tanks")
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	float SpringDamping = 500.f;
 
-	UPROPERTY(EditAnywhere, Category = "Tanks")
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	float RestLength = 100.f;
 
-	UPROPERTY(EditAnywhere, Category = "Tanks")
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	TSubclassOf<AActor> ShellClass;
 
-	UPROPERTY(EditAnywhere, Category = "Tanks")
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	TSubclassOf<ATanksShellTarget> ShellTargetClass;
 
 	UPROPERTY()
@@ -125,7 +125,7 @@ private:
 	
 	void Shoot();
 
-	UPROPERTY(EditAnywhere, Category = "Tank")
+	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	float ShootPeriod;
 	
 	FTimerHandle ShootTimerHandle;
