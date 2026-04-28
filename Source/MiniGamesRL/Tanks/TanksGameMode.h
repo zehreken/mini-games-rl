@@ -32,4 +32,6 @@ private:
 
 	UPROPERTY()
 	ATanksPlayer* TanksPlayer;
+
+	void OnCheckPhase(int32 StepCount) const;
 };

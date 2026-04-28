@@ -33,9 +33,29 @@ void ATanksGameMode::BeginPlay()
 	}
 
 	LearningManager->Init();
+
+	// Enable driving and shooting when running inference
+	TanksPlayer->bDrivingEnabled = TanksPlayer->bDrivingEnabled || LearningManager->RunInference;
+	TanksPlayer->bShootingEnabled = TanksPlayer->bShootingEnabled || LearningManager->RunInference;
+
+	LearningManager->CurriculumManager->CheckPhaseDelegate.AddUObject(this, &ATanksGameMode::OnCheckPhase);
 }
 
 void ATanksGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
 	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+}
+
+void ATanksGameMode::OnCheckPhase(int32 StepCount) const
+{
+	if (StepCount > 2'000'000 && !TanksPlayer->bDrivingEnabled)
+	{
+		TanksPlayer->bDrivingEnabled = true;
+		UE_LOG(LogTemp, Display, TEXT("Driving enabled %d %d"), TanksPlayer->bDrivingEnabled, StepCount);
+	}
+	if (StepCount > 1'000'000 && !TanksPlayer->bShootingEnabled)
+	{
+		TanksPlayer->bShootingEnabled = true;
+		UE_LOG(LogTemp, Display, TEXT("Shooting enabled %d %d"), TanksPlayer->bShootingEnabled, StepCount);
+	}
 }

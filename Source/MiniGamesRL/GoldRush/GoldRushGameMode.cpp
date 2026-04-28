@@ -59,25 +59,21 @@ void AGoldRushGameMode::HandleStartingNewPlayer_Implementation(APlayerController
 
 void AGoldRushGameMode::OnCheckPhase(int32 StepCount)
 {
-	if (AGoldRushGameMode* GoldRushGameMode = Cast<AGoldRushGameMode>(GetWorld()->GetAuthGameMode()))
-	{
-		UCurriculumManager* CurriculumManager = GoldRushGameMode->GetLearningManager()->CurriculumManager;
-		{
-			if (CurriculumManager->GetAverageEpisodeLength() > GoldRushConstants::Phases[CurrentPhaseId].PhaseThreshold
-				&& StepCount >
-				PreviousChangeStepCount + 4096)
-			// I guess this is very strict since MAX is 512
-			{
-				CurrentPhaseId += 1;
-				PreviousChangeStepCount = StepCount;
-				UE_LOG(LogTemp, Log, TEXT("Phase changed: %d TStep: %d"), CurrentPhaseId, StepCount);
+	UCurriculumManager* CurriculumManager = LearningManager->CurriculumManager;
 
-				float SpawnPeriod = GoldRushConstants::Phases[CurrentPhaseId].SpawnPeriod;
-				for (AGoldRushArenaManager* ArenaManager : ArenaManagers)
-				{
-					ArenaManager->SetTimer(SpawnPeriod);
-				}
-			}
+	if (CurriculumManager->GetAverageEpisodeLength() > GoldRushConstants::Phases[CurrentPhaseId].PhaseThreshold
+		&& StepCount >
+		PreviousChangeStepCount + 4096)
+	// I guess this is very strict since MAX is 512
+	{
+		CurrentPhaseId += 1;
+		PreviousChangeStepCount = StepCount;
+		UE_LOG(LogTemp, Log, TEXT("Phase changed: %d TStep: %d"), CurrentPhaseId, StepCount);
+
+		float SpawnPeriod = GoldRushConstants::Phases[CurrentPhaseId].SpawnPeriod;
+		for (AGoldRushArenaManager* ArenaManager : ArenaManagers)
+		{
+			ArenaManager->SetTimer(SpawnPeriod);
 		}
 	}
 }

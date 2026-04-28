@@ -60,10 +60,17 @@ public:
 	UPROPERTY()
 	USceneComponent* GunComponent;
 
+	// For curriculum
+	UPROPERTY(EditAnywhere)
+	bool bDrivingEnabled = true;
+
+	UPROPERTY(EditAnywhere)
+	bool bShootingEnabled = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* Body;
@@ -123,12 +130,12 @@ private:
 
 	void ApplySuspension();
 	void MoveWheels();
-	
+
 	void Shoot();
 
 	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	float ShootPeriod;
-	
+
 	FTimerHandle ShootTimerHandle;
 	bool bCanShoot;
 };

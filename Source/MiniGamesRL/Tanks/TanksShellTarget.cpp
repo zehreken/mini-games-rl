@@ -22,6 +22,8 @@ void ATanksShellTarget::BeginPlay()
 	Super::BeginPlay();
 
 	RandomStream.Initialize(43);
+
+	SetRandomLocation();
 }
 
 void ATanksShellTarget::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -31,6 +33,11 @@ void ATanksShellTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (!OtherActor->IsA<ATanksShell>())
 		return;
 
+	SetRandomLocation();
+}
+
+void ATanksShellTarget::SetRandomLocation()
+{
 	ATanksPlayer* Player = Cast<ATanksPlayer>(
 		UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
 
@@ -46,7 +53,7 @@ void ATanksShellTarget::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 
 	// Obsolete
-	Player->SetShellHit(OtherActor->GetActorLocation());
+	// Player->SetShellHit(OtherActor->GetActorLocation());
 
 	SetActorLocation(NewLocation);
 }

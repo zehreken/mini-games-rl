@@ -21,6 +21,8 @@ protected:
 
 	UFUNCTION()
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	
+	void SetRandomLocation();
 
 public:
 	// Called every frame

@@ -2,8 +2,8 @@
 
 
 #include "Tanks/TanksPlayerInteractor.h"
-
-#include "TanksPlayer.h"
+#include "Tanks/TanksConfig.h"
+#include "Tanks/TanksPlayer.h"
 
 void UTanksPlayerInteractor::SpecifyAgentObservation_Implementation(
 	FLearningAgentsObservationSchemaElement& OutObservationSchemaElement,
@@ -18,7 +18,7 @@ void UTanksPlayerInteractor::SpecifyAgentObservation_Implementation(
 	                         ULearningAgentsObservations::SpecifyDirectionObservation(InObservationSchema));
 	ObservationSchemaMap.Add("ShellTargetDistance",
 	                         ULearningAgentsObservations::SpecifyFloatObservation(
-		                         InObservationSchema, MaxShellTargetDistance));
+		                         InObservationSchema, TanksConfig::MaxShellTargetDistance));
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
 		InObservationSchema,
 		ObservationSchemaMap);
@@ -31,6 +31,9 @@ void UTanksPlayerInteractor::GatherAgentObservation_Implementation(
 	ATanksPlayer* Player = Cast<ATanksPlayer>(GetAgent(AgentId));
 	if (!IsValid(Player)) return;
 
+	bool bDrivingEnabled = Player->bDrivingEnabled;
+	bool bShootingEnabled = Player->bShootingEnabled;
+	
 	// Egocentric driving direction
 	FVector WorldOffset = Player->Target->GetActorLocation() - Player->GetActorLocation();
 	FVector LocalDir = Player->GetActorTransform().InverseTransformVector(WorldOffset).GetSafeNormal();
@@ -96,6 +99,9 @@ void UTanksPlayerInteractor::PerformAgentAction_Implementation(const ULearningAg
 	ULearningAgentsActions::GetDirectionAction(ShootingDirection, InActionObject, *ShootingDirectionElem,
 	                                           Player->GetActorTransform());
 
+	bool bDrivingEnabled = Player->bDrivingEnabled;
+	bool bShootingEnabled = Player->bShootingEnabled;
+	
 	if (bDrivingEnabled)
 		Player->SetThrottle(LeftThrottle, RightThrottle);
 	if (bShootingEnabled)
