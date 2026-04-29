@@ -8,7 +8,7 @@ public class MiniGamesRL : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Niagara", "NiagaraCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "LearningAgents", "LearningAgentsTraining", "LearningTraining" });
 

@@ -21,15 +21,14 @@ ATanksPlayer::ATanksPlayer()
 
 	LeftInput = 0.0f;
 	RightInput = 0.0f;
-	bHasArrived = false;
-	bShellHit = false;
-	bHasShot = false;
+
+	ResetAgent();
 }
 
 void ATanksPlayer::ResetAgent()
 {
 	FVector RandomLocation = FMath::VRand();
-	SetActorLocation(FVector(RandomLocation.X * 500.0f, RandomLocation.Y * 500.0f, 100.0f));
+	SetActorLocation(FVector(RandomLocation.X * 500.0f, RandomLocation.Y * 500.0f, 200.0f));
 	FRotator RandomRotation = FRotator(0.f, FMath::RandRange(0.f, 360.f), 0.f);
 	SetActorRotation(RandomRotation);
 	bHasArrived = false;

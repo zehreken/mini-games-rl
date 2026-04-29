@@ -3,6 +3,7 @@
 
 #include "TanksShell.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Tanks/TanksPlayer.h"
 
 // Sets default values
@@ -46,6 +47,12 @@ void ATanksShell::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	if (IsValid(Player))
 	{
 		Player->SetShellHit(Hit.ImpactPoint);
+	}
+
+	if (ExplosionEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExplosionEffect, Hit.ImpactPoint,
+		                                               FRotator::ZeroRotator, FVector(3.0f), true);
 	}
 	Destroy();
 }

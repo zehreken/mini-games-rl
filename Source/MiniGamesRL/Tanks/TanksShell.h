@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/StaticMeshComponent.h"
+#include "NiagaraSystem.h"
 #include "TanksShell.generated.h"
 
 UCLASS()
@@ -34,4 +34,7 @@ private:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);
+
+	UPROPERTY(EditDefaultsOnly, Category = "TanksConfig")
+	UNiagaraSystem* ExplosionEffect;
 };
