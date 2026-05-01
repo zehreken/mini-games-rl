@@ -21,8 +21,9 @@ void ATanksGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	TanksPlayer = Cast<ATanksPlayer>(UGameplayStatics::GetActorOfClass(GetWorld(), ATanksPlayer::StaticClass()));
+
 	if (!IsValid(TanksPlayer)) return;
-	UE_LOG(LogTemp, Warning, TEXT("Found TanksPlayer"));
+	UE_LOG(LogTemp, Warning, TEXT("Spawned tanks"));
 
 	LearningManager = Cast<ALearningManager>(
 		UGameplayStatics::GetActorOfClass(GetWorld(), ALearningManager::StaticClass()));
@@ -30,6 +31,17 @@ void ATanksGameMode::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Couldn't find LearningManager"));
 		return;
+	}
+
+	for (int32 i = 0; i < 31; i++)
+	{
+		ATanksPlayer* RedPlayer = GetWorld()->SpawnActor<ATanksPlayer>(TanksPlayerClass,
+		                                                               FVector(i / 4 * 400.0f, i % 4 * 400.0f, 400.0f),
+		                                                               FRotator::ZeroRotator);
+		RedPlayer->bDrivingEnabled = RedPlayer->bDrivingEnabled || LearningManager->RunInference;
+		RedPlayer->bShootingEnabled = RedPlayer->bShootingEnabled || LearningManager->RunInference;
+		if (i > 14) RedPlayer->SetRedFaction();
+		RedPlayers.Add(RedPlayer);
 	}
 
 	LearningManager->Init();

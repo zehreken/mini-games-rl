@@ -21,7 +21,7 @@ public:
 
 	UFUNCTION()
 	ALearningManager* GetLearningManager();
-	
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
@@ -32,6 +32,12 @@ private:
 
 	UPROPERTY()
 	ATanksPlayer* TanksPlayer;
+
+	UPROPERTY()
+	TArray<ATanksPlayer*> RedPlayers;
+
+	UPROPERTY(EditDefaultsOnly, Category = "TanksConfig")
+	TSubclassOf<ATanksPlayer> TanksPlayerClass;
 
 	void OnCheckPhase(int32 StepCount) const;
 };

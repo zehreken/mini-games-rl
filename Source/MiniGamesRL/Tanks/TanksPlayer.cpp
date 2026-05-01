@@ -62,7 +62,7 @@ void ATanksPlayer::BeginPlay()
 			Wheels.Add(Wheel);
 		}
 	}
-	
+
 	TArray<UActorComponent*> GunComponents = GetComponentsByTag(USceneComponent::StaticClass(), FName("Gun"));
 	if (GunComponents.Num() > 0)
 	{
@@ -273,8 +273,8 @@ void ATanksPlayer::Shoot()
 		float Angle = FMath::Atan2(SpeedSq - FMath::Sqrt(Discriminant), Gravity * HorizDist);
 		FVector2D Horizontal = FVector2D(ToTarget.X, ToTarget.Y).GetSafeNormal();
 		FVector IdealDir = FVector(Horizontal.X * FMath::Cos(Angle),
-								   Horizontal.Y * FMath::Cos(Angle),
-								   FMath::Sin(Angle));
+		                           Horizontal.Y * FMath::Cos(Angle),
+		                           FMath::Sin(Angle));
 		float Alignment = FVector::DotProduct(ClampedDirection.GetSafeNormal(), IdealDir);
 		Reward += FMath::Pow(Alignment, 20.0f);
 	}
@@ -282,7 +282,7 @@ void ATanksPlayer::Shoot()
 	{
 		Reward -= 1.0f;
 	}
-		
+
 	UE_LOG(LogTemp, Display, TEXT("shell reward: %f"), Reward);
 }
 
@@ -314,12 +314,24 @@ void ATanksPlayer::SetShellHit(const FVector& Location)
 		bShellHit = true;
 		ShellHitDelta = ShellTarget->GetActorLocation() - Location;
 		UE_LOG(LogTemp, Display, TEXT("Target: %s  Impact: %s  Delta: %s  Len: %.1f"),
-			*ShellTarget->GetActorLocation().ToString(), *Location.ToString(),
-			*ShellHitDelta.ToString(), ShellHitDelta.Length());
+		       *ShellTarget->GetActorLocation().ToString(), *Location.ToString(),
+		       *ShellHitDelta.ToString(), ShellHitDelta.Length());
 	}
 }
 
 float ATanksPlayer::GetNormalizedShootTime() const
 {
 	return GetWorld()->GetTimerManager().GetTimerElapsed(ShootTimerHandle) / ShootPeriod;
+}
+
+void ATanksPlayer::SetRedFaction() const
+{
+	TArray<UActorComponent*> HullActor = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Hull"));
+	if (HullActor.Num() > 0)
+	{
+		if (UStaticMeshComponent* Hull = Cast<UStaticMeshComponent>(HullActor[0]))
+		{
+			Hull->SetMaterial(0, RedMaterial);
+		}
+	}
 }

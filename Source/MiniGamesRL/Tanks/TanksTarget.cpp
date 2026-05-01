@@ -18,7 +18,7 @@ void ATanksTarget::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RandomStream.Initialize(42);
+	RandomStream.Initialize(FMath::RandRange(50, 80));
 
 	SetRandomLocation();
 }

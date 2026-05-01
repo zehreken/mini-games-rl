@@ -21,7 +21,7 @@ void ATanksShellTarget::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RandomStream.Initialize(43);
+	RandomStream.Initialize(FMath::RandRange(20, 50));
 
 	SetRandomLocation();
 }

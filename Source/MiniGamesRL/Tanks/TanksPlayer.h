@@ -51,6 +51,8 @@ public:
 
 	float GetNormalizedShootTime() const;
 
+	void SetRedFaction() const;
+
 	UPROPERTY()
 	ATanksTarget* Target; // For driving
 
@@ -101,6 +103,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "TanksConfig")
 	TSubclassOf<ATanksShellTarget> ShellTargetClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "TanksConfig")
+	UMaterialInterface* RedMaterial;
 
 	UPROPERTY()
 	TArray<UStaticMeshComponent*> Wheels;

@@ -14,18 +14,18 @@ void UTanksTrainingEnvironment::GatherAgentReward_Implementation(float& OutRewar
 	if (Player->bDrivingEnabled)
 	{
 		FVector TargetLocation = Player->Target->GetActorLocation();
-		FVector PreviousDistance = TargetLocation - Player->GetActorPreviousLocation();
-		FVector Distance = TargetLocation - Player->GetActorLocation();
+		FVector ToTargetPrev = TargetLocation - Player->GetActorPreviousLocation();
+		FVector ToTarget = TargetLocation - Player->GetActorLocation();
 
-		float pd = PreviousDistance.Length();
-		float d = Distance.Length();
+		float DistancePrev = ToTargetPrev.Length();
+		float Distance = ToTarget.Length();
 
 		FVector WorldOffset = TargetLocation - Player->GetActorLocation();
 		// This is what makes the observation egocentric(from the player's perspective)
 		FVector LocalOffset = Player->GetActorTransform().InverseTransformVector(WorldOffset);
 		FVector LocalDir = LocalOffset.GetSafeNormal();
 		float AlignX = LocalDir.X; // 1 if facing directly, -1 if facing the opposite way
-		float DistanceDelta = pd - d;
+		float DistanceDelta = DistancePrev - Distance;
 		Reward += DistanceDelta; // Add distance reward
 		Reward += AlignX; // Add alignment reward
 		if (Player->bHasArrived)
