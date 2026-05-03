@@ -20,6 +20,15 @@ void ARunnersPlayer::BeginPlay()
 	TArray<UPhysicsConstraintComponent*> Constraints;
 	GetComponents<UPhysicsConstraintComponent>(Constraints);
 
+	TArray<UActorComponent*> ArmActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Arm"));
+	for (UActorComponent* Comp : ArmActors)
+	{
+		if (UStaticMeshComponent* Arm = Cast<UStaticMeshComponent>(Comp))
+		{
+			Arms.Add(Arm);
+		}
+	}
+
 	for (auto* C : Constraints)
 	{
 		if (C->GetName() == "Joint1")
@@ -40,8 +49,8 @@ void ARunnersPlayer::BeginPlay()
 		}
 
 		C->SetAngularDriveMode(EAngularDriveMode::TwistAndSwing);
-		C->SetAngularVelocityDriveTwistAndSwing(false, false);
-		C->SetAngularDriveParams(5000.0f, 200.0f, 100000.0f);
+		C->SetAngularVelocityDriveTwistAndSwing(true, true);
+		C->SetAngularDriveParams(10.0f, 10.0f, 100000.0f);
 	}
 }
 
@@ -50,6 +59,70 @@ void ARunnersPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TotalTime += DeltaTime;
-	// Joint_1->SetAngularVelocityTarget(FVector(TotalTime, 0.0f, 0.0f));
+	FVector Start = GetActorLocation();
+	FVector End = Start + GetActorForwardVector() * 100.0f;
+	DrawDebugDirectionalArrow(GetWorld(), Start, End, 10.0f, FColor::Red, false,
+	                          -1.0f, 0.0f, 1.0f);
+
+	// TotalTime += DeltaTime;
+	Joint_1->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
+	Joint_2->SetAngularVelocityTarget(FVector(0.0f, 0.0f, 0.0f));
+	Joint_3->SetAngularVelocityTarget(FVector(0.0f, 0.0f, 0.0f));
+	Joint_4->SetAngularVelocityTarget(FVector(0.0f, 0.0f, 0.0f));
+
+	for (UStaticMeshComponent* Arm : Arms)
+	{
+		Arm->WakeRigidBody();
+	}
+}
+
+void ARunnersPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction("LeftForward", IE_Pressed, this, &ARunnersPlayer::LeftForwardOn);
+	PlayerInputComponent->BindAction("LeftForward", IE_Released, this, &ARunnersPlayer::LeftForwardOff);
+	PlayerInputComponent->BindAction("LeftBack", IE_Pressed, this, &ARunnersPlayer::LeftBackOn);
+	PlayerInputComponent->BindAction("LeftBack", IE_Released, this, &ARunnersPlayer::LeftBackOff);
+
+	PlayerInputComponent->BindAction("RightForward", IE_Pressed, this, &ARunnersPlayer::RightForwardOn);
+	PlayerInputComponent->BindAction("RightForward", IE_Released, this, &ARunnersPlayer::RightForwardOff);
+	PlayerInputComponent->BindAction("RightBack", IE_Pressed, this, &ARunnersPlayer::RightBackOn);
+	PlayerInputComponent->BindAction("RightBack", IE_Released, this, &ARunnersPlayer::RightBackOff);
+}
+
+void ARunnersPlayer::LeftForwardOn()
+{
+	TotalTime += 0.5f;
+	UE_LOG(LogTemp, Display, TEXT("left forward %f"), TotalTime);
+}
+
+void ARunnersPlayer::LeftForwardOff()
+{
+}
+
+void ARunnersPlayer::LeftBackOn()
+{
+	TotalTime -= 0.5f;
+	UE_LOG(LogTemp, Display, TEXT("left backward %f"), TotalTime);
+}
+
+void ARunnersPlayer::LeftBackOff()
+{
+}
+
+void ARunnersPlayer::RightForwardOn()
+{
+}
+
+void ARunnersPlayer::RightForwardOff()
+{
+}
+
+void ARunnersPlayer::RightBackOn()
+{
+}
+
+void ARunnersPlayer::RightBackOff()
+{
 }

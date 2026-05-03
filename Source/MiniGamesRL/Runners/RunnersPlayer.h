@@ -8,7 +8,7 @@
 #include "RunnersPlayer.generated.h"
 
 UCLASS()
-class MINIGAMESRL_API ARunnersPlayer : public AActor
+class MINIGAMESRL_API ARunnersPlayer : public APawn
 {
 	GENERATED_BODY()
 	
@@ -24,6 +24,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsConstraintComponent* Joint_1;
@@ -37,5 +39,21 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsConstraintComponent* Joint_4;
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<UStaticMeshComponent*> Arms;
+
 	float TotalTime;
+
+	float LeftInput;
+	float RightInput;
+
+	void LeftForwardOn();
+	void LeftForwardOff();
+	void LeftBackOn();
+	void LeftBackOff();
+
+	void RightForwardOn();
+	void RightForwardOff();
+	void RightBackOn();
+	void RightBackOff();
 };
