@@ -66,9 +66,9 @@ void ARunnersPlayer::Tick(float DeltaTime)
 
 	// TotalTime += DeltaTime;
 	Joint_1->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
-	Joint_2->SetAngularVelocityTarget(FVector(0.0f, 0.0f, 0.0f));
-	Joint_3->SetAngularVelocityTarget(FVector(0.0f, 0.0f, 0.0f));
-	Joint_4->SetAngularVelocityTarget(FVector(0.0f, 0.0f, 0.0f));
+	Joint_2->SetAngularVelocityTarget(FVector(0.0f, -TotalTime, 0.0f));
+	Joint_3->SetAngularVelocityTarget(FVector(0.0f, -TotalTime, 0.0f));
+	Joint_4->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
 
 	for (UStaticMeshComponent* Arm : Arms)
 	{
