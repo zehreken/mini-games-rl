@@ -2,11 +2,13 @@
 
 
 #include "RunnersGameMode.h"
+#include "Runners/RunnersPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Learning/LearningManager.h"
 
 ARunnersGameMode::ARunnersGameMode()
 {
+	PlayerControllerClass = ARunnersPlayerController::StaticClass();
 }
 
 ALearningManager* ARunnersGameMode::GetLearningManager()
