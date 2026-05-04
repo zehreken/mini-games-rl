@@ -8,8 +8,6 @@ ARunnersPlayer::ARunnersPlayer()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	TotalTime = 0.0f;
 }
 
 // Called when the game starts or when spawned
@@ -64,11 +62,10 @@ void ARunnersPlayer::Tick(float DeltaTime)
 	DrawDebugDirectionalArrow(GetWorld(), Start, End, 10.0f, FColor::Red, false,
 	                          -1.0f, 0.0f, 1.0f);
 
-	// TotalTime += DeltaTime;
-	JointFL->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
-	JointFR->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
-	JointBL->SetAngularVelocityTarget(FVector(0.0f, -TotalTime * 100.0f, 0.0f));
-	JointBR->SetAngularVelocityTarget(FVector(0.0f, -TotalTime * 100.0f, 0.0f));
+	JointFL->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetFL, 0.0f));
+	JointFR->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetFR, 0.0f));
+	JointBL->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetBL, 0.0f));
+	JointBR->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetBR, 0.0f));
 
 	for (UStaticMeshComponent* Leg : Legs)
 	{
@@ -81,14 +78,10 @@ void ARunnersPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("LeftForward", IE_Pressed, this, &ARunnersPlayer::LeftForwardOn);
-	PlayerInputComponent->BindAction("LeftForward", IE_Released, this, &ARunnersPlayer::LeftForwardOff);
 	PlayerInputComponent->BindAction("LeftBack", IE_Pressed, this, &ARunnersPlayer::LeftBackOn);
-	PlayerInputComponent->BindAction("LeftBack", IE_Released, this, &ARunnersPlayer::LeftBackOff);
 
 	PlayerInputComponent->BindAction("RightForward", IE_Pressed, this, &ARunnersPlayer::RightForwardOn);
-	PlayerInputComponent->BindAction("RightForward", IE_Released, this, &ARunnersPlayer::RightForwardOff);
 	PlayerInputComponent->BindAction("RightBack", IE_Pressed, this, &ARunnersPlayer::RightBackOn);
-	PlayerInputComponent->BindAction("RightBack", IE_Released, this, &ARunnersPlayer::RightBackOff);
 }
 
 void ARunnersPlayer::SetVelocityTargetFL(float target)
@@ -113,36 +106,24 @@ void ARunnersPlayer::SetVelocityTargetBR(float target)
 
 void ARunnersPlayer::LeftForwardOn()
 {
-	TotalTime += 0.5f;
-	UE_LOG(LogTemp, Display, TEXT("left forward %f"), TotalTime);
-}
-
-void ARunnersPlayer::LeftForwardOff()
-{
+	VelocityTargetFL += 0.5f;
+	UE_LOG(LogTemp, Display, TEXT("left forward %f"), VelocityTargetFL);
 }
 
 void ARunnersPlayer::LeftBackOn()
 {
-	TotalTime -= 0.5f;
-	UE_LOG(LogTemp, Display, TEXT("left backward %f"), TotalTime);
-}
-
-void ARunnersPlayer::LeftBackOff()
-{
+	VelocityTargetFL -= 0.5f;
+	UE_LOG(LogTemp, Display, TEXT("left backward %f"), VelocityTargetFL);
 }
 
 void ARunnersPlayer::RightForwardOn()
 {
-}
-
-void ARunnersPlayer::RightForwardOff()
-{
+	VelocityTargetFR += 0.5f;
+	UE_LOG(LogTemp, Display, TEXT("left forward %f"), VelocityTargetFR);
 }
 
 void ARunnersPlayer::RightBackOn()
 {
-}
-
-void ARunnersPlayer::RightBackOff()
-{
+	VelocityTargetFR -= 0.5f;
+	UE_LOG(LogTemp, Display, TEXT("left forward %f"), VelocityTargetFR);
 }

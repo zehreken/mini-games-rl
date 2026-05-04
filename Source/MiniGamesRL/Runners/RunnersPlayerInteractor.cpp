@@ -8,12 +8,44 @@ void URunnersPlayerInteractor::SpecifyAgentObservation_Implementation(
 	FLearningAgentsObservationSchemaElement& OutObservationSchemaElement,
 	ULearningAgentsObservationSchema* InObservationSchema)
 {
+	TMap<FName, FLearningAgentsObservationSchemaElement> ObservationSchemaMap;
+	ObservationSchemaMap.Add("LegAngleFL",
+	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("LegAngleFR",
+	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("LegAngleBL",
+	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("LegAngleBR",
+	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
+		InObservationSchema,
+		ObservationSchemaMap);
 }
 
 void URunnersPlayerInteractor::GatherAgentObservation_Implementation(
 	FLearningAgentsObservationObjectElement& OutObservationObjectElement,
 	ULearningAgentsObservationObject* InObservationObject, const int32 AgentId)
 {
+	ARunnersPlayer* Player = Cast<ARunnersPlayer>(GetAgent(AgentId));
+	if (!IsValid(Player)) return;
+
+	TMap<FName, FLearningAgentsObservationObjectElement> ObservationMap;
+
+	ObservationMap.Add("LegAngleFL",
+	                   ULearningAgentsObservations::MakeFloatObservation(
+		                   InObservationObject, Player->GetJointAngleFL()));
+	ObservationMap.Add("LegAngleFR",
+	                   ULearningAgentsObservations::MakeFloatObservation(
+		                   InObservationObject, Player->GetJointAngleFR()));
+	ObservationMap.Add("LegAngleBL",
+	                   ULearningAgentsObservations::MakeFloatObservation(
+		                   InObservationObject, Player->GetJointAngleBL()));
+	ObservationMap.Add("LegAngleBR",
+	                   ULearningAgentsObservations::MakeFloatObservation(
+		                   InObservationObject, Player->GetJointAngleBR()));
+	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
+		InObservationObject,
+		ObservationMap);
 }
 
 void URunnersPlayerInteractor::SpecifyAgentAction_Implementation(
@@ -29,7 +61,8 @@ void URunnersPlayerInteractor::SpecifyAgentAction_Implementation(
 }
 
 void URunnersPlayerInteractor::PerformAgentAction_Implementation(const ULearningAgentsActionObject* InActionObject,
-	const FLearningAgentsActionObjectElement& InActionObjectElement, const int32 AgentId)
+                                                                 const FLearningAgentsActionObjectElement&
+                                                                 InActionObjectElement, const int32 AgentId)
 {
 	ARunnersPlayer* Player = Cast<ARunnersPlayer>(GetAgent(AgentId));
 	if (!IsValid(Player)) return;
@@ -42,7 +75,7 @@ void URunnersPlayerInteractor::PerformAgentAction_Implementation(const ULearning
 	const FLearningAgentsActionObjectElement* AvtBLElem = ActionMap.Find(TEXT("AVT_BL"));
 	const FLearningAgentsActionObjectElement* AvtBRElem = ActionMap.Find(TEXT("AVT_BR"));
 
-	if (!AvtFLElem|| !AvtFRElem || !AvtBLElem || !AvtBRElem) return;
+	if (!AvtFLElem || !AvtFRElem || !AvtBLElem || !AvtBRElem) return;
 
 	float AvtFL;
 	ULearningAgentsActions::GetFloatAction(AvtFL, InActionObject, *AvtFLElem);
@@ -57,5 +90,4 @@ void URunnersPlayerInteractor::PerformAgentAction_Implementation(const ULearning
 	Player->SetVelocityTargetFR(AvtFR);
 	Player->SetVelocityTargetBL(AvtBL);
 	Player->SetVelocityTargetBR(AvtBR);
-
 }

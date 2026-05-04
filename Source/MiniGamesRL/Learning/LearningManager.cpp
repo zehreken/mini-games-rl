@@ -90,6 +90,13 @@ void ALearningManager::Init()
 		*Communicator,
 		ULearningAgentsPPOTrainer::StaticClass(),
 		TEXT("PPOTrainer"));
+
+	if (!IsValid(CurriculumManager))
+		UE_LOG(LogTemp, Error, TEXT("CurriculumManager is not valid"));
+	if (!IsValid(PPOTrainer))
+		UE_LOG(LogTemp, Error, TEXT("PPOTrainer is not valid"));
+	if (!IsValid(TrainerConfig))
+		UE_LOG(LogTemp, Error, TEXT("TrainerConfig is not valid"));
 }
 
 // Called every frame
@@ -103,6 +110,10 @@ void ALearningManager::Tick(float DeltaTime)
 	}
 	else
 	{
+		if (!PPOTrainer || !CurriculumManager || !TrainerConfig)
+		{
+			return;
+		}
 		PPOTrainer->RunTraining(TrainerConfig->PPOTrainingSettings);
 	
 		CurriculumManager->NextStep();

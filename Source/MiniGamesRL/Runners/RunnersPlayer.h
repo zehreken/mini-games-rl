@@ -31,6 +31,11 @@ public:
 	void SetVelocityTargetBL(float target);
 	void SetVelocityTargetBR(float target);
 
+	float GetJointAngleFL() const;
+	float GetJointAngleFR() const;
+	float GetJointAngleBL() const;
+	float GetJointAngleBR() const;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsConstraintComponent* JointFL;
@@ -52,18 +57,29 @@ private:
 	float VelocityTargetBL;
 	float VelocityTargetBR;
 
-	float TotalTime;
-
-	float LeftInput;
-	float RightInput;
-
 	void LeftForwardOn();
-	void LeftForwardOff();
 	void LeftBackOn();
-	void LeftBackOff();
 
 	void RightForwardOn();
-	void RightForwardOff();
 	void RightBackOn();
-	void RightBackOff();
 };
+
+inline float ARunnersPlayer::GetJointAngleFL() const
+{
+	return JointFL->GetCurrentTwist();
+}
+
+inline float ARunnersPlayer::GetJointAngleFR() const
+{
+	return JointFR->GetCurrentTwist();
+}
+
+inline float ARunnersPlayer::GetJointAngleBL() const
+{
+	return JointBL->GetCurrentTwist();
+}
+
+inline float ARunnersPlayer::GetJointAngleBR() const
+{
+	return JointBR->GetCurrentTwist();
+}
