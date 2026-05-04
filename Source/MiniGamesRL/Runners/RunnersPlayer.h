@@ -11,8 +11,8 @@ UCLASS()
 class MINIGAMESRL_API ARunnersPlayer : public APawn
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ARunnersPlayer();
 
@@ -20,27 +20,37 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void SetVelocityTargetFL(float target);
+	void SetVelocityTargetFR(float target);
+	void SetVelocityTargetBL(float target);
+	void SetVelocityTargetBR(float target);
+
 private:
 	UPROPERTY(VisibleAnywhere)
-	UPhysicsConstraintComponent* Joint_1;
+	UPhysicsConstraintComponent* JointFL;
 
 	UPROPERTY(VisibleAnywhere)
-	UPhysicsConstraintComponent* Joint_2;
+	UPhysicsConstraintComponent* JointFR;
 
 	UPROPERTY(VisibleAnywhere)
-	UPhysicsConstraintComponent* Joint_3;
+	UPhysicsConstraintComponent* JointBL;
 
 	UPROPERTY(VisibleAnywhere)
-	UPhysicsConstraintComponent* Joint_4;
+	UPhysicsConstraintComponent* JointBR;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<UStaticMeshComponent*> Arms;
+	TArray<UStaticMeshComponent*> Legs;
+
+	float VelocityTargetFL;
+	float VelocityTargetFR;
+	float VelocityTargetBL;
+	float VelocityTargetBR;
 
 	float TotalTime;
 

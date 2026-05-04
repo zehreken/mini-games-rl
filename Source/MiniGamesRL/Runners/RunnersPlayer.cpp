@@ -20,32 +20,32 @@ void ARunnersPlayer::BeginPlay()
 	TArray<UPhysicsConstraintComponent*> Constraints;
 	GetComponents<UPhysicsConstraintComponent>(Constraints);
 
-	TArray<UActorComponent*> ArmActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Arm"));
-	for (UActorComponent* Comp : ArmActors)
+	TArray<UActorComponent*> LegActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Leg"));
+	for (UActorComponent* Comp : LegActors)
 	{
-		if (UStaticMeshComponent* Arm = Cast<UStaticMeshComponent>(Comp))
+		if (UStaticMeshComponent* Leg = Cast<UStaticMeshComponent>(Comp))
 		{
-			Arms.Add(Arm);
+			Legs.Add(Leg);
 		}
 	}
 
 	for (auto* C : Constraints)
 	{
-		if (C->GetName() == "Joint1")
+		if (C->GetName() == "Joint_FL")
 		{
-			Joint_1 = C;
+			JointFL = C;
 		}
-		else if (C->GetName() == "Joint2")
+		else if (C->GetName() == "Joint_FR")
 		{
-			Joint_2 = C;
+			JointFR = C;
 		}
-		else if (C->GetName() == "Joint3")
+		else if (C->GetName() == "Joint_BL")
 		{
-			Joint_3 = C;
+			JointBL = C;
 		}
-		else if (C->GetName() == "Joint4")
+		else if (C->GetName() == "Joint_BR")
 		{
-			Joint_4 = C;
+			JointBR = C;
 		}
 
 		C->SetAngularDriveMode(EAngularDriveMode::TwistAndSwing);
@@ -65,14 +65,14 @@ void ARunnersPlayer::Tick(float DeltaTime)
 	                          -1.0f, 0.0f, 1.0f);
 
 	// TotalTime += DeltaTime;
-	Joint_1->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
-	Joint_2->SetAngularVelocityTarget(FVector(0.0f, -TotalTime, 0.0f));
-	Joint_3->SetAngularVelocityTarget(FVector(0.0f, -TotalTime, 0.0f));
-	Joint_4->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
+	JointFL->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
+	JointFR->SetAngularVelocityTarget(FVector(0.0f, TotalTime, 0.0f));
+	JointBL->SetAngularVelocityTarget(FVector(0.0f, -TotalTime * 100.0f, 0.0f));
+	JointBR->SetAngularVelocityTarget(FVector(0.0f, -TotalTime * 100.0f, 0.0f));
 
-	for (UStaticMeshComponent* Arm : Arms)
+	for (UStaticMeshComponent* Leg : Legs)
 	{
-		Arm->WakeRigidBody();
+		Leg->WakeRigidBody();
 	}
 }
 
@@ -89,6 +89,26 @@ void ARunnersPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAction("RightForward", IE_Released, this, &ARunnersPlayer::RightForwardOff);
 	PlayerInputComponent->BindAction("RightBack", IE_Pressed, this, &ARunnersPlayer::RightBackOn);
 	PlayerInputComponent->BindAction("RightBack", IE_Released, this, &ARunnersPlayer::RightBackOff);
+}
+
+void ARunnersPlayer::SetVelocityTargetFL(float target)
+{
+	VelocityTargetFL = FMath::Clamp(target, -1.0f, 1.0f);
+}
+
+void ARunnersPlayer::SetVelocityTargetFR(float target)
+{
+	VelocityTargetFR = FMath::Clamp(target, -1.0f, 1.0f);
+}
+
+void ARunnersPlayer::SetVelocityTargetBL(float target)
+{
+	VelocityTargetBL = FMath::Clamp(target, -1.0f, 1.0f);
+}
+
+void ARunnersPlayer::SetVelocityTargetBR(float target)
+{
+	VelocityTargetBR = FMath::Clamp(target, -1.0f, 1.0f);
 }
 
 void ARunnersPlayer::LeftForwardOn()
