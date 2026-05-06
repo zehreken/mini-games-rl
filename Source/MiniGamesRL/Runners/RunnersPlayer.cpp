@@ -18,12 +18,23 @@ void ARunnersPlayer::BeginPlay()
 	TArray<UPhysicsConstraintComponent*> Constraints;
 	GetComponents<UPhysicsConstraintComponent>(Constraints);
 
+	TArray<UActorComponent*> BodyActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("MainBody"));
+	if (BodyActors.Num() > 0)
+	{
+		MainBody = Cast<UStaticMeshComponent>(BodyActors[0]);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("no mainbody found"));
+	}
+
 	TArray<UActorComponent*> LegActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Leg"));
 	for (UActorComponent* Comp : LegActors)
 	{
 		if (UStaticMeshComponent* Leg = Cast<UStaticMeshComponent>(Comp))
 		{
 			Legs.Add(Leg);
+			LegLocations.Add(Leg->GetComponentLocation());
 		}
 	}
 
@@ -71,6 +82,14 @@ void ARunnersPlayer::Tick(float DeltaTime)
 	{
 		Leg->WakeRigidBody();
 	}
+
+	// 1.0 = perfectly aligned, 0.0 = perpendicular, -1.0 = upside down
+	float Alignment = FVector::DotProduct(GetActorUpVector(), FVector::UpVector);
+	// UE_LOG(LogTemp, Display, TEXT("Alignment: %f"), Alignment);
+	if (Alignment < 0.9f)
+	{
+		bHasFlipped = true;
+	}
 }
 
 void ARunnersPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -84,24 +103,82 @@ void ARunnersPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAction("RightBack", IE_Pressed, this, &ARunnersPlayer::RightBackOn);
 }
 
+void ARunnersPlayer::ResetAgent(int32 AgentId)
+{
+	UE_LOG(LogTemp, Display, TEXT("Agent id: %d"), AgentId);
+	MainBody->SetSimulatePhysics(false);
+	for (auto Leg : Legs)
+	{
+		Leg->SetSimulatePhysics(false);
+	}
+	// Reset bodies
+	MainBody->SetPhysicsLinearVelocity(FVector::Zero());
+	MainBody->SetPhysicsAngularVelocityInRadians(FVector::Zero());
+	for (auto Leg : Legs)
+	{
+		Leg->SetPhysicsLinearVelocity(FVector::Zero());
+		Leg->SetPhysicsAngularVelocityInRadians(FVector::Zero());
+	}
+	// Reset joints
+	JointFL->SetAngularVelocityTarget(FVector::Zero());
+	JointFR->SetAngularVelocityTarget(FVector::Zero());
+	JointBL->SetAngularVelocityTarget(FVector::Zero());
+	JointBR->SetAngularVelocityTarget(FVector::Zero());
+
+	bHasFlipped = false;
+	VelocityTargetFL = 0.0f;
+	VelocityTargetFR = 0.0f;
+	VelocityTargetBL = 0.0f;
+	VelocityTargetBR = 0.0f;
+
+	// Break joints
+	JointFL->TermComponentConstraint();
+	JointFR->TermComponentConstraint();
+	JointBL->TermComponentConstraint();
+	JointBR->TermComponentConstraint();
+
+	FRotator RandomRotation = FRotator(0.f, 0.0f, 0.f);
+	FVector Location = FVector(AgentId / 8 * 1200.0f, AgentId % 8 * 1200.0f, 400.0f);
+	SetActorLocationAndRotation(Location, FRotator::ZeroRotator);
+	// MainBody->SetWorldLocationAndRotation(FVector(0.0f, 0.0f, 400.0f), FRotator::ZeroRotator);
+	for (int32 i = 0; i < Legs.Num(); i++)
+	{
+		Legs[i]->SetWorldLocationAndRotation(LegLocations[i], FRotator::ZeroRotator);
+	}
+
+	// Reconnect joints
+	JointFL->InitComponentConstraint();
+	JointFR->InitComponentConstraint();
+	JointBL->InitComponentConstraint();
+	JointBR->InitComponentConstraint();
+
+	MainBody->SetSimulatePhysics(true);
+	for (auto Leg : Legs)
+	{
+		Leg->SetSimulatePhysics(true);
+	}
+}
+
+constexpr float VelocityFactor = 10.0f;
+
 void ARunnersPlayer::SetVelocityTargetFL(float target)
 {
-	VelocityTargetFL = FMath::Clamp(target, -1.0f, 1.0f);
+	VelocityTargetFL = FMath::Clamp(target, -1.0f, 1.0f) * VelocityFactor;
 }
 
 void ARunnersPlayer::SetVelocityTargetFR(float target)
 {
-	VelocityTargetFR = FMath::Clamp(target, -1.0f, 1.0f);
+	VelocityTargetFR = FMath::Clamp(target, -1.0f, 1.0f) * VelocityFactor;
 }
 
 void ARunnersPlayer::SetVelocityTargetBL(float target)
 {
-	VelocityTargetBL = FMath::Clamp(target, -1.0f, 1.0f);
+	VelocityTargetBL = FMath::Clamp(target, -1.0f, 1.0f) * VelocityFactor;
 }
 
 void ARunnersPlayer::SetVelocityTargetBR(float target)
 {
-	VelocityTargetBR = FMath::Clamp(target, -1.0f, 1.0f);
+	VelocityTargetBR = FMath::Clamp(target, -1.0f, 1.0f) * VelocityFactor;
 }
 
 void ARunnersPlayer::LeftForwardOn()

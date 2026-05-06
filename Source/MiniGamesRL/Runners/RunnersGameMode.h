@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Runners/RunnersPlayer.h"
 #include "GameFramework/GameModeBase.h"
 #include "RunnersGameMode.generated.h"
 
@@ -27,6 +28,9 @@ protected:
 private:
 	UPROPERTY()
 	ALearningManager* LearningManager;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ARunnersPlayer> PlayerClass;
 
 	void OnCheckPhase(int32 StepCount) const;
 };

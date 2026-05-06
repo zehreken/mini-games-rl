@@ -28,6 +28,14 @@ void ARunnersGameMode::BeginPlay()
 		return;
 	}
 
+	for (int32 i = 1; i < 64; i++)
+	{
+		ARunnersPlayer* Player = GetWorld()->SpawnActor<ARunnersPlayer>(PlayerClass,
+		                                                                FVector(i / 8 * 1200.0f, i % 8 * 1200.0f,
+			                                                                400.0f),
+		                                                                FRotator::ZeroRotator);
+	}
+
 	LearningManager->Init();
 	LearningManager->CurriculumManager->CheckPhaseDelegate.AddUObject(this, &ARunnersGameMode::OnCheckPhase);
 }

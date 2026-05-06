@@ -26,6 +26,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void ResetAgent(int32 AgentId);
+
 	void SetVelocityTargetFL(float target);
 	void SetVelocityTargetFR(float target);
 	void SetVelocityTargetBL(float target);
@@ -36,7 +38,12 @@ public:
 	float GetJointAngleBL() const;
 	float GetJointAngleBR() const;
 
+	bool bHasFlipped; // Termination condition
+
 private:
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* MainBody;
+	
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsConstraintComponent* JointFL;
 
@@ -51,6 +58,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<UStaticMeshComponent*> Legs;
+
+	UPROPERTY()
+	TArray<FVector> LegLocations;
 
 	float VelocityTargetFL;
 	float VelocityTargetFR;

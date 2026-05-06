@@ -40,7 +40,8 @@ void ALearningManager::Init()
 	{
 		LearningAgentsManager->AddAgent(Actor);
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, LevelName + TEXT(" - Added agent"));
+		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, LevelName + TEXT(" - Added agent"));
+		UE_LOG(LogTemp, Display, TEXT("%s - Added agent"), *LevelName);
 
 		Actor->AddTickPrerequisiteActor(this);
 	}
