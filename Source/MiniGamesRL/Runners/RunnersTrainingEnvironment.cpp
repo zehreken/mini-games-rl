@@ -2,7 +2,9 @@
 
 
 #include "Runners/RunnersTrainingEnvironment.h"
+#include "Runners/RunnersGameMode.h"
 #include "Runners/RunnersPlayer.h"
+#include "Learning/LearningManager.h"
 
 void URunnersTrainingEnvironment::GatherAgentReward_Implementation(float& OutReward, const int32 AgentId)
 {
@@ -13,7 +15,7 @@ void URunnersTrainingEnvironment::GatherAgentReward_Implementation(float& OutRew
 	float Reward = 0.0f;
 	
 	float Alignment = FVector::DotProduct(Player->GetActorUpVector(), FVector::UpVector);
-	Reward += Alignment * 0.1f;
+	Reward += FMath::Pow(Alignment, 8.0f);
 
 	if (Player->bHasFlipped)
 	{
@@ -46,6 +48,12 @@ void URunnersTrainingEnvironment::ResetAgentEpisode_Implementation(const int32 A
 	ARunnersPlayer* Player = Cast<ARunnersPlayer>(GetAgent(AgentId));
 
 	if (!IsValid(Player)) return;
+
+	if (ARunnersGameMode* RunnersGameMode = Cast<ARunnersGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		int32 StepCount = RunnersGameMode->GetLearningManager()->PPOTrainer->GetEpisodeStepNum(AgentId);
+		RunnersGameMode->GetLearningManager()->CurriculumManager->EnqueueEpisodeLength(StepCount);
+	}
 
 	Player->ResetAgent(AgentId);
 }

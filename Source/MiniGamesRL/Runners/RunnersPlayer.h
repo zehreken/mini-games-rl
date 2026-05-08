@@ -19,6 +19,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void SpawnFurShells();
 
 public:
 	// Called every frame
@@ -43,6 +44,18 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MainBody;
+
+	UPROPERTY(EditAnywhere, Category="Fur")
+	UMaterialInterface* FurMaterial;
+
+	UPROPERTY(EditAnywhere, Category="Fur")
+	int32 ShellCount = 16;
+
+	UPROPERTY(EditAnywhere, Category="Fur")
+	float ShellSpacing = 0.5f;
+
+	UPROPERTY()
+	TArray<UStaticMeshComponent*> FurShells;
 	
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsConstraintComponent* JointFL;
