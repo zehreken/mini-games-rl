@@ -28,6 +28,8 @@ void ARunnersPlayer::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("no mainbody found"));
 	}
 
+	SpawnFurShells();
+
 	TArray<UActorComponent*> LegActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Leg"));
 	for (UActorComponent* Comp : LegActors)
 	{
@@ -63,6 +65,29 @@ void ARunnersPlayer::BeginPlay()
 	}
 }
 
+void ARunnersPlayer::SpawnFurShells()
+{
+	if (!MainBody || !FurMaterial) return;
+
+	for (int32 i = 0; i < ShellCount; i++)
+	{
+		UStaticMeshComponent* Shell = NewObject<UStaticMeshComponent>(this);
+		Shell->SetStaticMesh(MainBody->GetStaticMesh());
+		Shell->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Shell->SetSimulatePhysics(false);
+		Shell->AttachToComponent(MainBody, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		Shell->RegisterComponent();
+
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(FurMaterial, this);
+		float ShellValue = (float)i / (float)ShellCount;
+		MID->SetScalarParameterValue(FName("ShellIndex"), ShellValue);
+		UE_LOG(LogTemp, Display, TEXT("Shell %d ShellIndex: %f"), i, ShellValue);
+		Shell->SetMaterial(0, MID);
+
+		FurShells.Add(Shell);
+	}
+}
+
 // Called every frame
 void ARunnersPlayer::Tick(float DeltaTime)
 {
@@ -86,7 +111,7 @@ void ARunnersPlayer::Tick(float DeltaTime)
 	// 1.0 = perfectly aligned, 0.0 = perpendicular, -1.0 = upside down
 	float Alignment = FVector::DotProduct(GetActorUpVector(), FVector::UpVector);
 	// UE_LOG(LogTemp, Display, TEXT("Alignment: %f"), Alignment);
-	if (Alignment < 0.9f)
+	if (Alignment < 0.95f)
 	{
 		bHasFlipped = true;
 	}
