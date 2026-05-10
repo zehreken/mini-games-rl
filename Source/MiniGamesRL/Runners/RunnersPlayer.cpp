@@ -14,10 +14,7 @@ ARunnersPlayer::ARunnersPlayer()
 void ARunnersPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
-	TArray<UPhysicsConstraintComponent*> Constraints;
-	GetComponents<UPhysicsConstraintComponent>(Constraints);
-
+	
 	TArray<UActorComponent*> BodyActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("MainBody"));
 	if (BodyActors.Num() > 0)
 	{
@@ -25,22 +22,14 @@ void ARunnersPlayer::BeginPlay()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("no mainbody found"));
+		UE_LOG(LogTemp, Error, TEXT("no MainBody found"));
 	}
 
+	// Do this after MainBody is found
 	SpawnFurShells();
 
-	
-	TArray<UActorComponent*> LegActors = GetComponentsByTag(UCapsuleComponent::StaticClass(), FName("Leg"));
-	for (UActorComponent* Comp : LegActors)
-	{
-		if (UCapsuleComponent* Leg = Cast<UCapsuleComponent>(Comp))
-		{
-			Legs.Add(Leg);
-			LegLocations.Add(Leg->GetComponentLocation());
-		}
-	}
-
+	TArray<UPhysicsConstraintComponent*> Constraints;
+	GetComponents<UPhysicsConstraintComponent>(Constraints);
 	for (auto* C : Constraints)
 	{
 		if (C->GetName() == "Joint_FL")
@@ -63,6 +52,32 @@ void ARunnersPlayer::BeginPlay()
 		C->SetAngularDriveMode(EAngularDriveMode::TwistAndSwing);
 		C->SetAngularVelocityDriveTwistAndSwing(true, true);
 		C->SetAngularDriveParams(10.0f, 10.0f, 100000.0f);
+	}
+	
+	TArray<UActorComponent*> LegActors = GetComponentsByTag(UCapsuleComponent::StaticClass(), FName("Leg"));
+	for (UActorComponent* Comp : LegActors)
+	{
+		if (UCapsuleComponent* Leg = Cast<UCapsuleComponent>(Comp))
+		{
+			if (Leg->GetName() == "Leg_FL")
+			{
+				LegFL = Leg;
+			}
+			else if (Leg->GetName() == "Leg_FR")
+			{
+				LegFR = Leg;
+			}
+			else if (Leg->GetName() == "Leg_BL")
+			{
+				LegBL = Leg;
+			}
+			else if (Leg->GetName() == "Leg_BR")
+			{
+				LegBR = Leg;
+			}
+			Legs.Add(Leg);
+			LegLocations.Add(Leg->GetComponentLocation());
+		}
 	}
 
 	float Angle = FMath::RandRange(0.0f, 2.0f * PI);

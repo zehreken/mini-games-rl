@@ -17,8 +17,18 @@ void URunnersPlayerInteractor::SpecifyAgentObservation_Implementation(
 	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
 	ObservationSchemaMap.Add("LegAngleBR",
 	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
-	ObservationSchemaMap.Add("LookAtX", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
-	ObservationSchemaMap.Add("LookAtY", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("LegVelocityFL",
+	                         ULearningAgentsObservations::SpecifyVelocityObservation(InObservationSchema, 50.0f));
+	ObservationSchemaMap.Add("LegVelocityFR",
+	                         ULearningAgentsObservations::SpecifyVelocityObservation(InObservationSchema, 50.0f));
+	ObservationSchemaMap.Add("LegVelocityBL",
+	                         ULearningAgentsObservations::SpecifyVelocityObservation(InObservationSchema, 50.0f));
+	ObservationSchemaMap.Add("LegVelocityBR",
+	                         ULearningAgentsObservations::SpecifyVelocityObservation(InObservationSchema, 50.0f));
+	ObservationSchemaMap.
+		Add("LookAtX", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.
+		Add("LookAtY", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
 		InObservationSchema,
 		ObservationSchemaMap);
@@ -46,13 +56,26 @@ void URunnersPlayerInteractor::GatherAgentObservation_Implementation(
 	                   ULearningAgentsObservations::MakeFloatObservation(
 		                   InObservationObject, Player->GetJointAngleBR()));
 
+	ObservationMap.Add("LegVelocityFL",
+	                   ULearningAgentsObservations::MakeVelocityObservation(
+		                   InObservationObject, Player->GetAngularVelocityFL()));
+	ObservationMap.Add("LegVelocityFR",
+	                   ULearningAgentsObservations::MakeVelocityObservation(
+		                   InObservationObject, Player->GetAngularVelocityFR()));
+	ObservationMap.Add("LegVelocityBL",
+	                   ULearningAgentsObservations::MakeVelocityObservation(
+		                   InObservationObject, Player->GetAngularVelocityBL()));
+	ObservationMap.Add("LegVelocityBR",
+	                   ULearningAgentsObservations::MakeVelocityObservation(
+		                   InObservationObject, Player->GetAngularVelocityBR()));
+
 	FVector LocalDir = Player->GetActorTransform().InverseTransformVector(Player->LookAtDirection).GetSafeNormal();
 	float LookAtX = Player->bLookingEnabled ? LocalDir.X : 0.0f;
 	float LookAtY = Player->bLookingEnabled ? LocalDir.Y : 0.0f;
 	ObservationMap.Add("LookAtX", ULearningAgentsObservations::MakeFloatObservation(
-		InObservationObject, LookAtX));
+		                   InObservationObject, LookAtX));
 	ObservationMap.Add("LookAtY", ULearningAgentsObservations::MakeFloatObservation(
-		InObservationObject, LookAtY));
+		                   InObservationObject, LookAtY));
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,
 		ObservationMap);

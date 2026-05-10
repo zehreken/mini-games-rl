@@ -56,7 +56,7 @@ void ARunnersGameMode::HandleStartingNewPlayer_Implementation(APlayerController*
 
 void ARunnersGameMode::OnCheckPhase(int32 StepCount) const
 {
-	if (LearningManager->CurriculumManager->GetAverageEpisodeLength() > 450 && !Players[0]->bLookingEnabled)
+	if (LearningManager->CurriculumManager->GetAverageEpisodeLength() > 480 && !Players[0]->bLookingEnabled)
 	{
 		for (ARunnersPlayer* Player: Players)
 		{

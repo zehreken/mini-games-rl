@@ -48,6 +48,10 @@ public:
 	float GetJointAngleFR() const;
 	float GetJointAngleBL() const;
 	float GetJointAngleBR() const;
+	FVector GetAngularVelocityFL() const;
+	FVector GetAngularVelocityFR() const;
+	FVector GetAngularVelocityBL() const;
+	FVector GetAngularVelocityBR() const;
 
 	bool bHasFlipped; // Termination condition
 
@@ -66,7 +70,7 @@ private:
 
 	UPROPERTY()
 	TArray<UStaticMeshComponent*> FurShells;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsConstraintComponent* JointFL;
 
@@ -79,7 +83,19 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UPhysicsConstraintComponent* JointBR;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
+	UCapsuleComponent* LegFL;
+
+	UPROPERTY()
+	UCapsuleComponent* LegFR;
+
+	UPROPERTY()
+	UCapsuleComponent* LegBL;
+
+	UPROPERTY()
+	UCapsuleComponent* LegBR;
+
+	UPROPERTY()
 	TArray<UCapsuleComponent*> Legs;
 
 	UPROPERTY()
@@ -115,4 +131,24 @@ inline float ARunnersPlayer::GetJointAngleBL() const
 inline float ARunnersPlayer::GetJointAngleBR() const
 {
 	return JointBR->GetCurrentSwing2();
+}
+
+inline FVector ARunnersPlayer::GetAngularVelocityFL() const
+{
+	return GetActorTransform().InverseTransformVector(LegFL->GetPhysicsAngularVelocityInRadians());
+}
+
+inline FVector ARunnersPlayer::GetAngularVelocityFR() const
+{
+	return GetActorTransform().InverseTransformVector(LegFR->GetPhysicsAngularVelocityInRadians());
+}
+
+inline FVector ARunnersPlayer::GetAngularVelocityBL() const
+{
+	return GetActorTransform().InverseTransformVector(LegBL->GetPhysicsAngularVelocityInRadians());
+}
+
+inline FVector ARunnersPlayer::GetAngularVelocityBR() const
+{
+	return GetActorTransform().InverseTransformVector(LegBR->GetPhysicsAngularVelocityInRadians());
 }
