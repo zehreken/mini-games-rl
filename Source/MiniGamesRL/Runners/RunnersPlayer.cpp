@@ -30,10 +30,11 @@ void ARunnersPlayer::BeginPlay()
 
 	SpawnFurShells();
 
-	TArray<UActorComponent*> LegActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Leg"));
+	
+	TArray<UActorComponent*> LegActors = GetComponentsByTag(UCapsuleComponent::StaticClass(), FName("Leg"));
 	for (UActorComponent* Comp : LegActors)
 	{
-		if (UStaticMeshComponent* Leg = Cast<UStaticMeshComponent>(Comp))
+		if (UCapsuleComponent* Leg = Cast<UCapsuleComponent>(Comp))
 		{
 			Legs.Add(Leg);
 			LegLocations.Add(Leg->GetComponentLocation());
@@ -63,6 +64,9 @@ void ARunnersPlayer::BeginPlay()
 		C->SetAngularVelocityDriveTwistAndSwing(true, true);
 		C->SetAngularDriveParams(10.0f, 10.0f, 100000.0f);
 	}
+
+	float Angle = FMath::RandRange(0.0f, 2.0f * PI);
+	LookAtDirection = FVector(FMath::Cos(Angle), FMath::Sin(Angle), 0.0f);
 }
 
 void ARunnersPlayer::SpawnFurShells()
@@ -77,6 +81,12 @@ void ARunnersPlayer::SpawnFurShells()
 		Shell->SetSimulatePhysics(false);
 		Shell->AttachToComponent(MainBody, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		Shell->RegisterComponent();
+		bool bShouldCastShadow = (i >= ShellCount - 7) || i < 1; // Keep the body shadow and add some of the top layers
+		Shell->SetCastShadow(bShouldCastShadow);
+		Shell->bCastDynamicShadow = bShouldCastShadow;
+		Shell->bCastStaticShadow = bShouldCastShadow;
+		Shell->bCastHiddenShadow = bShouldCastShadow;
+		Shell->bCastShadowAsTwoSided = bShouldCastShadow;
 
 		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(FurMaterial, this);
 		float ShellValue = (float)i / (float)ShellCount;
@@ -97,13 +107,18 @@ void ARunnersPlayer::Tick(float DeltaTime)
 	FVector End = Start + GetActorForwardVector() * 100.0f;
 	DrawDebugDirectionalArrow(GetWorld(), Start, End, 10.0f, FColor::Red, false,
 	                          -1.0f, 0.0f, 1.0f);
+	
+	FVector LookAtStart = GetActorLocation() + FVector::UpVector * 100.0f;
+	FVector LookAtEnd = LookAtStart + LookAtDirection * 100.0f;
+	DrawDebugDirectionalArrow(GetWorld(), LookAtStart, LookAtEnd, 10.0f, FColor::Green, false,
+							  -1.0f, 0.0f, 1.0f);
 
 	JointFL->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetFL, 0.0f));
 	JointFR->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetFR, 0.0f));
 	JointBL->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetBL, 0.0f));
 	JointBR->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetBR, 0.0f));
 
-	for (UStaticMeshComponent* Leg : Legs)
+	for (UCapsuleComponent* Leg : Legs)
 	{
 		Leg->WakeRigidBody();
 	}
@@ -130,7 +145,7 @@ void ARunnersPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 void ARunnersPlayer::ResetAgent(int32 AgentId)
 {
-	UE_LOG(LogTemp, Display, TEXT("Agent id: %d"), AgentId);
+	// UE_LOG(LogTemp, Display, TEXT("Agent id: %d"), AgentId);
 	MainBody->SetSimulatePhysics(false);
 	for (auto Leg : Legs)
 	{
@@ -163,7 +178,7 @@ void ARunnersPlayer::ResetAgent(int32 AgentId)
 	JointBR->TermComponentConstraint();
 
 	FRotator RandomRotation = FRotator(0.f, 0.0f, 0.f);
-	FVector Location = FVector(AgentId / 8 * 1200.0f, AgentId % 8 * 1200.0f, 400.0f);
+	FVector Location = FVector(AgentId / 8 * 1200.0f, AgentId % 8 * 1200.0f, 150.0f);
 	SetActorLocationAndRotation(Location, FRotator::ZeroRotator);
 	// MainBody->SetWorldLocationAndRotation(FVector(0.0f, 0.0f, 400.0f), FRotator::ZeroRotator);
 	for (int32 i = 0; i < Legs.Num(); i++)
@@ -182,6 +197,9 @@ void ARunnersPlayer::ResetAgent(int32 AgentId)
 	{
 		Leg->SetSimulatePhysics(true);
 	}
+
+	float Angle = FMath::RandRange(0.0f, 2.0f * PI);
+	LookAtDirection = FVector(FMath::Cos(Angle), FMath::Sin(Angle), 0.0f);
 }
 
 constexpr float VelocityFactor = 10.0f;
@@ -198,11 +216,13 @@ void ARunnersPlayer::SetVelocityTargetFR(float target)
 
 void ARunnersPlayer::SetVelocityTargetBL(float target)
 {
+	// Back joints are rotated 180 degrees
 	VelocityTargetBL = FMath::Clamp(target, -1.0f, 1.0f) * VelocityFactor;
 }
 
 void ARunnersPlayer::SetVelocityTargetBR(float target)
 {
+	// Back joints are rotated 180 degrees
 	VelocityTargetBR = FMath::Clamp(target, -1.0f, 1.0f) * VelocityFactor;
 }
 

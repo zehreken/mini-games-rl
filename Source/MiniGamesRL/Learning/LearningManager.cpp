@@ -116,6 +116,7 @@ void ALearningManager::Tick(float DeltaTime)
 			return;
 		}
 		PPOTrainer->RunTraining(TrainerConfig->PPOTrainingSettings);
+		// UE_LOG(LogTemp, Display, TEXT("StepCount: %d %d"), CurriculumManager->GetAverageEpisodeLength(), CurriculumManager->GetStepCount());
 	
 		CurriculumManager->NextStep();
 	}

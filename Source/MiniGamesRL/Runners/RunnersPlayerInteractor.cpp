@@ -17,6 +17,8 @@ void URunnersPlayerInteractor::SpecifyAgentObservation_Implementation(
 	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
 	ObservationSchemaMap.Add("LegAngleBR",
 	                         ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("LookAtX", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
+	ObservationSchemaMap.Add("LookAtY", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
 		InObservationSchema,
 		ObservationSchemaMap);
@@ -43,6 +45,14 @@ void URunnersPlayerInteractor::GatherAgentObservation_Implementation(
 	ObservationMap.Add("LegAngleBR",
 	                   ULearningAgentsObservations::MakeFloatObservation(
 		                   InObservationObject, Player->GetJointAngleBR()));
+
+	FVector LocalDir = Player->GetActorTransform().InverseTransformVector(Player->LookAtDirection).GetSafeNormal();
+	float LookAtX = Player->bLookingEnabled ? LocalDir.X : 0.0f;
+	float LookAtY = Player->bLookingEnabled ? LocalDir.Y : 0.0f;
+	ObservationMap.Add("LookAtX", ULearningAgentsObservations::MakeFloatObservation(
+		InObservationObject, LookAtX));
+	ObservationMap.Add("LookAtY", ULearningAgentsObservations::MakeFloatObservation(
+		InObservationObject, LookAtY));
 	OutObservationObjectElement = ULearningAgentsObservations::MakeStructObservation(
 		InObservationObject,
 		ObservationMap);

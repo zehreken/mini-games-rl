@@ -32,5 +32,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ARunnersPlayer> PlayerClass;
 
+	UPROPERTY()
+	TArray<ARunnersPlayer*> Players;
+
 	void OnCheckPhase(int32 StepCount) const;
 };

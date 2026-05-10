@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Actor.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "RunnersPlayer.generated.h"
@@ -26,6 +27,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(EditAnywhere)
+	bool bLookingEnabled;
+
+	UPROPERTY(EditAnywhere)
+	bool bWalkingEnabled;
+
+	UPROPERTY(VisibleInstanceOnly)
+	FVector LookAtDirection;
 
 	void ResetAgent(int32 AgentId);
 
@@ -70,7 +80,7 @@ private:
 	UPhysicsConstraintComponent* JointBR;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<UStaticMeshComponent*> Legs;
+	TArray<UCapsuleComponent*> Legs;
 
 	UPROPERTY()
 	TArray<FVector> LegLocations;
@@ -89,20 +99,20 @@ private:
 
 inline float ARunnersPlayer::GetJointAngleFL() const
 {
-	return JointFL->GetCurrentTwist();
+	return JointFL->GetCurrentSwing2();
 }
 
 inline float ARunnersPlayer::GetJointAngleFR() const
 {
-	return JointFR->GetCurrentTwist();
+	return JointFR->GetCurrentSwing2();
 }
 
 inline float ARunnersPlayer::GetJointAngleBL() const
 {
-	return JointBL->GetCurrentTwist();
+	return JointBL->GetCurrentSwing2();
 }
 
 inline float ARunnersPlayer::GetJointAngleBR() const
 {
-	return JointBR->GetCurrentTwist();
+	return JointBR->GetCurrentSwing2();
 }
