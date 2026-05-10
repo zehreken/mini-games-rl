@@ -17,9 +17,21 @@ void URunnersTrainingEnvironment::GatherAgentReward_Implementation(float& OutRew
 	float Alignment = FVector::DotProduct(Player->GetActorUpVector(), FVector::UpVector);
 	Reward += FMath::Pow(Alignment, 8.0f);
 
-	if (Player->bHasFlipped)
+	if (Player->bHasFlipped) // Alignment < 0.95 => Termination
 	{
 		Reward -= 1.0f;
+	}
+
+	if (Player->bLookingEnabled)
+	{
+		float LookAtAlignment = FVector::DotProduct(Player->GetActorForwardVector(), Player->LookAtDirection);
+		// LookAtAlignment is [-1, 1], below maps it to [0, 1]
+		Reward += LookAtAlignment > 0.0f ? FMath::Pow(LookAtAlignment, 4.0f) : LookAtAlignment;
+	}
+
+	if (Player->bWalkingEnabled)
+	{
+		// For later
 	}
 
 	OutReward = Reward;
@@ -34,7 +46,7 @@ void URunnersTrainingEnvironment::GatherAgentCompletion_Implementation(ELearning
 
 	if (Player->bHasFlipped)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Agent terminating"));
+		// UE_LOG(LogTemp, Warning, TEXT("Agent terminating"));
 		OutCompletion = ELearningAgentsCompletion::Termination;
 	}
 	else
