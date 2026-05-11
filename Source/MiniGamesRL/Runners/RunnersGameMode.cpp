@@ -56,12 +56,12 @@ void ARunnersGameMode::HandleStartingNewPlayer_Implementation(APlayerController*
 
 void ARunnersGameMode::OnCheckPhase(int32 StepCount) const
 {
-	if (LearningManager->CurriculumManager->GetAverageEpisodeLength() > 480 && !Players[0]->bLookingEnabled)
-	{
-		for (ARunnersPlayer* Player: Players)
-		{
-			Player->bLookingEnabled = true;
-		}
-		UE_LOG(LogTemp, Warning, TEXT("Looking enabled"));
-	}
+	// if (LearningManager->CurriculumManager->GetAverageEpisodeLength() > 480 && !Players[0]->bWalkingEnabled)
+	// {
+	// 	for (ARunnersPlayer* Player: Players)
+	// 	{
+	// 		Player->bWalkingEnabled = true;
+	// 	}
+	// 	UE_LOG(LogTemp, Warning, TEXT("Walking enabled"));
+	// }
 }

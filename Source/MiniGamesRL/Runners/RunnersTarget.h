@@ -20,6 +20,8 @@ public:
 	UFUNCTION()
 	void SetOwnerPlayer(ARunnersPlayer* Player);
 
+	void SetRandomLocation();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -32,6 +34,4 @@ private:
 
 	UPROPERTY()
 	ARunnersPlayer* OwnerPlayer;
-
-	void SetRandomLocation();
 };

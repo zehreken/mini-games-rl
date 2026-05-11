@@ -14,7 +14,7 @@ ARunnersPlayer::ARunnersPlayer()
 void ARunnersPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	TArray<UActorComponent*> BodyActors = GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("MainBody"));
 	if (BodyActors.Num() > 0)
 	{
@@ -53,7 +53,7 @@ void ARunnersPlayer::BeginPlay()
 		C->SetAngularVelocityDriveTwistAndSwing(true, true);
 		C->SetAngularDriveParams(10.0f, 10.0f, 100000.0f);
 	}
-	
+
 	TArray<UActorComponent*> LegActors = GetComponentsByTag(UCapsuleComponent::StaticClass(), FName("Leg"));
 	for (UActorComponent* Comp : LegActors)
 	{
@@ -80,8 +80,8 @@ void ARunnersPlayer::BeginPlay()
 		}
 	}
 
-	float Angle = FMath::RandRange(0.0f, 2.0f * PI);
-	LookAtDirection = FVector(FMath::Cos(Angle), FMath::Sin(Angle), 0.0f);
+	Target = GetWorld()->SpawnActor<ARunnersTarget>(TargetClass);
+	Target->SetOwnerPlayer(this);
 }
 
 void ARunnersPlayer::SpawnFurShells()
@@ -118,15 +118,19 @@ void ARunnersPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	PreviousLocation = GetActorLocation();
+
 	FVector Start = GetActorLocation();
 	FVector End = Start + GetActorForwardVector() * 100.0f;
 	DrawDebugDirectionalArrow(GetWorld(), Start, End, 10.0f, FColor::Red, false,
 	                          -1.0f, 0.0f, 1.0f);
-	
+
 	FVector LookAtStart = GetActorLocation() + FVector::UpVector * 100.0f;
+	LookAtDirection = Target->GetActorLocation() - GetActorPreviousLocation();
+	LookAtDirection = LookAtDirection.GetSafeNormal();
 	FVector LookAtEnd = LookAtStart + LookAtDirection * 100.0f;
 	DrawDebugDirectionalArrow(GetWorld(), LookAtStart, LookAtEnd, 10.0f, FColor::Green, false,
-							  -1.0f, 0.0f, 1.0f);
+	                          -1.0f, 0.0f, 1.0f);
 
 	JointFL->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetFL, 0.0f));
 	JointFR->SetAngularVelocityTarget(FVector(0.0f, VelocityTargetFR, 0.0f));
@@ -213,8 +217,13 @@ void ARunnersPlayer::ResetAgent(int32 AgentId)
 		Leg->SetSimulatePhysics(true);
 	}
 
-	float Angle = FMath::RandRange(0.0f, 2.0f * PI);
-	LookAtDirection = FVector(FMath::Cos(Angle), FMath::Sin(Angle), 0.0f);
+	Target->SetRandomLocation();
+	bHasArrived = false;
+}
+
+FVector ARunnersPlayer::GetActorPreviousLocation() const
+{
+	return PreviousLocation;
 }
 
 constexpr float VelocityFactor = 10.0f;

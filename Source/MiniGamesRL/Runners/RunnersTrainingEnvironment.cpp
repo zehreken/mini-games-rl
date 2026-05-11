@@ -13,7 +13,7 @@ void URunnersTrainingEnvironment::GatherAgentReward_Implementation(float& OutRew
 	if (!IsValid(Player)) return;
 
 	float Reward = 0.0f;
-	
+
 	float Alignment = FVector::DotProduct(Player->GetActorUpVector(), FVector::UpVector);
 	Reward += FMath::Pow(Alignment, 8.0f);
 
@@ -21,17 +21,30 @@ void URunnersTrainingEnvironment::GatherAgentReward_Implementation(float& OutRew
 	{
 		Reward -= 1.0f;
 	}
-
-	if (Player->bLookingEnabled)
+	else
 	{
-		float LookAtAlignment = FVector::DotProduct(Player->GetActorForwardVector(), Player->LookAtDirection);
-		// LookAtAlignment is [-1, 1], below maps it to [0, 1]
-		Reward += LookAtAlignment > 0.0f ? FMath::Pow(LookAtAlignment, 4.0f) : LookAtAlignment;
-	}
+		FVector TargetLocation = Player->Target->GetActorLocation();
+		FVector ToTargetPrev = TargetLocation - Player->GetActorPreviousLocation();
+		FVector ToTarget = TargetLocation - Player->GetActorLocation();
 
-	if (Player->bWalkingEnabled)
-	{
-		// For later
+		float DistancePrev = ToTargetPrev.Length();
+		float Distance = ToTarget.Length();
+
+		// UE_LOG(LogTemp, Display, TEXT("Test: %f %f"), DistancePrev, Distance);
+
+		FVector WorldOffset = TargetLocation - Player->GetActorLocation();
+		// This is what makes the observation egocentric(from the player's perspective)
+		FVector LocalOffset = Player->GetActorTransform().InverseTransformVector(WorldOffset);
+		FVector LocalDir = LocalOffset.GetSafeNormal();
+		float AlignX = LocalDir.X; // 1 if facing directly, -1 if facing the opposite way
+		float DistanceDelta = DistancePrev - Distance;
+		Reward += DistanceDelta; // Add distance reward
+		Reward += AlignX; // Add alignment reward
+		if (Player->bHasArrived)
+		{
+			Reward += 10.0f;
+			Player->bHasArrived = false;
+		}
 	}
 
 	OutReward = Reward;

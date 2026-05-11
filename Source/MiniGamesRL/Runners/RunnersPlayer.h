@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Runners/RunnersTarget.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Actor.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
@@ -28,16 +29,17 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditAnywhere)
-	bool bLookingEnabled;
-
-	UPROPERTY(EditAnywhere)
-	bool bWalkingEnabled;
+	UPROPERTY()
+	bool bHasArrived;
 
 	UPROPERTY(VisibleInstanceOnly)
 	FVector LookAtDirection;
 
+	UPROPERTY()
+	ARunnersTarget* Target;
+
 	void ResetAgent(int32 AgentId);
+	FVector GetActorPreviousLocation() const;
 
 	void SetVelocityTargetFL(float target);
 	void SetVelocityTargetFR(float target);
@@ -56,6 +58,12 @@ public:
 	bool bHasFlipped; // Termination condition
 
 private:
+	UPROPERTY(EditAnywhere, Category = "RunnersConfig")
+	TSubclassOf<ARunnersTarget> TargetClass;
+
+	UPROPERTY(VisibleInstanceOnly)
+	FVector PreviousLocation;
+	
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MainBody;
 
