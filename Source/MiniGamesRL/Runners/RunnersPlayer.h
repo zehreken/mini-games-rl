@@ -67,6 +67,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MainBody;
 
+	UPROPERTY(EditAnywhere, Category="RunnersConfig")
+	UStaticMesh* FurMesh;
+
 	UPROPERTY(EditAnywhere, Category="Fur")
 	UMaterialInterface* FurMaterial;
 

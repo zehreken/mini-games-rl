@@ -91,7 +91,7 @@ void ARunnersPlayer::SpawnFurShells()
 	for (int32 i = 0; i < ShellCount; i++)
 	{
 		UStaticMeshComponent* Shell = NewObject<UStaticMeshComponent>(this);
-		Shell->SetStaticMesh(MainBody->GetStaticMesh());
+		Shell->SetStaticMesh(FurMesh);
 		Shell->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		Shell->SetSimulatePhysics(false);
 		Shell->AttachToComponent(MainBody, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
