@@ -108,6 +108,7 @@ void ARunnersPlayer::SpawnFurShells()
 		MID->SetScalarParameterValue(FName("ShellIndex"), ShellValue);
 		UE_LOG(LogTemp, Display, TEXT("Shell %d ShellIndex: %f"), i, ShellValue);
 		Shell->SetMaterial(0, MID);
+		FurMIDs.Add(MID);
 
 		FurShells.Add(Shell);
 	}
@@ -140,6 +141,19 @@ void ARunnersPlayer::Tick(float DeltaTime)
 	for (UCapsuleComponent* Leg : Legs)
 	{
 		Leg->WakeRigidBody();
+	}
+
+
+	FVector RawVelocity = MainBody->GetPhysicsLinearVelocity();
+	SmoothedFurVelocity = FMath::Lerp(SmoothedFurVelocity, RawVelocity, 0.2f);
+	// Negate so fur leans back against movement direction
+	FVector Lean = -SmoothedFurVelocity;
+	Lean += FVector::DownVector * 50.0f;
+
+	for (UMaterialInstanceDynamic* MID : FurMIDs)
+	{
+		MID->SetVectorParameterValue(FName("BodyVelocity"), 
+			FLinearColor(Lean.X, Lean.Y, Lean.Z, 0.0f));
 	}
 
 	// 1.0 = perfectly aligned, 0.0 = perpendicular, -1.0 = upside down

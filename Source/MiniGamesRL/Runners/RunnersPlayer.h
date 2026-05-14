@@ -70,6 +70,12 @@ private:
 	UPROPERTY(EditAnywhere, Category="RunnersConfig")
 	UStaticMesh* FurMesh;
 
+	UPROPERTY()
+	TArray<UMaterialInstanceDynamic*> FurMIDs;
+
+	UPROPERTY()
+	FVector SmoothedFurVelocity = FVector::ZeroVector;
+
 	UPROPERTY(EditAnywhere, Category="Fur")
 	UMaterialInterface* FurMaterial;
 
