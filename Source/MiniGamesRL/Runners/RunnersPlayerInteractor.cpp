@@ -25,7 +25,11 @@ void URunnersPlayerInteractor::SpecifyAgentObservation_Implementation(
 	                         ULearningAgentsObservations::SpecifyVelocityObservation(InObservationSchema, 50.0f));
 	ObservationSchemaMap.Add("LegVelocityBR",
 	                         ULearningAgentsObservations::SpecifyVelocityObservation(InObservationSchema, 50.0f));
-	
+	ObservationSchemaMap.Add("LegFLContact", ULearningAgentsObservations::SpecifyBoolObservation(InObservationSchema));
+	ObservationSchemaMap.Add("LegFRContact", ULearningAgentsObservations::SpecifyBoolObservation(InObservationSchema));
+	ObservationSchemaMap.Add("LegBLContact", ULearningAgentsObservations::SpecifyBoolObservation(InObservationSchema));
+	ObservationSchemaMap.Add("LegBRContact", ULearningAgentsObservations::SpecifyBoolObservation(InObservationSchema));
+
 	ObservationSchemaMap.Add("AlignX", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
 	ObservationSchemaMap.Add("AlignY", ULearningAgentsObservations::SpecifyFloatObservation(InObservationSchema, 1.0f));
 	OutObservationSchemaElement = ULearningAgentsObservations::SpecifyStructObservation(
@@ -67,6 +71,20 @@ void URunnersPlayerInteractor::GatherAgentObservation_Implementation(
 	ObservationMap.Add("LegVelocityBR",
 	                   ULearningAgentsObservations::MakeVelocityObservation(
 		                   InObservationObject, Player->GetAngularVelocityBR()));
+
+	ObservationMap.Add("LegFLContact", ULearningAgentsObservations::MakeBoolObservation(
+		                   InObservationObject, Player->bLegFLContact));
+	ObservationMap.Add("LegFRContact", ULearningAgentsObservations::MakeBoolObservation(
+		                   InObservationObject, Player->bLegFRContact));
+	ObservationMap.Add("LegBLContact", ULearningAgentsObservations::MakeBoolObservation(
+		                   InObservationObject, Player->bLegBLContact));
+	ObservationMap.Add("LegBRContact", ULearningAgentsObservations::MakeBoolObservation(
+		                   InObservationObject, Player->bLegBRContact));
+
+	Player->bLegFLContact = false;
+	Player->bLegFRContact = false;
+	Player->bLegBLContact = false;
+	Player->bLegBRContact = false;
 
 	FVector WorldOffset = Player->Target->GetActorLocation() - Player->GetActorLocation();
 	FVector LocalDir = Player->GetActorTransform().InverseTransformVector(WorldOffset).GetSafeNormal();

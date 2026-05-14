@@ -46,6 +46,15 @@ public:
 	void SetVelocityTargetBL(float target);
 	void SetVelocityTargetBR(float target);
 
+	UFUNCTION()
+	void OnLegFLHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+	void OnLegFRHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+	void OnLegBLHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+	void OnLegBRHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	
 	float GetJointAngleFL() const;
 	float GetJointAngleFR() const;
 	float GetJointAngleBL() const;
@@ -54,6 +63,11 @@ public:
 	FVector GetAngularVelocityFR() const;
 	FVector GetAngularVelocityBL() const;
 	FVector GetAngularVelocityBR() const;
+
+	bool bLegFLContact;
+	bool bLegFRContact;
+	bool bLegBLContact;
+	bool bLegBRContact;
 
 	bool bHasFlipped; // Termination condition
 

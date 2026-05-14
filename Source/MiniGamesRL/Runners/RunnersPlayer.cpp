@@ -75,10 +75,16 @@ void ARunnersPlayer::BeginPlay()
 			{
 				LegBR = Leg;
 			}
+			Leg->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Ignore);
 			Legs.Add(Leg);
 			LegLocations.Add(Leg->GetComponentLocation());
 		}
 	}
+	
+	LegFL->OnComponentHit.AddDynamic(this, &ARunnersPlayer::OnLegFLHit);
+	LegFR->OnComponentHit.AddDynamic(this, &ARunnersPlayer::OnLegFRHit);
+	LegBL->OnComponentHit.AddDynamic(this, &ARunnersPlayer::OnLegBLHit);
+	LegBR->OnComponentHit.AddDynamic(this, &ARunnersPlayer::OnLegBRHit);
 
 	Target = GetWorld()->SpawnActor<ARunnersTarget>(TargetClass);
 	Target->SetOwnerPlayer(this);
@@ -143,7 +149,6 @@ void ARunnersPlayer::Tick(float DeltaTime)
 		Leg->WakeRigidBody();
 	}
 
-
 	FVector RawVelocity = MainBody->GetPhysicsLinearVelocity();
 	SmoothedFurVelocity = FMath::Lerp(SmoothedFurVelocity, RawVelocity, 0.2f);
 	// Negate so fur leans back against movement direction
@@ -152,8 +157,8 @@ void ARunnersPlayer::Tick(float DeltaTime)
 
 	for (UMaterialInstanceDynamic* MID : FurMIDs)
 	{
-		MID->SetVectorParameterValue(FName("BodyVelocity"), 
-			FLinearColor(Lean.X, Lean.Y, Lean.Z, 0.0f));
+		MID->SetVectorParameterValue(FName("BodyVelocity"),
+		                             FLinearColor(Lean.X, Lean.Y, Lean.Z, 0.0f));
 	}
 
 	// 1.0 = perfectly aligned, 0.0 = perpendicular, -1.0 = upside down
@@ -232,12 +237,43 @@ void ARunnersPlayer::ResetAgent(int32 AgentId)
 	}
 
 	Target->SetRandomLocation();
+
+	bLegFLContact = false;
+	bLegFRContact = false;
+	bLegBLContact = false;
+	bLegBRContact = false;
+
 	bHasArrived = false;
 }
 
 FVector ARunnersPlayer::GetActorPreviousLocation() const
 {
 	return PreviousLocation;
+}
+
+
+void ARunnersPlayer::OnLegFLHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                FVector NormalImpulse, const FHitResult& Hit)
+{
+	bLegFLContact = true;
+}
+
+void ARunnersPlayer::OnLegFRHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                FVector NormalImpulse, const FHitResult& Hit)
+{
+	bLegFRContact = true;
+}
+
+void ARunnersPlayer::OnLegBLHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                FVector NormalImpulse, const FHitResult& Hit)
+{
+	bLegBLContact = true;
+}
+
+void ARunnersPlayer::OnLegBRHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                FVector NormalImpulse, const FHitResult& Hit)
+{
+	bLegBRContact = true;
 }
 
 constexpr float VelocityFactor = 10.0f;
